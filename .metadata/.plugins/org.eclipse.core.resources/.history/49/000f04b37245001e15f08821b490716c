@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>POSSG_BE</groupId>
+  <artifactId>POSSG_BE</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <release>17</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.3</version>
+      </plugin>
+    </plugins> 
+  </build>
+  <dependencies>
+		
+		<!-- 스프링부트 스타터 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-web</artifactId>
+		    <version>3.1.2</version>
+		</dependency>
+		                                    
+		<!-- 스프링 부트 스타터 톰캣 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-tomcat</artifactId>
+		    <version>3.1.2</version>
+		</dependency>
+		
+		<!-- 스프링 부트 스타터 jdbc -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-jdbc</artifactId>
+		    <version>3.1.2</version>
+		</dependency>
+		
+		<!-- 마이바티스 스프링 부트 스타터-->
+		<dependency>
+		    <groupId>org.mybatis.spring.boot</groupId>
+		    <artifactId>mybatis-spring-boot-starter</artifactId>
+		    <version>3.0.1</version>
+		</dependency>
+
+		<!-- 마이바티스 스프링 -->
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis-spring</artifactId>
+		    <version>3.0.1</version>
+		</dependency>
+
+		<!-- 마이바티스 -->
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis</artifactId>
+		    <version>3.5.11</version>
+		</dependency>
+		
+		<!-- mysql 커넥터 -->
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>8.0.33</version>
+		</dependency>
+		
+		<!-- 톰캣라이브러리 -->
+		<dependency>
+	  		<groupId>org.apache.commons</groupId>
+	  		<artifactId>commons-io</artifactId>
+	  		<version>1.3.2</version>
+	  	</dependency>
+	  	
+	  	<dependency>
+	  		<groupId>org.apache.commons</groupId>
+	  		<artifactId>commons-lang3</artifactId>
+	  		<version>3.9</version>
+	  	</dependency>
+	  	
+	  	<dependency>
+	  		<groupId>org.apache.commons</groupId>
+	  		<artifactId>commons-pool2</artifactId>
+	  		<version>2.8.0</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>org.slf4j</groupId>
+	  		<artifactId>slf4j-log4j12</artifactId>
+	  		<version>1.7.30</version>
+	  	</dependency>
+	</dependencies>
+  
+</project>
