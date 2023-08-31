@@ -31,7 +31,7 @@ public class ProductService {
 		return dao.productWrite(dto);
 	}
 	
-	public String productNameFind(String name) {
+	public List<ProductDto> productNameFind(String name) {
 		return dao.productNameFind(name);
 	}
 	

@@ -18,7 +18,7 @@ public interface ProductDao {
 	
 	int productWrite(ProductDto dto);
 	
-	String productNameFind(String name);
+	List<ProductDto> productNameFind(String name);
 	
 	int getTotalStock(String name);
 	int callProductConvAdd(CallProductConvDto dto);

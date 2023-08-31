@@ -111,15 +111,17 @@ public class ProductUtil {
 	
 	public static boolean productNameFind(String name, ProductService service) {
 		System.out.println("ProductController productNameFind " + new Date());
-    	String productNameCompare = service.productNameFind(name);
+    	List<ProductDto> productNameCompare = service.productNameFind(name);
     	System.out.println("name= " + name);
-    	System.out.println("productNameCompare= " + productNameCompare);
-        if (productNameCompare == null) { // 동일한 상품X
-        	System.out.println("ProductController product add " + new Date());
-            //service.newswrite(newNews);
-            return false;
-	    }
-        
+    	if (productNameCompare != null && !productNameCompare.isEmpty()) {
+    		System.out.println("productNameCompare= " + productNameCompare.get(0).getProductName());
+    		String productName = productNameCompare.get(0).getProductName();
+    	    if (productName == null) { // 동일한 상품X
+            	System.out.println("ProductController product add " + new Date());
+                //service.newswrite(newNews);
+                return false;
+    	    }
+    	}     
         // 동일한 상품 존재
         System.out.println("ProductController no product to add " + new Date());
     	return true;

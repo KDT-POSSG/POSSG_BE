@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import possg.com.a.dto.CallProductConvDto;
+import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.service.ProductService;
@@ -82,7 +83,7 @@ public class ProductController {
 	// stockLimit: 발주 장바구니에 자동으로 등록되는 갯수의 경계값
 	// ProductDto: productName, productSeq, priceDiscount
 	// CallProductConvDto: userId, rpName, bName 
-	public String callProductConvAddAuto(ProductDto productDto, CallProductConvDto callDto, int stockLimit) {
+	public String callProductConvAddAuto(ProductDto productDto, ConvenienceDto convDto, int stockLimit) {
 		System.out.println("ProductController callProductConvAddAuto() " + new Date());
 		
 		int totalStock = service.getTotalStock(productDto.getProductName());
@@ -92,8 +93,8 @@ public class ProductController {
 		if (totalStock < stockLimit) {
 
 			CallProductConvDto insertCallDto = new CallProductConvDto(0,
-			callDto.getUserId(), productDto.getProductSeq(), 0, callDto.getRpName(),
-			callDto.getbName(), productDto.getPriceDiscount(), new Date().toString(),
+			convDto.getUserId(), productDto.getProductSeq(), 0, convDto.getRepresentativeName(),
+			convDto.getBranchName(), productDto.getPriceDiscount(), new Date().toString(),
 			productDto.getProductName());
 			
 			int count = service.callProductConvAdd(insertCallDto);
@@ -111,12 +112,12 @@ public class ProductController {
 	// ProductDto: productName, productSeq, priceDiscount
 	// CallProductConvDto: userId, rpName, bName 
 	@PostMapping("callProductConvAdd")
-	public String callProductConvAdd(ProductDto productDto, CallProductConvDto callDto) {
+	public String callProductConvAdd(ProductDto productDto, ConvenienceDto convDto) {
 		System.out.println("ProductController callProductConvAdd() " + new Date());
 		
 		CallProductConvDto insertCallDto = new CallProductConvDto(0,
-		callDto.getUserId(), productDto.getProductSeq(), 0, callDto.getRpName(),
-		callDto.getbName(), productDto.getPriceDiscount(), new Date().toString(),
+				convDto.getUserId(), productDto.getProductSeq(), 0, convDto.getRepresentativeName(),
+				convDto.getBranchName(), productDto.getPriceDiscount(), new Date().toString(),
 		productDto.getProductName());
 		
 		int count = service.callProductConvAdd(insertCallDto);
@@ -126,8 +127,11 @@ public class ProductController {
 		}
 		return "NO";
 	}
+	/*
+	@PostMapping("productNameFind")
+	public void productNameFind()
+	*/
 }
-
 
 
 
