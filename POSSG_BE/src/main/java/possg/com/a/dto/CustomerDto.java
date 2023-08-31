@@ -85,7 +85,7 @@ public class CustomerDto {
     // toString()
     @Override
     public String toString() {
-        return "CustomerDto{" +
+        return "CustomerDtos{" +
                 "customerSeq=" + customerSeq +
                 ", customerId='" + customerId + '\'' +
                 ", pinNumber=" + pinNumber +

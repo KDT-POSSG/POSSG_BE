@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="possg.com.a.dao.ProductDao">
+		
+<select id="productList" parameterType="possg.com.a.dto.ProductParam"
+	resultType="possg.com.a.dto.ProductDto">
+	select product_seq, category_id, product_name, price, price_discount, stock_quantity,
+		expiration_date, discount_rate, promotion_info, barcode, img_url
+	from Product
+	<where>
+		<if test="choice != null and choice != '' and search != null and search != '' ">
+			<if test="choice == 'product_name'">
+				product_name like concat('%', #{search}, '%')
+			</if>				
+		</if>
+		<if test="promotionInfo != null and promotionInfo != ''">
+            and promotion_info = #{promotionInfo}
+        </if>
+        <if test="categoryId != null and categoryId != ''">
+            and category_id = #{categoryId}
+        </if>
+		<choose>
+			<when test="minPrice >= 0 and maxPrice > 0">
+				and price between #{minPrice} and #{maxPrice}
+			</when>
+			<when test="minPrice > maxPrice">
+				and 1=0
+			</when>
+			<when test="minPrice >= 0 and maxPrice == 0">
+	        and price >= #{minPrice}
+	   		</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</where>
+	order by 
+		case when stock_quantity = 0 then 1 else 0 end,
+	<choose>
+		<when test="sortOrder == 'latest'">
+			expiration_date desc
+		</when>
+		<when test="sortOrder == 'lowestPrice'">
+			price_discount asc
+		</when>
+		<when test="sortOrder == 'highestPrice'">
+			price_discount desc
+		</when>
+		<when test="sortOrder == 'discountRate'">
+			discount_rate desc
+		</when>
+		<otherwise>
+			product_seq asc
+		</otherwise>
+	</choose>
+	limit ${(pageNumber * 10)}, 10
+</select>
+
+
+<select id="getAllProduct" parameterType="possg.com.a.dto.ProductParam"
+	resultType="java.lang.Integer">
+	select count(*)
+	from Product
+	<if test="choice != null and choice != '' and search != null and search != '' ">
+		<if test="choice == 'product_name'">
+			where product_seq like concat('%', #{search}, '%')
+		</if>
+	</if>
+</select>
+
+<insert id="productWrite" parameterType="possg.com.a.dto.ProductDto">
+	insert into Product(category_id, product_name, price, price_discount, 
+	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
+	values(#{category_id}, #{product_name}, #{price}, #{price_discount}, 
+			#{stock_quantity}, #{expiration_date}, #{discount_rate}, 
+			#{promotion_info}, #{barcode}, #{img_url})
+</insert>
+
+<select id="productNameFind" parameterType="String" resultType="String">
+    select product_name from Product where product_name = #{product_name}
+</select>
+
+</mapper>
