@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.service.ProductService;
@@ -27,16 +27,16 @@ public class ProductController {
 	ProductService service;
 	
 	@GetMapping("productList")
-	public Map<String, Object> productList(ProductParam param){ //
+	public List<ProductDto> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
 		System.out.println("ProductController ProductList " + new Date());
 		System.out.println("ProductParam= " + param);
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
-		
+		/*
 		//글의 총 수
 		int count = service.getAllProduct(param);
-		int pageProduct = count / 10;
-		if((count % 10) > 0) {
+		int pageProduct = count / 12;
+		if((count % 12) > 0) {
 			pageProduct = pageProduct + 1;
 		}
 		
@@ -46,7 +46,8 @@ public class ProductController {
 		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
-		
+		*/
+		return list;
 	}
 	
 	// 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
@@ -77,7 +78,54 @@ public class ProductController {
         }  
     }
 	
-	
+	// input
+	// stockLimit: 발주 장바구니에 자동으로 등록되는 갯수의 경계값
+	// ProductDto: productName, productSeq, priceDiscount
+	// CallProductConvDto: userId, rpName, bName 
+	public String callProductConvAddAuto(ProductDto productDto, CallProductConvDto callDto, int stockLimit) {
+		System.out.println("ProductController callProductConvAddAuto() " + new Date());
+		
+		int totalStock = service.getTotalStock(productDto.getProductName());
+		
+		stockLimit = 3; // 임시 제한
+		
+		if (totalStock < stockLimit) {
+
+			CallProductConvDto insertCallDto = new CallProductConvDto(0,
+			callDto.getUserId(), productDto.getProductSeq(), 0, callDto.getRpName(),
+			callDto.getbName(), productDto.getPriceDiscount(), new Date().toString(),
+			productDto.getProductName());
+			
+			int count = service.callProductConvAdd(insertCallDto);
+			System.out.println(count);
+			if(count > 0) {
+				return "YES";
+			}
+			return "NO";
+		  }
+		
+		return "NO";
+	}
+
+	// input
+	// ProductDto: productName, productSeq, priceDiscount
+	// CallProductConvDto: userId, rpName, bName 
+	@PostMapping("callProductConvAdd")
+	public String callProductConvAdd(ProductDto productDto, CallProductConvDto callDto) {
+		System.out.println("ProductController callProductConvAdd() " + new Date());
+		
+		CallProductConvDto insertCallDto = new CallProductConvDto(0,
+		callDto.getUserId(), productDto.getProductSeq(), 0, callDto.getRpName(),
+		callDto.getbName(), productDto.getPriceDiscount(), new Date().toString(),
+		productDto.getProductName());
+		
+		int count = service.callProductConvAdd(insertCallDto);
+		System.out.println(count);
+		if(count > 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 }
 
 

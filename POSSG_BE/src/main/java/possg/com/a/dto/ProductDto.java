@@ -12,7 +12,6 @@ public class ProductDto {
     private int promotionInfo;
     private String barcode;
     private String imgUrl;
-//    private String imgUrl;
 
     // 생성자
     public ProductDto() {}

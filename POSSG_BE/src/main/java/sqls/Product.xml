@@ -54,7 +54,7 @@
 			product_seq asc
 		</otherwise>
 	</choose>
-	limit ${(pageNumber * 10)}, 10
+	limit ${(pageNumber * 20)}, 20
 </select>
 
 
@@ -69,16 +69,29 @@
 	</if>
 </select>
 
+<select id="getLastProduct" resultType="Integer">
+	select max(product_seq) from Product;
+</select>
+
 <insert id="productWrite" parameterType="possg.com.a.dto.ProductDto">
 	insert into Product(category_id, product_name, price, price_discount, 
 	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
-	values(#{category_id}, #{product_name}, #{price}, #{price_discount}, 
-			#{stock_quantity}, #{expiration_date}, #{discount_rate}, 
-			#{promotion_info}, #{barcode}, #{img_url})
+	values(#{categoryId}, #{productName}, #{price}, #{priceDiscount}, 
+			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
+			#{promotionInfo}, #{barcode}, #{imgUrl})
 </insert>
 
 <select id="productNameFind" parameterType="String" resultType="String">
     select product_name from Product where product_name = #{product_name}
 </select>
+
+<select id="getTotalStock" parameterType="String" resultType="int">
+  select SUM(stock_quantity) from Product where product_name = #{productName}
+</select>
+
+<insert id="callProductConvAdd" parameterType="possg.com.a.dto.CallProductConvDto">
+  insert into call_product_Conv (user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name)
+  values (#{userId}, #{productSeq}, #{amount}, #{rpName}, #{bName}, #{price}, #{callDate}, #{productName})
+</insert>
 
 </mapper>

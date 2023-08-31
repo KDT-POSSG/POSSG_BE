@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.ProductDao;
+import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 
@@ -32,6 +33,14 @@ public class ProductService {
 	
 	public String productNameFind(String name) {
 		return dao.productNameFind(name);
+	}
+	
+	public int getTotalStock(String name) {
+		return dao.getTotalStock(name);
+	}
+	
+	public int callProductConvAdd(CallProductConvDto dto) {
+		return dao.callProductConvAdd(dto);
 	}
 	
 }

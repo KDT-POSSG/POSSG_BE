@@ -95,7 +95,7 @@ CREATE TABLE Payment (
 	discount_info TEXT,											-- 할인 정보
 	price INT not null,											-- 가격 
 	count INT not null,											-- 수량
-	payment_date String not null,							-- 결제일
+	payment_date String not null,								-- 결제일
 	ref	INT not null,											-- 결제 묶음
 	card_num varchar(255),										-- 카드 번호 
     foreign key(user_seq) references Customer(customer_seq),	-- Customer 테이블에서 참조
@@ -167,7 +167,7 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-	call_date String not null,								-- 발주 날짜	
+	call_date String not null,									-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
     foreign key(user_id) references Convenience(user_id),		-- 편의점 테이블에서 참조
     foreign key(product_seq) references Product(product_seq)	-- customer 테이블에서 참조
