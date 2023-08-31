@@ -11,7 +11,7 @@ CREATE TABLE Convenience (
 	representative_name	VARCHAR(255) not null,	-- 편의점 점주명	
 	branch_name	VARCHAR(255) not null,			-- 편의점 점포명
 	phone_number VARCHAR(255) not null,			-- 편의점 점주 휴대폰 번호
-	registration_date TIMESTAMP not null,		-- 편의점 설립일	
+	registration_date String not null,		-- 편의점 설립일	
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
 	-- day_night int 							-- 주야간 (삭제 예정)
 );
@@ -23,7 +23,7 @@ CREATE TABLE Customer (
 	pin_number INT,												-- 결제 비밀 번호. 6자리?
 	customer_name VARCHAR(255) default 'anonymous' not null,	-- 고객 이름
 	phone_number VARCHAR(255),									-- 고객 휴대폰 번호
-	registration_date TIMESTAMP,								-- 고객 가입일 
+	registration_date String,								-- 고객 가입일 
     customer_status int default 1 not null						-- 고객 탈퇴 여부 (0: 탈퇴 1: 가입됨)
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE Product (
 	price INT not null,													-- 상품 가격
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
-	expiration_date	TIMESTAMP,											-- 유통기한
+	expiration_date	String,											-- 유통기한
 	discount_rate DECIMAL(5, 2),										-- 할인율
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호
@@ -79,7 +79,7 @@ CREATE TABLE Delivery (
 	order_status int not null, 									-- 배송상태 (1: 접수대기, 2: 픽업대기, 3: 배송중, 4: 배송완료)
 	quantity int not null,										-- 배달 상품 하나의 갯수
 	product_name VARCHAR(255),									-- 배달 상품명
-	order_date TIMESTAMP not null,								-- 배달 주문 시각
+	order_date String not null,								-- 배달 주문 시각
 	ref	INT not null,											-- 배달 묶음 
 	location VARCHAR(255) not null, 							-- 배송지
     foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
@@ -95,7 +95,7 @@ CREATE TABLE Payment (
 	discount_info TEXT,											-- 할인 정보
 	price INT not null,											-- 가격 
 	count INT not null,											-- 수량
-	payment_date TIMESTAMP not null,							-- 결제일
+	payment_date String not null,							-- 결제일
 	ref	INT not null,											-- 결제 묶음
 	card_num varchar(255),										-- 카드 번호 
     foreign key(user_seq) references Customer(customer_seq),	-- Customer 테이블에서 참조
@@ -106,11 +106,11 @@ CREATE TABLE Payment (
 CREATE TABLE Employee (
 	employee_seq INT auto_increment primary key,				-- 직원 고유번호
 	emp_name VARCHAR(255) not null,								-- 직원 이름
-	birth_date TIMESTAMP not null,								-- 직원 생년월일
+	birth_date String not null,								-- 직원 생년월일
 	gender VARCHAR(20) not null,								-- 직원 성별
 	phone_number VARCHAR(255) not null,							-- 직원 휴대폰 번호		
-	hire_date TIMESTAMP not null,								-- 직원 고용일	
-	termination_date TIMESTAMP,									-- 직원 해고일
+	hire_date String not null,								-- 직원 고용일	
+	termination_date String,									-- 직원 해고일
 	salary INT not null											-- 직원 월급
 );
 
@@ -133,9 +133,9 @@ CREATE TABLE Cost (
 CREATE TABLE Attendance (
 	att_seq	INT auto_increment primary key,							-- 근태 고유번호
 	employee_seq INT,												-- 직원 고유번호
-	attendance TIMESTAMP not null,									-- 출근시간	
-	leave_work TIMESTAMP,											-- 퇴근시간
-	work_hours TIMESTAMP,											-- 근무시간	
+	attendance String not null,									-- 출근시간	
+	leave_work String,											-- 퇴근시간
+	work_hours String,											-- 근무시간	
 	remark VARCHAR(20),												-- 비고
 	matter TEXT,													-- 특이사항
     foreign key (employee_seq) references Employee(employee_seq)	-- Employee 테이블에서 참조
@@ -167,7 +167,7 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-	call_date TIMESTAMP not null,								-- 발주 날짜	
+	call_date String not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
     foreign key(user_id) references Convenience(user_id),		-- 편의점 테이블에서 참조
     foreign key(product_seq) references Product(product_seq)	-- customer 테이블에서 참조
@@ -182,7 +182,7 @@ CREATE TABLE call_product_customer (
 	c_name VARCHAR(255) not null,									-- 고객 이름
 	b_name VARCHAR(255) not null,									-- 점포 이름
 	price INT not null,												-- 발주 주문 가격
-	call_date TIMESTAMP not null,									-- 발주 날짜
+	call_date String not null,									-- 발주 날짜
 	product_name VARCHAR(255) not null,								-- 상품 이름
     foreign key(customer_seq) references Customer(customer_seq),	-- customer 테이블에서 참조 
 	foreign key(product_seq) references Product(product_seq)		-- 상품 테이블에서 참조

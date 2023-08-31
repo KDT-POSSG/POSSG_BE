@@ -1,8 +1,6 @@
 package possg.com.a.dto;
 
-import java.io.Serializable;
-
-public class ProductDto implements Serializable {
+public class ProductDto {
     private int productSeq;
     private int categoryId;
     private String productName;

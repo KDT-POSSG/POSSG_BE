@@ -1,7 +1,5 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
-
 public class DeliveryDto {
     private int orderSeq;
     private String userId;
@@ -9,14 +7,14 @@ public class DeliveryDto {
     private int orderStatus;
     private int quantity;
     private String productName;
-    private Timestamp orderDate;
+    private String orderDate;
     private int ref;
     private String location;
 
     // 생성자
     public DeliveryDto() {}
     
-    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, Timestamp orderDate, int ref, String location) {
+    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, int ref, String location) {
         this.orderSeq = orderSeq;
         this.userId = userId;
         this.productSeq = productSeq;
@@ -78,11 +76,11 @@ public class DeliveryDto {
 		this.productName = productName;
 	}
 
-	public Timestamp getOrderDate() {
+	public String getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(Timestamp orderDate) {
+	public void setOrderDate(String orderDate) {
 		this.orderDate = orderDate;
 	}
 
