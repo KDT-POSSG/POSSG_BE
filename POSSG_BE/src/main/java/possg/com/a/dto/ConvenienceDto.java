@@ -1,6 +1,5 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
 
 public class ConvenienceDto {
     private int convSeq;
@@ -9,13 +8,13 @@ public class ConvenienceDto {
     private String representativeName;
     private String branchName;
     private String phoneNumber;
-    private Timestamp registrationDate;
+    private String registrationDate;
     private int convStatus;
 
     // 생성자
     public ConvenienceDto() {}
 
-    public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, Timestamp registrationDate, int convStatus) {
+    public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, String registrationDate, int convStatus) {
         this.convSeq = convSeq;
         this.userId = userId;
         this.pwd = pwd;
@@ -76,11 +75,11 @@ public class ConvenienceDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Timestamp getRegistrationDate() {
+	public String getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(Timestamp registrationDate) {
+	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 

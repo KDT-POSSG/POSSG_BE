@@ -1,20 +1,18 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
-
 public class CustomerDto {
     private int customerSeq;
     private String customerId;
     private int pinNumber;
     private String customerName;
     private String phoneNumber;
-    private Timestamp registrationDate;
+    private String registrationDate;
     private int customerStatus;
 
     // 생성자
     public CustomerDto() {}
 
-    public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber, Timestamp registrationDate, int customerStatus) {
+    public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber, String registrationDate, int customerStatus) {
         this.customerSeq = customerSeq;
         this.customerId = customerId;
         this.pinNumber = pinNumber;
@@ -66,11 +64,11 @@ public class CustomerDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Timestamp getRegistrationDate() {
+	public String getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(Timestamp registrationDate) {
+	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
@@ -85,7 +83,7 @@ public class CustomerDto {
     // toString()
     @Override
     public String toString() {
-        return "CustomerDto{" +
+        return "CustomerDtos{" +
                 "customerSeq=" + customerSeq +
                 ", customerId='" + customerId + '\'' +
                 ", pinNumber=" + pinNumber +

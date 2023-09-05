@@ -1,15 +1,14 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
 
 public class EmployeeDto {
 	private int employeeSeq;
     private String empName;
-    private Timestamp birthDate;
+    private String birthDate;
     private String gender;
     private String phoneNumber;
-    private Timestamp hireDate;
-    private Timestamp terminationDate;
+    private String hireDate;
+    private String terminationDate;
     private int salary;
     
     //생성자
@@ -18,8 +17,8 @@ public class EmployeeDto {
     	
     }
     
-	public EmployeeDto(int employeeSeq, String empName, Timestamp birthDate, String gender, String phoneNumber,
-			Timestamp hireDate, Timestamp terminationDate, int salary) {
+	public EmployeeDto(int employeeSeq, String empName, String birthDate, String gender, String phoneNumber,
+			String hireDate, String terminationDate, int salary) {
 		super();
 		this.employeeSeq = employeeSeq;
 		this.empName = empName;
@@ -49,11 +48,11 @@ public class EmployeeDto {
 		this.empName = empName;
 	}
 
-	public Timestamp getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Timestamp birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -73,19 +72,19 @@ public class EmployeeDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Timestamp getHireDate() {
+	public String getHireDate() {
 		return hireDate;
 	}
 
-	public void setHireDate(Timestamp hireDate) {
+	public void setHireDate(String hireDate) {
 		this.hireDate = hireDate;
 	}
 
-	public Timestamp getTerminationDate() {
+	public String getTerminationDate() {
 		return terminationDate;
 	}
 
-	public void setTerminationDate(Timestamp terminationDate) {
+	public void setTerminationDate(String terminationDate) {
 		this.terminationDate = terminationDate;
 	}
 
