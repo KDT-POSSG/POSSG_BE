@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="possg.com.a.dao.ConvenienceDao">
+
+<select id="idcheck" parameterType="java.lang.String"
+	resultType="java.lang.Integer">
+	select count(*)
+	from Convenience
+	where user_id = #{userId}
+</select>
+
+<insert id="adduser" parameterType="possg.com.a.dto.ConvenienceDto">
+	insert into Convenience(user_id, pwd, representative_name, branch_name, phone_number, registration_date, conv_status, conv_key)
+	values(#{userId}, #{pwd}, #{representativeName}, #{branchName}, #{phoneNumber}, now(), 1, #{convKey}) 
+</insert>
+
+<update id="updateCodeStatus" parameterType="possg.com.a.dto.AccountNumDto">
+    UPDATE account_num
+	SET code_status = 1
+	WHERE account_code = #{convKey};
+</update>
+
+<select id="login" parameterType="possg.com.a.dto.ConvenienceDto"
+	resultType="possg.com.a.dto.ConvenienceDto">
+	select  user_id, pwd, representative_name, branch_name, phone_number, registration_date, conv_status, conv_seq
+	from Convenience
+	where user_id=#{userId} and pwd=SHA2(#{pwd}, 256)
+</select>
+	
+<!-- 아이디 찾기  -->	
+<select id="findUserByAddressAndPhoneNumber" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+     SELECT * FROM Convenience WHERE representative_name = #{representativeName} AND phone_number = #{phoneNumber}
+</select>
+    
+    
+ <!-- 변경   비밀번호 점주명 전화번호 -->   
+   <!-- 비밀번호 업데이트 -->
+<update id="updatePassword" parameterType="possg.com.a.dto.ConvenienceDto">
+	UPDATE Convenience
+	SET pwd = #{pwd}
+	WHERE user_id = #{userId}
+</update>
+
+<!-- mypage -->
+<select id="mypage" parameterType="java.lang.String" resultType="possg.com.a.dto.ConvenienceDto">
+    	select user_id, representative_name, branch_name, registration_date, phone_number, conv_status
+    	from Convenience
+    	where user_id=#{userId}
+</select>
+
+<!-- mypage에서 비밀번호 점주명 전화번호변경 -->
+<update id="updateMypage" parameterType="possg.com.a.dto.ConvenienceDto">
+    	update Convenience
+    	set 
+    	representative_name=#{representativeName}, 
+    	phone_number=#{phoneNumber},
+    	pwd=#{pwd} 
+    	where user_id=#{userId}
+</update>
+
+<!-- 비밀번호 업데이트 -->
+	<update id="changePassword" parameterType="possg.com.a.dto.ConvenienceDto">
+		UPDATE Convenience
+		SET pwd = #{pwd}
+		WHERE user_id = #{userId}
+	</update>
+
+
+<!-- key중복체크 -->
+<select id="keycheck" parameterType="java.lang.String"
+	resultType="java.lang.Integer">
+	SELECT count(*)
+	FROM account_num
+	WHERE account_code = #{convKey} AND code_status = 0;
+
+</select>
+
+
+
+
+
+</mapper>
