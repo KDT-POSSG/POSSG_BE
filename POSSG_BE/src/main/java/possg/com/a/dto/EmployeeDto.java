@@ -1,14 +1,16 @@
 package possg.com.a.dto;
 
+import java.util.Date;
 
 public class EmployeeDto {
 	private int employeeSeq;
+	private int convSeq;
     private String empName;
-    private String birthDate;
+    private Date birthDate;
     private String gender;
     private String phoneNumber;
-    private String hireDate;
-    private String terminationDate;
+    private Date hireDate;
+    private Date terminationDate;
     private int salary;
     
     //생성자
@@ -16,11 +18,12 @@ public class EmployeeDto {
     public EmployeeDto() {
     	
     }
-    
-	public EmployeeDto(int employeeSeq, String empName, String birthDate, String gender, String phoneNumber,
-			String hireDate, String terminationDate, int salary) {
+
+	public EmployeeDto(int employeeSeq, int convSeq, String empName, Date birthDate, String gender, String phoneNumber,
+			Date hireDate, Date terminationDate, int salary) {
 		super();
 		this.employeeSeq = employeeSeq;
+		this.convSeq = convSeq;
 		this.empName = empName;
 		this.birthDate = birthDate;
 		this.gender = gender;
@@ -30,14 +33,20 @@ public class EmployeeDto {
 		this.salary = salary;
 	}
 
-	//Getter, Setter
-	
 	public int getEmployeeSeq() {
 		return employeeSeq;
 	}
 
 	public void setEmployeeSeq(int employeeSeq) {
 		this.employeeSeq = employeeSeq;
+	}
+
+	public int getConvSeq() {
+		return convSeq;
+	}
+
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public String getEmpName() {
@@ -48,11 +57,11 @@ public class EmployeeDto {
 		this.empName = empName;
 	}
 
-	public String getBirthDate() {
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(String birthDate) {
+	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -72,19 +81,19 @@ public class EmployeeDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getHireDate() {
+	public Date getHireDate() {
 		return hireDate;
 	}
 
-	public void setHireDate(String hireDate) {
+	public void setHireDate(Date hireDate) {
 		this.hireDate = hireDate;
 	}
 
-	public String getTerminationDate() {
+	public Date getTerminationDate() {
 		return terminationDate;
 	}
 
-	public void setTerminationDate(String terminationDate) {
+	public void setTerminationDate(Date terminationDate) {
 		this.terminationDate = terminationDate;
 	}
 
@@ -98,11 +107,9 @@ public class EmployeeDto {
 
 	@Override
 	public String toString() {
-		return "EmployeeDto [employeeSeq=" + employeeSeq + ", empName=" + empName + ", birthDate=" + birthDate
-				+ ", gender=" + gender + ", phoneNumber=" + phoneNumber + ", hireDate=" + hireDate
-				+ ", terminationDate=" + terminationDate + ", salary=" + salary + "]";
+		return "EmployeeDto [employeeSeq=" + employeeSeq + ", convSeq=" + convSeq + ", empName=" + empName
+				+ ", birthDate=" + birthDate + ", gender=" + gender + ", phoneNumber=" + phoneNumber + ", hireDate="
+				+ hireDate + ", terminationDate=" + terminationDate + ", salary=" + salary + "]";
 	}
-    
-	
-    
+
 }

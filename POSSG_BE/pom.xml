@@ -104,10 +104,33 @@
 	  		<artifactId>commons-pool2</artifactId>
 	  		<version>2.8.0</version>
 	  	</dependency>
+	  	
 	  	<dependency>
 	  		<groupId>org.slf4j</groupId>
 	  		<artifactId>slf4j-log4j12</artifactId>
 	  		<version>1.7.30</version>
+	  	</dependency>
+	  	
+	  	<!-- 아파치 클라이언트 -->
+	  	 <dependency>
+	        <groupId>org.apache.httpcomponents</groupId>
+	        <artifactId>httpclient</artifactId>
+	        <version>4.5.13</version> <!-- 버전은 최신 버전으로 변경 가능 -->
+	    </dependency>
+	    
+	    <dependency>
+	      <groupId>com.googlecode.json-simple</groupId>
+	      <artifactId>json-simple</artifactId>
+	      <version>1.1.1</version> 
+	    </dependency>
+	    
+	    <!-- 부트페이 -->
+	    <dependency>
+		    <groupId>io.github.bootpay</groupId>
+		    <artifactId>backend</artifactId>
+		    <version>2.2.0</version>
+		</dependency>
+	</dependencies>
 	  	</dependency>		  	
 	  	
 	  	   <dependency>

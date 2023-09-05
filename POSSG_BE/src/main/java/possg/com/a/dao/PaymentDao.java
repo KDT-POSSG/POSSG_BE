@@ -3,13 +3,12 @@ package possg.com.a.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import possg.com.a.dto.CustomerDto;
+import possg.com.a.dto.PaymentDto;
 
 @Mapper
 @Repository
-public interface CustomerDao {
-
-	int addcustomer(CustomerDto dto);
+public interface PaymentDao {
 	
-	CustomerDto getcustomer(CustomerDto dto);
+	int addkakaopayment(PaymentDto dto);
+	int cancelkakaopayment(int seq);
 }

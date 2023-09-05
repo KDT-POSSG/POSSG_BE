@@ -1,132 +1,125 @@
 package possg.com.a.dto;
 
 public class PaymentDto {
-    private int paymentSeq;
-    private int userSeq;
-    private int productSeq;
-    private String paymentMethod;
-    private String discountInfo;
-    private int price;
-    private int count;
-    private String paymentDate;
-    private int ref;
-    private String cardNum;
-
-    // Getter, Setter
-    // 생략...
-
-    // 생성자
-    public PaymentDto() {}
-
-    public PaymentDto(int paymentSeq, int userSeq, int productSeq, String paymentMethod, String discountInfo, int price, int count, String paymentDate, int ref, String cardNum) {
-        this.paymentSeq = paymentSeq;
-        this.userSeq = userSeq;
-        this.productSeq = productSeq;
-        this.paymentMethod = paymentMethod;
-        this.discountInfo = discountInfo;
-        this.price = price;
-        this.count = count;
-        this.paymentDate = paymentDate;
-        this.ref = ref;
-        this.cardNum = cardNum;
-    }
-
-    //Getter, Setter
+	private String receiptId; // 결제 고유번호
+    private int userSeq; // customer 테이블에서 참조
+    private int productSeq; // product 테이블에서 참조
+    private String pg; // 결제사
+    private String method; // 결제 방법 (카카오페이, 네이버페이, 실물카드, 깊티 ...)
+    private String discountInfo; // 할인 정보
+    private int price; // 가격
+    private int count; // 수량
+    private String purchasedAt; // 결제시간
+    private String receiptUrl; // 결제 영수증 URL
+    private int ref; // 결제 묶음
+    private int cardNum; // 카드 번호
+    private int del; // 결제 취소 여부 (0, 1: 삭제)
     
-    public int getPaymentSeq() {
-		return paymentSeq;
+    public PaymentDto() {
 	}
-
-	public void setPaymentSeq(int paymentSeq) {
-		this.paymentSeq = paymentSeq;
+    
+	public PaymentDto(String receiptId, int userSeq, int productSeq, String pg, String method, String discountInfo,
+			int price, int count, String purchasedAt, String receiptUrl, int ref, int cardNum, int del) {
+		super();
+		this.receiptId = receiptId;
+		this.userSeq = userSeq;
+		this.productSeq = productSeq;
+		this.pg = pg;
+		this.method = method;
+		this.discountInfo = discountInfo;
+		this.price = price;
+		this.count = count;
+		this.purchasedAt = purchasedAt;
+		this.receiptUrl = receiptUrl;
+		this.ref = ref;
+		this.cardNum = cardNum;
+		this.del = del;
 	}
-
+	public String getReceiptId() {
+		return receiptId;
+	}
+	public void setReceiptId(String receiptId) {
+		this.receiptId = receiptId;
+	}
 	public int getUserSeq() {
 		return userSeq;
 	}
-
 	public void setUserSeq(int userSeq) {
 		this.userSeq = userSeq;
 	}
-
 	public int getProductSeq() {
 		return productSeq;
 	}
-
 	public void setProductSeq(int productSeq) {
 		this.productSeq = productSeq;
 	}
-
-	public String getPaymentMethod() {
-		return paymentMethod;
+	public String getPg() {
+		return pg;
 	}
-
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
+	public void setPg(String pg) {
+		this.pg = pg;
 	}
-
+	public String getMethod() {
+		return method;
+	}
+	public void setMethod(String method) {
+		this.method = method;
+	}
 	public String getDiscountInfo() {
 		return discountInfo;
 	}
-
 	public void setDiscountInfo(String discountInfo) {
 		this.discountInfo = discountInfo;
 	}
-
 	public int getPrice() {
 		return price;
 	}
-
 	public void setPrice(int price) {
 		this.price = price;
 	}
-
 	public int getCount() {
 		return count;
 	}
-
 	public void setCount(int count) {
 		this.count = count;
 	}
-
-	public String getPaymentDate() {
-		return paymentDate;
+	public String getPurchasedAt() {
+		return purchasedAt;
 	}
-
-	public void setPaymentDate(String paymentDate) {
-		this.paymentDate = paymentDate;
+	public void setPurchasedAt(String purchasedAt) {
+		this.purchasedAt = purchasedAt;
 	}
-
+	public String getReceiptUrl() {
+		return receiptUrl;
+	}
+	public void setReceiptUrl(String receiptUrl) {
+		this.receiptUrl = receiptUrl;
+	}
 	public int getRef() {
 		return ref;
 	}
-
 	public void setRef(int ref) {
 		this.ref = ref;
 	}
-
-	public String getCardNum() {
+	public int getCardNum() {
 		return cardNum;
 	}
-
-	public void setCardNum(String cardNum) {
+	public void setCardNum(int cardNum) {
 		this.cardNum = cardNum;
 	}
-
-	// toString()
-    @Override
-    public String toString() {
-        return "PaymentDto{" +
-                "paymentSeq=" + paymentSeq +
-                ", userSeq=" + userSeq +
-                ", productSeq=" + productSeq +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", discountInfo='" + discountInfo + '\'' +
-                ", price=" + price +
-                ", count=" + count +
-                ", paymentDate=" + paymentDate +
-                ", ref=" + ref +
-                ", cardNum='" + cardNum + '\'' +
-                '}';
-    }
+	public int getDel() {
+		return del;
+	}
+	public void setDel(int del) {
+		this.del = del;
+	}
+	@Override
+	public String toString() {
+		return "PaymentDto [receiptId=" + receiptId + ", userSeq=" + userSeq + ", productSeq=" + productSeq + ", pg="
+				+ pg + ", method=" + method + ", discountInfo=" + discountInfo + ", price=" + price + ", count=" + count
+				+ ", purchasedAt=" + purchasedAt + ", receiptUrl=" + receiptUrl + ", ref=" + ref + ", cardNum="
+				+ cardNum + ", del=" + del + "]";
+	}
+	
+   
 }

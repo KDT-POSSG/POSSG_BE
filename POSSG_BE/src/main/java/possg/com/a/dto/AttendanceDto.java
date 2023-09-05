@@ -1,6 +1,5 @@
 package possg.com.a.dto;
 
-
 public class AttendanceDto {
     private int attSeq;
     private int employeeSeq;
@@ -13,18 +12,19 @@ public class AttendanceDto {
     // 생성자
     public AttendanceDto() {}
 
-    public AttendanceDto(int attSeq, int employeeSeq, String attendance, String leaveWork, String workHours, String remark, String matter) {
-        this.attSeq = attSeq;
-        this.employeeSeq = employeeSeq;
-        this.attendance = attendance;
-        this.leaveWork = leaveWork;
-        this.workHours = workHours;
-        this.remark = remark;
-        this.matter = matter;
-    }
+	public AttendanceDto(int attSeq, int employeeSeq, String attendance, String leaveWork, String workHours,
+			String remark, String matter) {
+		super();
+		this.attSeq = attSeq;
+		this.employeeSeq = employeeSeq;
+		this.attendance = attendance;
+		this.leaveWork = leaveWork;
+		this.workHours = workHours;
+		this.remark = remark;
+		this.matter = matter;
+	}
 
-    // Getter, Setter
-    public int getAttSeq() {
+	public int getAttSeq() {
 		return attSeq;
 	}
 
@@ -80,17 +80,12 @@ public class AttendanceDto {
 		this.matter = matter;
 	}
 
-	// toString()
-    @Override
-    public String toString() {
-        return "AttendanceDto{" +
-                "attSeq=" + attSeq +
-                ", employeeSeq=" + employeeSeq +
-                ", attendance=" + attendance +
-                ", leaveWork=" + leaveWork +
-                ", workHours=" + workHours +
-                ", remark='" + remark + '\'' +
-                ", matter='" + matter + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "AttendanceDto [attSeq=" + attSeq + ", employeeSeq=" + employeeSeq + ", attendance=" + attendance
+				+ ", leaveWork=" + leaveWork + ", workHours=" + workHours + ", remark=" + remark + ", matter=" + matter
+				+ "]";
+	}
+
+    
 }
