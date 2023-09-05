@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="possg.com.a.dao.DeliveryDao">
+
+<!-- 배달점포 입점 -->
+<update id="convAddDelivery" parameterType="possg.com.a.dto.ConvenienceDto">
+update Convenience
+set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
+where conv_seq = #{convSeq}
+</update>
+
+<!-- 주문접수 -->
+<insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location)
+values(
+    (select customer_seq from Customer where customer_seq = #{userId}),
+    (select product_seq from Product where product_seq = #{productSeq}),
+    1, #{quantity}, #{productName}, now(), now(), #{location}
+)
+</insert>
+
+
+</mapper>

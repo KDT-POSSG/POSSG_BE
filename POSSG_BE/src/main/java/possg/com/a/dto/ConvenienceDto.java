@@ -1,6 +1,5 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
 
 public class ConvenienceDto {
     private int convSeq;
@@ -9,26 +8,55 @@ public class ConvenienceDto {
     private String representativeName;
     private String branchName;
     private String phoneNumber;
-    private Timestamp registrationDate;
+    private String registrationDate;
     private int convStatus;
+    private String convKey;
+    private String newPwd;
+    private String convLocation;
+    private double latitude;	//위도
+    private double longtitude; //경도
 
     // 생성자
     public ConvenienceDto() {}
 
-    public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, Timestamp registrationDate, int convStatus) {
-        this.convSeq = convSeq;
-        this.userId = userId;
-        this.pwd = pwd;
-        this.representativeName = representativeName;
-        this.branchName = branchName;
-        this.phoneNumber = phoneNumber;
-        this.registrationDate = registrationDate;
-        this.convStatus = convStatus;
-    }
-    
-    // Getter, Setter
+	public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName,
+			String phoneNumber, String registrationDate, int convStatus, String convKey, String newPwd, String convLocation) {
+		super();
+		this.convSeq = convSeq;
+		this.userId = userId;
+		this.pwd = pwd;
+		this.representativeName = representativeName;
+		this.branchName = branchName;
+		this.phoneNumber = phoneNumber;
+		this.registrationDate = registrationDate;
+		this.convStatus = convStatus;
+		this.convKey = convKey;
+		this.newPwd = newPwd;
+		this.convLocation = convLocation;
+	}
+	
+	
 
-    public int getConvSeq() {
+	public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName,
+			String phoneNumber, String registrationDate, int convStatus, String convKey, String newPwd,
+			String convLocation, double latitude, double longtitude) {
+		super();
+		this.convSeq = convSeq;
+		this.userId = userId;
+		this.pwd = pwd;
+		this.representativeName = representativeName;
+		this.branchName = branchName;
+		this.phoneNumber = phoneNumber;
+		this.registrationDate = registrationDate;
+		this.convStatus = convStatus;
+		this.convKey = convKey;
+		this.newPwd = newPwd;
+		this.convLocation = convLocation;
+		this.latitude = latitude;
+		this.longtitude = longtitude;
+	}
+
+	public int getConvSeq() {
 		return convSeq;
 	}
 
@@ -76,11 +104,11 @@ public class ConvenienceDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Timestamp getRegistrationDate() {
+	public String getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(Timestamp registrationDate) {
+	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
@@ -92,18 +120,55 @@ public class ConvenienceDto {
 		this.convStatus = convStatus;
 	}
 
-	// toString()
-    @Override
-    public String toString() {
-        return "ConvenienceDto{" +
-                "convSeq=" + convSeq +
-                ", userId='" + userId + '\'' +
-                ", pwd='" + pwd + '\'' +
-                ", representativeName='" + representativeName + '\'' +
-                ", branchName='" + branchName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", convStatus=" + convStatus +
-                '}';
-    }
+	public String getConvKey() {
+		return convKey;
+	}
+
+	public void setConvKey(String convKey) {
+		this.convKey = convKey;
+	}
+
+	public String getNewPwd() {
+		return newPwd;
+	}
+
+	public void setNewPwd(String newPwd) {
+		this.newPwd = newPwd;
+	}
+	
+	public String getConvLocation() {
+		return convLocation;
+	}
+
+	public void setConvLocation(String convLocation) {
+		this.convLocation = convLocation;
+	}
+	
+	
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongtitude() {
+		return longtitude;
+	}
+
+	public void setLongtitude(double longtitude) {
+		this.longtitude = longtitude;
+	}
+
+	@Override
+	public String toString() {
+		return "ConvenienceDto [convSeq=" + convSeq + ", userId=" + userId + ", pwd=" + pwd + ", representativeName="
+				+ representativeName + ", branchName=" + branchName + ", phoneNumber=" + phoneNumber
+				+ ", registrationDate=" + registrationDate + ", convStatus=" + convStatus + ", convKey=" + convKey
+				+ ", newPwd=" + newPwd + ", convLocation=" + convLocation + ", latitude=" + latitude + ", longtitude="
+				+ longtitude + "]";
+	}  
+
 }

@@ -1,5 +1,25 @@
 package possg.com.a.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import possg.com.a.dao.CustomerDao;
+import possg.com.a.dto.CustomerDto;
+
+@Service
+@Transactional
 public class CustomerService {
 
+	@Autowired
+	CustomerDao dao;
+	
+	public int addcustomer(CustomerDto dto) {
+		return dao.addcustomer(dto);
+	}
+	
+	public CustomerDto getcustomer(CustomerDto dto) {
+		return dao.getcustomer(dto);
+	}
+	
 }
