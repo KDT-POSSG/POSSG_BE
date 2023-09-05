@@ -69,6 +69,12 @@ public class ProductService {
 	public List<CallProductConvDto> findCallProductConvName(String name){
 		return dao.findCallProductConvName(name);
 	}
+	public int updateRefCallProductConv(String callRef) {
+		return dao.updateRefCallProductConv(callRef);
+	}
+	public int deleteCallRefProductConv(String callRef) {
+		return dao.deleteCallRefProductConv(callRef);
+	}
 	
 	public List<CallProductConvOrderListDto> getAllConvOrderList(){
 		return dao.getAllConvOrderList();
@@ -82,7 +88,7 @@ public class ProductService {
 	public int updateConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.updateConvOrderList(orderDto);
 	}
-	public int deleteConvOrderList(CallProductConvOrderListDto orderDto) {
-		return dao.deleteConvOrderList(orderDto);
+	public int deleteConvOrderList(String callRef) {
+		return dao.deleteConvOrderList(callRef);
 	}
 }

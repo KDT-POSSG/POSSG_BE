@@ -154,22 +154,25 @@
 <!-- 점주 발주 상품 목록 -->
 <select id="getAllCallProductConvList" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from call_product_conv
+	where call_status != '-1'
 	order by call_seq desc;
 </select>
 
 <select id="getRefCallProductConvList" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from call_product_conv
+	where call_ref = #{callRef}
 	order by call_seq desc
-	where call_ref = #{callRef};
+	
 </select>
 
 <select id="getSeqCallProductConv" parameterType="Integer" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from call_product_conv
-	where call_seq = #{callSeq};
+	where call_seq = #{callSeq} and call_status != '-1';
 </select>
 
 <select id="findCallProductConvName" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
-    select* from Product where product_name = #{productName}
+    select * from call_product_conv 
+    where call_status = 0 and product_name = #{productName}
 </select>
 
 <insert id="addCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
@@ -179,41 +182,61 @@
 
 <update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
 	update call_product_conv
-	set  amount = #{amount}
-	where call_seq = #{callSeq};
+	set amount = #{amount}, price = #{price}
+	where product_name = #{productName} and call_status != '-1';
+</update>
+
+<update id="updateRefCallProductConv" parameterType="String">
+	update call_product_conv
+	set call_ref = #{callRef}, call_status = 1
+	where call_ref = '0' and call_status != '-1';
+</update>
+
+<update id="deleteCallRefProductConv" parameterType="String">
+    update call_product_conv
+    set call_status = '-1'
+    where call_ref = #{callRef} and call_status != '-1'
 </update>
 
 <delete id="deleteCallProduct" parameterType="possg.com.a.dto.CallProductConvDto">
     DELETE FROM call_product_conv
-    WHERE call_ref = #{callRef} AND product_seq = #{productSeq}
+    WHERE call_ref = #{callRef} AND product_name = #{productName} and call_status != '-1'
 </delete>
 
 <!-- 점주 발주 주문 목록 -->
 <select id="getAllConvOrderList" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from call_product_conv_order_list
+	where call_ref != '-1'
 </select>
 
-<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from call_product_conv_order_list
+	where call_ref = #{callRef}
 	order by call_ref desc
-	where call_ref = #{callRef};
 </select>
 
 <insert id="addConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
-    INSERT INTO call_product_conv_order_list (call_ref, call_date, call_status, call_stock, call_total_price, call_remark)
-    VALUES (#{callRef}, #{callDate}, #{callStatus}, #{callStock}, #{callTotalPrice}, #{callRemark})
+    INSERT INTO call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number, call_total_price, call_remark)
+    VALUES (#{seq}, #{callRef}, #{callDate}, #{callStatus}, #{callTotalNumber}, #{callTotalPrice}, #{callRemark})
 </insert>
 
 <update id="updateConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
     UPDATE call_product_conv_order_list
     SET call_status=#{callStatus}, call_total_number=#{callTotalNumber}, call_total_price=#{callTotalPrice}, call_remark=#{callRemark}
-    WHERE call_ref = #{callRef}
+    WHERE call_ref = #{callRef} and call_status != '-1'
 </update>
 
+<update id="deleteConvOrderList" parameterType="String">
+    update call_product_conv_order_list
+    set call_status = '-1'
+    where call_ref = #{callRef} and call_status != '-1'
+</update>
+<!-- 
 <delete id="deleteConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
     DELETE FROM call_product_conv_order_list
     WHERE call_ref = #{callRef}
 </delete>
+-->
 
 <!-- 고객 발주 상품 목록 -->
 <insert id="addCallProductCustomer" parameterType="possg.com.a.dto.CallProductCustomerDto">

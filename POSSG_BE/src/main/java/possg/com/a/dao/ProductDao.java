@@ -36,12 +36,14 @@ public interface ProductDao {
 	List<CallProductConvDto> getRefCallProductConvList(String callRef);
 	CallProductConvDto getSeqCallProductConv(int callSeq);
 	List<CallProductConvDto> findCallProductConvName(String name);
+	int updateRefCallProductConv(String callRef);
+	int deleteCallRefProductConv(String callRef);
 	
 	List<CallProductConvOrderListDto> getAllConvOrderList();
 	CallProductConvOrderListDto getRefConvOrderList(String callRef);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
-	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
+	int deleteConvOrderList(String callRef);
 	
 	
 	

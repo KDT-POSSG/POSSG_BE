@@ -175,16 +175,19 @@ public class ProductController {
 	public String updateCallProductConv(CallProductConvDto convDto) {
 		System.out.println("ProductController updateCallProductConv() " + new Date());
 		
-		// 발주 신청전 모든 상품 리스트 정보 획득
-		List<CallProductConvDto> refTemp = service.getRefCallProductConvList(convDto.getCallRef());
+		// 발주 신청 전 모든 상품 리스트 정보 획득
+		//List<CallProductConvDto> refTemp = service.getRefCallProductConvList(convDto.getCallRef());
 		
-		// 발주 수정할 상품 정보 획득
-		ProductDto productTemp = new ProductDto(convDto.getProductName());
-		List<ProductDto> productDto = service.findProductName(productTemp);
-		if (productDto.size() > 1) {
+		// 발주 신청 전 상품중 해당 상품명 정보 획득 (call_status == 0, product_name == 매개변수 상품명)
+		List<CallProductConvDto> nameTemp = service.findCallProductConvName(convDto.getProductName());
+		System.out.println("nameTemp: " + nameTemp);
+		if (nameTemp.size() > 1 || nameTemp.isEmpty()) {
 			System.out.println("Product duplication error!!" + new Date());
 			return "NO";
 		}
+		// 발주 수정할 상품 정보 획득
+		ProductDto productTemp = new ProductDto(convDto.getProductName());
+		List<ProductDto> productDto = service.findProductName(productTemp);
 		
 		// 해당 상품 가격
 		int productPrice = productDto.get(0).getPriceDiscount();
@@ -197,19 +200,22 @@ public class ProductController {
 		System.out.println("발주 상품 목록 수정 성공");
 		// 업데이트 성공
 		if(count > 0) {
-			// 발주 주문 목록 수정
-			CallProductConvOrderListDto orderDto = 
-					service.getRefConvOrderList(convDto.getCallRef());
-										
-			int totalPrice = orderDto.getCallTotalPrice() 
-					- (refTemp.get(0).getPrice() - convDto.getPrice()); // 기존 총 가격 - 수정된 총 가격 
-		    			
-			orderDto.setCallTotalPrice(totalPrice);
-			int countOrder = service.updateConvOrderList(orderDto);
-			if (countOrder > 0) {
-				System.out.println("발주 주문 목록 수정 성공");
-				return "YES";
+			if (!convDto.getCallRef().equals("0")) {
+				// 발주 주문 목록 수정
+				CallProductConvOrderListDto orderDto = 
+						service.getRefConvOrderList(convDto.getCallRef());
+				System.out.println("getRefConvOrderList: " + orderDto.toString());					
+				int totalPrice = orderDto.getCallTotalPrice() 
+						- (nameTemp.get(0).getPrice() - convDto.getPrice()); // 기존 총 가격 - 수정된 총 가격 
+			    			
+				orderDto.setCallTotalPrice(totalPrice);
+				int countOrder = service.updateConvOrderList(orderDto);
+				if (countOrder > 0) {
+					System.out.println("발주 주문 목록 수정 성공");
+					return "YES";
+				}
 			}
+			return "YES";
 		}
 		return "NO";
 	}
@@ -249,13 +255,21 @@ public class ProductController {
 	// 발주 주문 올리기
 	// input: String remark
 	@PostMapping("addConvOrderList")
-	public String addConvOrderList(String remark) {
+	public String addConvOrderList(@RequestBody String remark) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
 	    List<CallProductConvDto> callList = service.getRefCallProductConvList("0");
+	    
+	    if (remark == null) {
+	    	remark = "";
+	    }
+	    
 	    // 발주 목록 묶음 (call_ref) 생성 로직
 	    // 주문 날짜(yyyyMMddHHmmss)
 	    String callRef = ProductUtil.generateCallRef();
 	    
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String formattedDate = sdf.format(new Date());
+		
 	    // 발주 상품 수 및 총 가격 계산
 	    int totalProduct = callList.size();
 	    int totalPrice = 0;
@@ -266,27 +280,37 @@ public class ProductController {
 	    // call_product_conv_order_list에 추가
 	    // call_status, call_stock, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
-	    		// 
-	    		new CallProductConvOrderListDto(0, callRef, new Date().toString(), 
+	    		new CallProductConvOrderListDto(0, callRef, formattedDate, 
 	    										1, totalProduct, totalPrice, remark);
 	    int count = service.addConvOrderList(orderListDto);
-	    
+	    System.out.println("ProductController addConvOrderList() count: " + count);
 	    if (count > 0) {
-	        return "YES";
+	    	int callCount = service.updateRefCallProductConv(callRef);
+	    	System.out.println("ProductController addConvOrderList() callCount: " + callCount);
+	    	if(callCount > 0) {
+	    		return "YES";
+	    	}
 	    }
 	    return "NO";
 	}
 	
 	
 	// 점주 발주 주문 삭제
-	// input: int callRef
+	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
 	@PostMapping("deleteConvOrderList")
-	public String deleteConvOrderList(CallProductConvOrderListDto orderDto) {
+	public String deleteConvOrderList(@RequestBody String callRef) {
 		System.out.println("ProductController deleteConvOrderList() " + new Date());
-		
-		int count = service.deleteConvOrderList(orderDto);
+		System.out.println(callRef);
+		//callRef="202309051811";
+		int count = service.deleteCallRefProductConv(callRef);
+		System.out.println("ProductController deleteConvOrderList() count: " + count);
 		if (count > 0) {
-	        return "YES";
+			
+			int orderCount = service.deleteConvOrderList(callRef);
+			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
+			if (orderCount > 0) {
+		        return "YES";
+		    }
 	    }
 		return "NO";
 	}
