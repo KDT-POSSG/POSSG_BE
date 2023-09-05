@@ -16,6 +16,11 @@ public class ProductDto {
     // 생성자
     public ProductDto() {}
     
+    public ProductDto(String productName) {
+    	super();
+    	this.productName = productName;
+    }
+    
 	public ProductDto(int productSeq, int categoryId, String productName, int price, int priceDiscount, int stockQuantity,
 			String expirationDate, double discountRate, int promotionInfo, String barcode, String imgUrl) {
 		super();

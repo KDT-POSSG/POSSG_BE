@@ -6,14 +6,16 @@
 		
 <select id="productList" parameterType="possg.com.a.dto.ProductParam"
 	resultType="possg.com.a.dto.ProductDto">
-	select MIN(product_seq) AS product_seq, MIN(category_id) AS category_id
+	select MIN(product_seq) AS product_seq
+	, MIN(category_id) AS category_id
 	, product_name, MIN(price) AS price
 	, MIN(price_discount) AS price_discount
-	, MAX(stock_quantity) AS stock_quantity,
-		MAX(expiration_date) AS expiration_date
-		, MAX(discount_rate) AS discount_rate
-		, MIN(promotion_info) AS promotion_info
-		, MAX(barcode) AS barcode, MAX(img_url) AS img_url
+	, SUM(stock_quantity) AS stock_quantity
+	, MIN(expiration_date) AS expiration_date
+	, MAX(discount_rate) AS discount_rate
+	, MIN(promotion_info) AS promotion_info
+	, MAX(barcode) AS barcode
+	, MAX(img_url) AS img_url
 	from Product
 	<where>
 		<if test="choice != null and choice != '' and search != null and search != '' ">
@@ -44,7 +46,7 @@
 	</where>
 	GROUP BY product_name
 	order by 
-		case when MAX(stock_quantity) = 0 then 1 else 0 end,
+		case when SUM(stock_quantity) = 0 then 1 else 0 end,
 	<choose>
 		<when test="sortOrder == 'leastExpiry'">
 			expiration_date asc
@@ -60,6 +62,9 @@
 		</when>
 		<when test="sortOrder == 'discountRate'">
 			discount_rate desc
+		</when>
+		<when test="sortOrder == 'newest'">
+			product_seq desc
 		</when>
 		<otherwise>
 			product_seq asc
@@ -102,7 +107,10 @@
 	order by 
 		case when stock_quantity = 0 then 1 else 0 end,
 	<choose>
-		<when test="sortOrder == 'latest'">
+		<when test="sortOrder == 'leastExpiry'">
+			expiration_date asc
+		</when>
+		<when test="sortOrder == 'mostExpiry'">
 			expiration_date desc
 		</when>
 		<when test="sortOrder == 'lowestPrice'">
@@ -114,8 +122,11 @@
 		<when test="sortOrder == 'discountRate'">
 			discount_rate desc
 		</when>
-		<otherwise>
+		<when test="sortOrder == 'newest'">
 			product_seq asc
+		</when>
+		<otherwise>
+			product_seq desc
 		</otherwise>
 	</choose>
 </select>
@@ -124,7 +135,15 @@
 	select max(product_seq) from Product;
 </select>
 
-<insert id="productWrite" parameterType="possg.com.a.dto.ProductDto">
+<select id="findProductName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+    select* from Product where product_name = #{productName}
+</select>
+
+<select id="getTotalStock" parameterType="String" resultType="int">
+  select SUM(stock_quantity) from Product where product_name = #{productName}
+</select>
+
+<insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
 	insert into Product(category_id, product_name, price, price_discount, 
 	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
 	values(#{categoryId}, #{productName}, #{price}, #{priceDiscount}, 
@@ -132,17 +151,85 @@
 			#{promotionInfo}, #{barcode}, #{imgUrl})
 </insert>
 
-<select id="productNameFind" parameterType="String" resultType="possg.com.a.dto.ProductDto">
-    select(*) from Product where product_name = #{product_name}
+<!-- 점주 발주 상품 목록 -->
+<select id="getAllCallProductConvList" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from call_product_conv
+	order by call_seq desc;
 </select>
 
-<select id="getTotalStock" parameterType="String" resultType="int">
-  select SUM(stock_quantity) from Product where product_name = #{productName}
+<select id="getRefCallProductConvList" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from call_product_conv
+	order by call_seq desc
+	where call_ref = #{callRef};
 </select>
 
-<insert id="callProductConvAdd" parameterType="possg.com.a.dto.CallProductConvDto">
-  insert into call_product_Conv (user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name)
-  values (#{userId}, #{productSeq}, #{amount}, #{rpName}, #{bName}, #{price}, #{callDate}, #{productName})
+<select id="getSeqCallProductConv" parameterType="Integer" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from call_product_conv
+	where call_seq = #{callSeq};
+</select>
+
+<select id="findCallProductConvName" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+    select* from Product where product_name = #{productName}
+</select>
+
+<insert id="addCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
+  insert into call_product_conv (user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status)
+  values (#{userId}, #{productSeq}, #{amount}, #{rpName}, #{bName}, #{price}, #{callDate}, #{productName}, #{callRef}, #{callStatus})
 </insert>
+
+<update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
+	update call_product_conv
+	set  amount = #{amount}
+	where call_seq = #{callSeq};
+</update>
+
+<delete id="deleteCallProduct" parameterType="possg.com.a.dto.CallProductConvDto">
+    DELETE FROM call_product_conv
+    WHERE call_ref = #{callRef} AND product_seq = #{productSeq}
+</delete>
+
+<!-- 점주 발주 주문 목록 -->
+<select id="getAllConvOrderList" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from call_product_conv_order_list
+</select>
+
+<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from call_product_conv_order_list
+	order by call_ref desc
+	where call_ref = #{callRef};
+</select>
+
+<insert id="addConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    INSERT INTO call_product_conv_order_list (call_ref, call_date, call_status, call_stock, call_total_price, call_remark)
+    VALUES (#{callRef}, #{callDate}, #{callStatus}, #{callStock}, #{callTotalPrice}, #{callRemark})
+</insert>
+
+<update id="updateConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    UPDATE call_product_conv_order_list
+    SET call_status=#{callStatus}, call_total_number=#{callTotalNumber}, call_total_price=#{callTotalPrice}, call_remark=#{callRemark}
+    WHERE call_ref = #{callRef}
+</update>
+
+<delete id="deleteConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    DELETE FROM call_product_conv_order_list
+    WHERE call_ref = #{callRef}
+</delete>
+
+<!-- 고객 발주 상품 목록 -->
+<insert id="addCallProductCustomer" parameterType="possg.com.a.dto.CallProductCustomerDto">
+  insert into call_product_customer (customer_id, product_seq, amount, c_name, b_name, price, call_date, product_name)
+  values (#{customerId}, #{productSeq}, #{amount}, #{cName}, #{bName}, #{price}, #{callDate}, #{productName})
+</insert>
+
+
+<!-- 편의점 -->
+<select id="getConvenienceInfo" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+	select * from Convenience where branch_name = #{branchName};
+</select>
+
+<select id="getAllConvenience" resultType="possg.com.a.dto.ConvenienceDto">
+	select * from Convenience;
+</select>
+
 
 </mapper>

@@ -85,7 +85,7 @@ public class ProductUtil {
                     									promotion_info, barcode, img_url);
             		
                     // 동일한 제목이 있으면 해당 제목 return
-                    boolean compare = productNameFind(product_name, proService);
+                    boolean compare = findProductName(dto, proService);
             		if(compare) {
             			System.out.println("\n product skip check: \n" );
             			break;
@@ -109,10 +109,10 @@ public class ProductUtil {
         return dtoList;
     }
 	
-	public static boolean productNameFind(String name, ProductService service) {
-		System.out.println("ProductController productNameFind " + new Date());
-    	List<ProductDto> productNameCompare = service.productNameFind(name);
-    	System.out.println("name= " + name);
+	public static boolean findProductName(ProductDto dto, ProductService service) {
+		System.out.println("ProductController findProductName " + new Date());
+    	List<ProductDto> productNameCompare = service.findProductName(dto);
+    	System.out.println("name= " + dto.getProductName());
     	if (productNameCompare != null && !productNameCompare.isEmpty()) {
     		System.out.println("productNameCompare= " + productNameCompare.get(0).getProductName());
     		String productName = productNameCompare.get(0).getProductName();
@@ -182,5 +182,11 @@ public class ProductUtil {
     	}
 
 		return InfoNum;
+	}
+    
+    public static String generateCallRef() {
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	    String timestamp = sdf.format(new Date());
+	    return timestamp;
 	}
 }
