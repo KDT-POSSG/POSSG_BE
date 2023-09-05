@@ -1,7 +1,5 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
-
 public class ProductDto {
     private int productSeq;
     private int categoryId;
@@ -9,29 +7,37 @@ public class ProductDto {
     private int price;
     private int priceDiscount;
     private int stockQuantity;
-    private Timestamp expirationDate;
+    private String expirationDate;
     private double discountRate;
     private int promotionInfo;
     private String barcode;
+    private String imgUrl;
 
     // 생성자
     public ProductDto() {}
-
-    public ProductDto(int productSeq, int categoryId, String productName, int price, int priceDiscount, int stockQuantity, Timestamp expirationDate, double discountRate, int promotionInfo, String barcode) {
-        this.productSeq = productSeq;
-        this.categoryId = categoryId;
-        this.productName = productName;
-        this.price = price;
-        this.priceDiscount = priceDiscount;
-        this.stockQuantity = stockQuantity;
-        this.expirationDate = expirationDate;
-        this.discountRate = discountRate;
-        this.promotionInfo = promotionInfo;
-        this.barcode = barcode;
+    
+    public ProductDto(String productName) {
+    	super();
+    	this.productName = productName;
     }
+    
+	public ProductDto(int productSeq, int categoryId, String productName, int price, int priceDiscount, int stockQuantity,
+			String expirationDate, double discountRate, int promotionInfo, String barcode, String imgUrl) {
+		super();
+		this.productSeq = productSeq;
+		this.categoryId = categoryId;
+		this.productName = productName;
+		this.price = price;
+		this.priceDiscount = priceDiscount;
+		this.stockQuantity = stockQuantity;
+		this.expirationDate = expirationDate;
+		this.discountRate = discountRate;
+		this.promotionInfo = promotionInfo;
+		this.barcode = barcode;
+		this.imgUrl = imgUrl;
+	}
 
-    // getter, setter
-    public int getProductSeq() {
+	public int getProductSeq() {
 		return productSeq;
 	}
 
@@ -79,11 +85,11 @@ public class ProductDto {
 		this.stockQuantity = stockQuantity;
 	}
 
-	public Timestamp getExpirationDate() {
+	public String getExpirationDate() {
 		return expirationDate;
 	}
 
-	public void setExpirationDate(Timestamp expirationDate) {
+	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 
@@ -111,20 +117,20 @@ public class ProductDto {
 		this.barcode = barcode;
 	}
 
-	// toString()
-    @Override
-    public String toString() {
-        return "ProductDto{" +
-                "productSeq=" + productSeq +
-                ", categoryId=" + categoryId +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-                ", priceDiscount=" + priceDiscount +
-                ", stockQuantity=" + stockQuantity +
-                ", expirationDate=" + expirationDate +
-                ", discountRate=" + discountRate +
-                ", promotionInfo=" + promotionInfo +
-                ", barcode='" + barcode + '\'' +
-                '}';
-    }
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductDto [productSeq=" + productSeq + ", categoryId=" + categoryId + ", productName=" + productName
+				+ ", price=" + price + ", priceDiscount=" + priceDiscount + ", stockQuantity=" + stockQuantity
+				+ ", expirationDate=" + expirationDate + ", discountRate=" + discountRate + ", promotionInfo="
+				+ promotionInfo + ", barcode=" + barcode + ", imgUrl=" + imgUrl + "]";
+	}
+
 }

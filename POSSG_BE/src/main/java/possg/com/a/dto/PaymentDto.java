@@ -1,7 +1,5 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
-
 public class PaymentDto {
     private int paymentSeq;
     private int userSeq;
@@ -10,7 +8,7 @@ public class PaymentDto {
     private String discountInfo;
     private int price;
     private int count;
-    private Timestamp paymentDate;
+    private String paymentDate;
     private int ref;
     private String cardNum;
 
@@ -20,7 +18,7 @@ public class PaymentDto {
     // 생성자
     public PaymentDto() {}
 
-    public PaymentDto(int paymentSeq, int userSeq, int productSeq, String paymentMethod, String discountInfo, int price, int count, Timestamp paymentDate, int ref, String cardNum) {
+    public PaymentDto(int paymentSeq, int userSeq, int productSeq, String paymentMethod, String discountInfo, int price, int count, String paymentDate, int ref, String cardNum) {
         this.paymentSeq = paymentSeq;
         this.userSeq = userSeq;
         this.productSeq = productSeq;
@@ -91,11 +89,11 @@ public class PaymentDto {
 		this.count = count;
 	}
 
-	public Timestamp getPaymentDate() {
+	public String getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(String paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 

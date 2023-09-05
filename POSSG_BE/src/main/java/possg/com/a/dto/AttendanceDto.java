@@ -1,20 +1,19 @@
 package possg.com.a.dto;
 
-import java.sql.Timestamp;
 
 public class AttendanceDto {
     private int attSeq;
     private int employeeSeq;
-    private Timestamp attendance;
-    private Timestamp leaveWork;
-    private Timestamp workHours;
+    private String attendance;
+    private String leaveWork;
+    private String workHours;
     private String remark;
     private String matter;
 
     // 생성자
     public AttendanceDto() {}
 
-    public AttendanceDto(int attSeq, int employeeSeq, Timestamp attendance, Timestamp leaveWork, Timestamp workHours, String remark, String matter) {
+    public AttendanceDto(int attSeq, int employeeSeq, String attendance, String leaveWork, String workHours, String remark, String matter) {
         this.attSeq = attSeq;
         this.employeeSeq = employeeSeq;
         this.attendance = attendance;
@@ -41,27 +40,27 @@ public class AttendanceDto {
 		this.employeeSeq = employeeSeq;
 	}
 
-	public Timestamp getAttendance() {
+	public String getAttendance() {
 		return attendance;
 	}
 
-	public void setAttendance(Timestamp attendance) {
+	public void setAttendance(String attendance) {
 		this.attendance = attendance;
 	}
 
-	public Timestamp getLeaveWork() {
+	public String getLeaveWork() {
 		return leaveWork;
 	}
 
-	public void setLeaveWork(Timestamp leaveWork) {
+	public void setLeaveWork(String leaveWork) {
 		this.leaveWork = leaveWork;
 	}
 
-	public Timestamp getWorkHours() {
+	public String getWorkHours() {
 		return workHours;
 	}
 
-	public void setWorkHours(Timestamp workHours) {
+	public void setWorkHours(String workHours) {
 		this.workHours = workHours;
 	}
 

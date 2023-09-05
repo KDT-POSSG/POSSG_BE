@@ -19,7 +19,19 @@ public class ConvenienceDto {
     // 생성자
     public ConvenienceDto() {}
 
-	public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName,
+
+	 public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, String registrationDate, int convStatus) {
+        this.convSeq = convSeq;
+        this.userId = userId;
+        this.pwd = pwd;
+        this.representativeName = representativeName;
+        this.branchName = branchName;
+        this.phoneNumber = phoneNumber;
+        this.registrationDate = registrationDate;
+        this.convStatus = convStatus;
+    }
+  
+  public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName,
 			String phoneNumber, String registrationDate, int convStatus, String convKey, String newPwd, String convLocation) {
 		super();
 		this.convSeq = convSeq;
@@ -55,8 +67,10 @@ public class ConvenienceDto {
 		this.latitude = latitude;
 		this.longtitude = longtitude;
 	}
+  
+    // Getter, Setter
 
-	public int getConvSeq() {
+  public int getConvSeq() {
 		return convSeq;
 	}
 

@@ -1,7 +1,9 @@
 use mydb;
 
+
 -- SET foreign_key_checks = 0;
 -- SET foreign_key_checks = 1;
+
 
 -- 편의점 (점주) 테이블 --
 CREATE TABLE Convenience (
@@ -15,6 +17,11 @@ CREATE TABLE Convenience (
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
 	-- day_night int 							-- 주야간 (삭제 예정)
 );
+
+INSERT INTO Convenience (conv_seq, user_id, pwd, representative_name, branch_name
+								, phone_number, registration_date, conv_status) 
+VALUES (0, 'ghfrlfehd', '10101010', '홍길동', '수영구 이마트', '01011112222', '20230805', 1);
+
 
 -- 고객 테이블 --
 CREATE TABLE Customer (
@@ -42,7 +49,9 @@ CREATE TABLE Delivery (
 	location VARCHAR(255) not null, 							-- 배송지
     foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
+
 );
+
 
 -- 상품 테이블 --
 CREATE TABLE Product (
@@ -52,10 +61,11 @@ CREATE TABLE Product (
 	price INT not null,													-- 상품 가격
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
-	expiration_date	TIMESTAMP,											-- 유통기한
+	expiration_date	Timestamp,											-- 유통기한
 	discount_rate DECIMAL(5, 2),										-- 할인율
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호
+	img_url VARCHAR(255),												-- 이미지 주소
     foreign key(category_id) references Category(category_id)			-- Category 테이블에서 참조
 );
 
@@ -63,6 +73,23 @@ CREATE TABLE Product (
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
 	category_name VARCHAR(255) not null				-- 상품 카테고리명				
+
+	
+
+-- 배달 테이블 --
+CREATE TABLE Delivery (
+	order_seq int auto_increment primary key,					-- 배달 고유 번호
+	user_id	INT, 												-- 배달 시킨 사람
+	product_seq INT,											-- 배달 상품 고유번호
+	order_status int not null, 									-- 배송상태 (1: 접수대기, 2: 픽업대기, 3: 배송중, 4: 배송완료)
+	quantity int not null,										-- 배달 상품 하나의 갯수
+	product_name VARCHAR(255),									-- 배달 상품명
+	order_date Timestamp not null,								-- 배달 주문 시각
+	ref	INT not null,											-- 배달 묶음 
+	location VARCHAR(255) not null, 							-- 배송지
+    foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
+    foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
+
 );
 
 -- 결제 정보 테이블 --
@@ -75,6 +102,7 @@ CREATE TABLE Payment (
 	price INT not null,											-- 가격 
 	count INT not null,											-- 수량
 	payment_date TIMESTAMP not null,							-- 결제일
+
 	ref	INT not null,											-- 결제 묶음
 	card_num varchar(255),										-- 카드 번호 
     foreign key(user_seq) references Customer(customer_seq),	-- Customer 테이블에서 참조
@@ -137,6 +165,7 @@ CREATE TABLE PT(
     foreign key(customer_seq) references Customer(customer_seq)		-- customer 테이블에서 참조 
 );
 
+
 -- 점주 발주 테이블 --
 CREATE TABLE call_product_Conv (
 	call_seq INT auto_increment primary key,					-- 편의점 발주 고유번호
@@ -146,14 +175,29 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-	call_date TIMESTAMP not null,								-- 발주 날짜	
+  call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
+	call_ref varchar(255) not null,								-- 발주 목록 묶음
+	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
     foreign key(user_id) references Convenience(user_id),		-- 편의점 테이블에서 참조
-    foreign key(product_seq) references Product(product_seq)	-- customer 테이블에서 참조
+    foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
+    foreign key(call_ref) references call_product_conv_order_list(call_ref)
+);
+
+	
+
+CREATE TABLE Call_product_conv_order_list(
+	seq INT auto_increment primary key,							-- seq
+	call_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
+	call_date Timestamp not null,								-- 발주 날짜
+	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
+	call_total_number INT not null,								-- 발주 상품 수량
+	call_total_price INT not null,								-- 발주 총 가격		
+	call_remark VARCHAR(255)									-- 비고
 );
 
 -- 고객 발주 테이블 --
-CREATE TABLE call_product_customer (
+CREATE TABLE Call_product_customer (
 	call_seq INT auto_increment primary key,						-- 고객 발주 고유번호
 	customer_seq INT,												-- 고객 고유번호
 	product_seq INT,												-- 상품 고유번호	
@@ -166,3 +210,4 @@ CREATE TABLE call_product_customer (
     foreign key(customer_seq) references Customer(customer_seq),	-- customer 테이블에서 참조 
 	foreign key(product_seq) references Product(product_seq)		-- 상품 테이블에서 참조
 );
+
