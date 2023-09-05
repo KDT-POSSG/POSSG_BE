@@ -35,6 +35,7 @@ public class ProductController {
 	@Autowired
 	ProductService service;
 	
+	// 상품 목록 획득
 	@GetMapping("productList")
 	public List<ProductDto> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
 		System.out.println("ProductController ProductList " + new Date());
@@ -59,6 +60,7 @@ public class ProductController {
 		return list;
 	}
 	
+	// 새로운 상품을 추가
 	// 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
 	@PostMapping("addProduct")
 	public String addProduct(ProductDto dto) {
@@ -103,26 +105,26 @@ public class ProductController {
 	@PostMapping("addCallProductConvAuto")
 	public String addCallProductConvAuto(ProductDto productDto, ConvenienceDto convDto, int stockLimit) {
 		System.out.println("ProductController addCallProductConvAuto() " + new Date());
-		
+		// 해당 상품의 총 재고량을 가져옴
 		int totalStock = service.getTotalStock(productDto.getProductName());
-		
+		// 임시로 재고 제한을 3으로 설정
 		stockLimit = 3; // 임시 제한
-		
+		// 총 재고가 재고 제한보다 작은 경우
 		if (totalStock < stockLimit) {
-
+			// 발주 상품 정보를 설정
 			CallProductConvDto insertCallDto = new CallProductConvDto(0,
 			convDto.getUserId(), productDto.getProductSeq(), 0, convDto.getRepresentativeName(),
 			convDto.getBranchName(), productDto.getPriceDiscount(), new Date().toString(),
 			productDto.getProductName(), "0", 0);
-			
+			// 발주 상품 정보를 추가
 			int count = service.addCallProductConv(insertCallDto);
 			System.out.println(count);
+			// 추가가 성공적으로 이루어진 경우
 			if(count > 0) {
 				return "YES";
 			}
-			return "NO";
 		  }
-		
+		// 재고가 충분한 경우
 		return "NO";
 	}
 		
@@ -155,12 +157,13 @@ public class ProductController {
 		// 객체 입력하여 상품명 전달
 		ProductDto insertProductDto = findProductName(productDto).get(0);
 		System.out.println(insertProductDto);
+		// 발주 상품 정보 설정
 		// user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status
 		CallProductConvDto insertCallDto = new CallProductConvDto(0,
 				convDto.getUserId(), insertProductDto.getProductSeq(), amount, convDto.getRepresentativeName(),
 				convDto.getBranchName(), insertProductDto.getPriceDiscount()*amount, 
 				formattedDate.toString(), insertProductDto.getProductName(), "0", 0);
-		
+		// 발주 상품 정보를 데이터베이스에 추가
 		int count = service.addCallProductConv(insertCallDto);
 		System.out.println(count);
 		if(count > 0) {
@@ -181,6 +184,7 @@ public class ProductController {
 		// 발주 신청 전 상품중 해당 상품명 정보 획득 (call_status == 0, product_name == 매개변수 상품명)
 		List<CallProductConvDto> nameTemp = service.findCallProductConvName(convDto.getProductName());
 		System.out.println("nameTemp: " + nameTemp);
+		// 상품명이 중복되거나 없는 경우 에러 처리
 		if (nameTemp.size() > 1 || nameTemp.isEmpty()) {
 			System.out.println("Product duplication error!!" + new Date());
 			return "NO";
@@ -200,14 +204,16 @@ public class ProductController {
 		System.out.println("발주 상품 목록 수정 성공");
 		// 업데이트 성공
 		if(count > 0) {
+			// callRef가 '0'이 아닌 경우 발주 주문 목록도 업데이트
 			if (!convDto.getCallRef().equals("0")) {
 				// 발주 주문 목록 수정
 				CallProductConvOrderListDto orderDto = 
 						service.getRefConvOrderList(convDto.getCallRef());
-				System.out.println("getRefConvOrderList: " + orderDto.toString());					
+				System.out.println("getRefConvOrderList: " + orderDto.toString());
+				// 총 가격을 업데이트 (기존 총 가격 - 수정된 총 가격)
 				int totalPrice = orderDto.getCallTotalPrice() 
 						- (nameTemp.get(0).getPrice() - convDto.getPrice()); // 기존 총 가격 - 수정된 총 가격 
-			    			
+				// 발주 주문 목록을 업데이트
 				orderDto.setCallTotalPrice(totalPrice);
 				int countOrder = service.updateConvOrderList(orderDto);
 				if (countOrder > 0) {
@@ -226,14 +232,16 @@ public class ProductController {
 	@PostMapping("addCallProductCustomer")
 	public String addCallProductCustomer(ProductDto productDto, CustomerDto customerDto, ConvenienceDto convDto) {
 		System.out.println("ProductController addCallProductCustomer() " + new Date());
-		
+		// 상품명을 찾아 객체에 할당
 		ProductDto insertProductDto = findProductName(productDto).get(0);
 		
+		// 고객을 대상으로 발주 상품 정보 설정
+	    // customer_seq, product_seq, amount, customer_name, b_name, price, call_date, product_name
 		CallProductCustomerDto insertCallDto = new CallProductCustomerDto(0,
 				customerDto.getCustomerSeq(), insertProductDto.getProductSeq(), 0, customerDto.getCustomerName(),
 				convDto.getBranchName(), insertProductDto.getPriceDiscount(), new Date().toString(),
 				insertProductDto.getProductName());
-		
+		// 발주 상품 정보를 데이터베이스에 추가
 		int count = service.addCallProductCustomer(insertCallDto);
 		System.out.println(count);
 		if(count > 0) {
@@ -252,13 +260,16 @@ public class ProductController {
 		return service.getAllConvOrderList();
 	}
 	
-	// 발주 주문 올리기
+	// 발주 주문 추가
 	// input: String remark
 	@PostMapping("addConvOrderList")
 	public String addConvOrderList(@RequestBody String remark) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
-	    List<CallProductConvDto> callList = service.getRefCallProductConvList("0");
 	    
+		// call_status가 '0'인 발주 상품 목록을 가져옴
+		List<CallProductConvDto> callList = service.getRefCallProductConvList("0");
+	    
+		// 비고(remark)이 null인 경우 빈 문자열로 설정
 	    if (remark == null) {
 	    	remark = "";
 	    }
@@ -266,7 +277,7 @@ public class ProductController {
 	    // 발주 목록 묶음 (call_ref) 생성 로직
 	    // 주문 날짜(yyyyMMddHHmmss)
 	    String callRef = ProductUtil.generateCallRef();
-	    
+	    // 발주 등록 시간
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String formattedDate = sdf.format(new Date());
 		
@@ -282,11 +293,16 @@ public class ProductController {
 	    CallProductConvOrderListDto orderListDto = 
 	    		new CallProductConvOrderListDto(0, callRef, formattedDate, 
 	    										1, totalProduct, totalPrice, remark);
+	    // 발주 목록을 데이터베이스에 추가
 	    int count = service.addConvOrderList(orderListDto);
 	    System.out.println("ProductController addConvOrderList() count: " + count);
+	    // 추가가 성공적으로 이루어진 경우
 	    if (count > 0) {
+	    	// 발주 상품 목록의 call_ref를 업데이트
 	    	int callCount = service.updateRefCallProductConv(callRef);
 	    	System.out.println("ProductController addConvOrderList() callCount: " + callCount);
+	    	
+	    	// 업데이트가 성공적으로 이루어진 경우
 	    	if(callCount > 0) {
 	    		return "YES";
 	    	}

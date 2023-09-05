@@ -1,8 +1,10 @@
 -- SET foreign_key_checks = 0;
 -- SET foreign_key_checks = 1;
+
 /*
 drop table call_product_conv;
 drop table call_product_customer;
+drop table call_product_conv_order_list;
 drop table Payment;
 drop table Delivery;
 drop table Product;
@@ -26,4 +28,25 @@ ALTER TABLE Product
 ADD img_url varchar(255);
 
 ALTER TABLE call_product_Conv ADD call_ref varchar(255) unique;
+
+delete from call_product_conv where call_seq=6;
+
+INSERT INTO call_product_conv (call_seq, user_id, product_seq, amount, rp_name
+								, b_name, price, call_date, product_name, call_ref, call_status) 
+VALUES (0, 'ghfrlfehd', 1, 10, '홍길동', '수영구 이마트', 14000, '2023-09-05', '농심)새우탕큰사발', '202309051811', 1);
+
+INSERT INTO call_product_conv (call_seq, user_id, product_seq, amount, rp_name
+								, b_name, price, call_date, product_name, call_ref, call_status) 
+VALUES (1, 'ghfrlfehd', 1, 5, '홍길동', '수영구 이마트', 34500, '2023-09-05', '삼립)로스트치킨하바네로210g' , '202309051811', 1);
+
+INSERT INTO call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, '-1', '2000-01-01', 0, 0, 0, 'temp');
+
+select * from call_product_conv;
+
+select * from call_product_conv_order_list;
+
+delete from call_product_conv_order_list where call_ref=-1;
+
 */
