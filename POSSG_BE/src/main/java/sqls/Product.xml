@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="possg.com.a.dao.ProductDao">
+		
+<!-- 상품 -->
+<!-- 중복 제외 상품 목록 획득 -->
+<select id="productList" parameterType="possg.com.a.dto.ProductParam"
+	resultType="possg.com.a.dto.ProductDto">
+	select MIN(product_seq) AS product_seq
+	, MIN(category_id) AS category_id
+	, product_name, MIN(price) AS price
+	, MIN(price_discount) AS price_discount
+	, SUM(stock_quantity) AS stock_quantity
+	, MIN(expiration_date) AS expiration_date
+	, MAX(discount_rate) AS discount_rate
+	, MIN(promotion_info) AS promotion_info
+	, MAX(barcode) AS barcode
+	, MAX(img_url) AS img_url
+	from Product
+	<where>
+		<if test="choice != null and choice != '' and search != null and search != '' ">
+			<if test="choice == 'product_name'">
+				product_name like concat('%', #{search}, '%')
+			</if>				
+		</if>
+		<if test="promotionInfo != null and promotionInfo != ''">
+            and promotion_info = #{promotionInfo}
+        </if>  
+        <if test="categoryId != null and categoryId != ''">
+            and category_id = #{categoryId}
+        </if>
+
+		<choose>
+			<when test="minPrice >= 0 and maxPrice > 0">
+				and price between #{minPrice} and #{maxPrice}
+			</when>
+			<when test="minPrice > maxPrice">
+				and 1=0
+			</when>
+			<when test="minPrice >= 0 and maxPrice == 0">
+	        and price >= #{minPrice}
+	   		</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</where>
+	GROUP BY product_name
+	order by 
+		case when SUM(stock_quantity) = 0 then 1 else 0 end,
+	<choose>
+		<when test="sortOrder == 'leastExpiry'">
+			expiration_date asc
+		</when>
+		<when test="sortOrder == 'mostExpiry'">
+			expiration_date desc
+		</when>
+		<when test="sortOrder == 'lowestPrice'">
+			price_discount asc
+		</when>
+		<when test="sortOrder == 'highestPrice'">
+			price_discount desc
+		</when>
+		<when test="sortOrder == 'discountRate'">
+			discount_rate desc
+		</when>
+		<when test="sortOrder == 'newest'">
+			product_seq desc
+		</when>
+		<otherwise>
+			product_seq asc
+		</otherwise>
+	</choose>
+	limit ${(pageNumber * 20)}, 20
+</select>
+
+<!-- 모든 상품 목록 획득 -->
+<select id="getAllProduct" parameterType="possg.com.a.dto.ProductParam"
+	resultType="java.lang.Integer">
+	select count(*)
+	from Product
+	<where>
+		<if test="choice != null and choice != '' and search != null and search != '' ">
+			<if test="choice == 'product_name'">
+				product_name like concat('%', #{search}, '%')
+			</if>				
+		</if>
+		<if test="promotionInfo != null and promotionInfo != ''">
+            and promotion_info = #{promotionInfo}
+        </if>
+        <if test="categoryId != null and categoryId != ''">
+            and category_id = #{categoryId}
+        </if>
+		<choose>
+			<when test="minPrice >= 0 and maxPrice > 0">
+				and price between #{minPrice} and #{maxPrice}
+			</when>
+			<when test="minPrice > maxPrice">
+				and 1=0
+			</when>
+			<when test="minPrice >= 0 and maxPrice == 0">
+	        and price >= #{minPrice}
+	   		</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</where>
+	order by 
+		case when stock_quantity = 0 then 1 else 0 end,
+	<choose>
+		<when test="sortOrder == 'leastExpiry'">
+			expiration_date asc
+		</when>
+		<when test="sortOrder == 'mostExpiry'">
+			expiration_date desc
+		</when>
+		<when test="sortOrder == 'lowestPrice'">
+			price_discount asc
+		</when>
+		<when test="sortOrder == 'highestPrice'">
+			price_discount desc
+		</when>
+		<when test="sortOrder == 'discountRate'">
+			discount_rate desc
+		</when>
+		<when test="sortOrder == 'newest'">
+			product_seq asc
+		</when>
+		<otherwise>
+			product_seq desc
+		</otherwise>
+	</choose>
+</select>
+
+<!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
+<select id="getLastProduct" resultType="Integer">
+	select max(product_seq) from Product;
+</select>
+
+<!-- 주어진 productName에 해당하는 상품 정보 획득 -->
+<select id="findProductName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+    select* from Product where product_name = #{productName}
+</select>
+
+<!-- 주어진 productName에 해당하는 상품의 총 재고량 획득 -->
+<select id="getTotalStock" parameterType="String" resultType="int">
+  select SUM(stock_quantity) from Product where product_name = #{productName}
+</select>
+
+<!-- 새로운 상품을 추가 -->
+<insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
+	insert into Product(category_id, product_name, price, price_discount, 
+	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
+	values(#{categoryId}, #{productName}, #{price}, #{priceDiscount}, 
+			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
+			#{promotionInfo}, #{barcode}, #{imgUrl})
+</insert>
+
+<!-- 점주 발주 상품 -->
+<!-- 모든 발주 상품 목록 획득. (call_status '-1' 제외) -->
+<select id="getAllCallProductConvList" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from Call_product_conv
+	where call_status != '-1'
+	order by call_seq desc;
+</select>
+
+<!-- 주어진 callRef에 해당하는 발주 상품 목록 획득 -->
+<select id="getRefCallProductConvList" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from Call_product_conv
+	where call_ref = #{callRef}
+	order by call_seq desc
+	
+</select>
+
+<!-- 주어진 callSeq에 해당하는 발주 상품 정보 획득. (call_status '-1' 제외) -->
+<select id="getSeqCallProductConv" parameterType="Integer" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from Call_product_conv
+	where call_seq = #{callSeq} and call_status != '-1';
+</select>
+
+<!-- call_status가 0이고 productName이 일치하는 발주 상품 정보 획득 -->
+<select id="findCallProductConvName" parameterType="String" resultType="possg.com.a.dto.CallProductConvDto">
+    select * from Call_product_conv 
+    where call_status = 0 and product_name = #{productName}
+</select>
+
+<!-- 새로운 발주 상품 추가 -->
+<insert id="addCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
+  insert into Call_product_conv (user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status)
+  values (#{userId}, #{productSeq}, #{amount}, #{rpName}, #{bName}, #{price}, #{callDate}, #{productName}, #{callRef}, #{callStatus})
+</insert>
+
+<!-- 발주 상품의 amount와 price 업데이트 -->
+<update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
+	update Call_product_conv
+	set amount = #{amount}, price = #{price}
+	where product_name = #{productName} and call_status != '-1';
+</update>
+
+<!-- callRef와 call_status 업데이트 -->
+<update id="updateRefCallProductConv" parameterType="String">
+	update Call_product_conv
+	set call_ref = #{callRef}, call_status = 1
+	where call_ref = '0' and call_status != '-1';
+</update>
+
+<!-- 주어진 callRef에 해당하는 발주 상품의 call_status를 '-1'로 설정 -->
+<update id="deleteCallRefProductConv" parameterType="String">
+    update Call_product_conv
+    set call_status = '-1'
+    where call_ref = #{callRef} and call_status != '-1'
+</update>
+
+<!-- 주어진 callRef와 productName에 해당하는 발주 상품 삭제 -->
+<delete id="deleteCallProduct" parameterType="possg.com.a.dto.CallProductConvDto">
+    DELETE FROM Call_product_conv
+    WHERE call_ref = #{callRef} AND product_name = #{productName} and call_status != '-1'
+</delete>
+
+<!-- 점주 발주 주문 -->
+<!-- 모든 발주 주문 목록 획득 -->
+<select id="getAllConvOrderList" resultType="possg.com.a.dto.CallProductConvDto">
+	select * from Call_product_conv_order_list
+	where call_ref != '-1'
+</select>
+
+<!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->
+<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvOrderListDto">
+	select * from Call_product_conv_order_list
+	where call_ref = #{callRef}
+	order by call_ref desc
+</select>
+
+<!-- 새로운 발주 주문 추가 -->
+<insert id="addConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    INSERT INTO Call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number, call_total_price, call_remark)
+    VALUES (#{seq}, #{callRef}, #{callDate}, #{callStatus}, #{callTotalNumber}, #{callTotalPrice}, #{callRemark})
+</insert>
+
+<!-- 발주 주문 정보 업데이트 -->
+<update id="updateConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    UPDATE Call_product_conv_order_list
+    SET call_status=#{callStatus}, call_total_number=#{callTotalNumber}, call_total_price=#{callTotalPrice}, call_remark=#{callRemark}
+    WHERE call_ref = #{callRef} and call_status != '-1'
+</update>
+
+<!-- 주어진 callRef에 해당하는 발주 주문의 call_status를 '-1'로 설정 -->
+<update id="deleteConvOrderList" parameterType="String">
+    update Call_product_conv_order_list
+    set call_status = '-1'
+    where call_ref = #{callRef} and call_status != '-1'
+</update>
+<!-- 
+<delete id="deleteConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    DELETE FROM Call_product_conv_order_list
+    WHERE call_ref = #{callRef}
+</delete>
+-->
+
+<!-- 고객 발주 상품 목록 -->
+
+<insert id="addCallProductCustomer" parameterType="possg.com.a.dto.CallProductCustomerDto">
+  insert into call_product_customer (customer_id, product_seq, amount, c_name, b_name, price, call_date, product_name)
+  values (#{customerId}, #{productSeq}, #{amount}, #{cName}, #{bName}, #{price}, #{callDate}, #{productName})
+</insert>
+
+
+<!-- 편의점 -->
+<!-- 주어진 branchName에 해당하는 편의점 정보 획득 -->
+<select id="getConvenienceInfo" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+	select * from Convenience where branch_name = #{branchName};
+</select>
+
+<!--  모든 편의점 정보 획득 -->
+<select id="getAllConvenience" resultType="possg.com.a.dto.ConvenienceDto">
+	select * from Convenience;
+</select>
+
+
+</mapper>
