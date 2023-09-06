@@ -42,6 +42,7 @@ public class ProductController {
 		System.out.println("ProductParam= " + param);
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
+		System.out.println("test");
 		/*
 		//글의 총 수
 		int count = service.getAllProduct(param);
