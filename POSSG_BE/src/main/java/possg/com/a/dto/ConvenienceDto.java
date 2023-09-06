@@ -56,7 +56,20 @@ public class ConvenienceDto {
 		this.longtitude = longtitude;
 	}
 
-	public int getConvSeq() {
+    public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, String registrationDate, int convStatus) {
+        this.convSeq = convSeq;
+        this.userId = userId;
+        this.pwd = pwd;
+        this.representativeName = representativeName;
+        this.branchName = branchName;
+        this.phoneNumber = phoneNumber;
+        this.registrationDate = registrationDate;
+        this.convStatus = convStatus;
+    }
+    
+    // Getter, Setter
+
+    public int getConvSeq() {
 		return convSeq;
 	}
 
@@ -119,7 +132,6 @@ public class ConvenienceDto {
 	public void setConvStatus(int convStatus) {
 		this.convStatus = convStatus;
 	}
-
 	public String getConvKey() {
 		return convKey;
 	}
@@ -142,9 +154,7 @@ public class ConvenienceDto {
 
 	public void setConvLocation(String convLocation) {
 		this.convLocation = convLocation;
-	}
-	
-	
+	}	
 
 	public double getLatitude() {
 		return latitude;
@@ -171,4 +181,6 @@ public class ConvenienceDto {
 				+ longtitude + "]";
 	}  
 
+
 }
+

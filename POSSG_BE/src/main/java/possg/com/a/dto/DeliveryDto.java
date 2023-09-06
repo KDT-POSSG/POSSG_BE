@@ -1,5 +1,6 @@
 package possg.com.a.dto;
 
+
 import java.sql.Timestamp;
 
 public class DeliveryDto {
@@ -9,15 +10,16 @@ public class DeliveryDto {
     private int orderStatus;
     private int quantity;
     private String productName;
-    private Timestamp orderDate;
+    private String orderDate;
     private String ref;
     private String location;
     private int price;
+   
 
     // 생성자
     public DeliveryDto() {}
     
-    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, Timestamp orderDate, String ref, String location, int price) {
+    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price) {
         this.orderSeq = orderSeq;
         this.userId = userId;
         this.productSeq = productSeq;
@@ -27,6 +29,7 @@ public class DeliveryDto {
         this.orderDate = orderDate;
         this.ref = ref;
         this.location = location;
+        this.price = price;
     }
 
     // getter, setter
@@ -79,20 +82,20 @@ public class DeliveryDto {
 		this.productName = productName;
 	}
 
-	public Timestamp getOrderDate() {
-		return orderDate;
-	}
-
-	public void setOrderDate(Timestamp orderDate) {
-		this.orderDate = orderDate;
-	}
-
 	public String getRef() {
 		return ref;
 	}
 
 	public void setRef(String ref) {
 		this.ref = ref;
+	}
+
+	public String getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
 	}
 
 	public String getLocation() {
@@ -102,6 +105,7 @@ public class DeliveryDto {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
 
     public int getPrice() {
 		return price;

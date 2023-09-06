@@ -2,21 +2,24 @@ package possg.com.a.dto;
 
 import java.sql.Timestamp;
 
+
 public class CustomerDto {
     private int customerSeq;
     private String customerId;
     private int pinNumber;
     private String customerName;
     private String phoneNumber;
-    private Timestamp registrationDate;
+    private String registrationDate;
     private int customerStatus;
     private int convSeq;
+
 
     // 생성자
     public CustomerDto() {}
 
+
 	public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber,
-			Timestamp registrationDate, int customerStatus, int convSeq) {
+			String registrationDate, int customerStatus, int convSeq) {
 		super();
 		this.customerSeq = customerSeq;
 		this.customerId = customerId;
@@ -27,6 +30,16 @@ public class CustomerDto {
 		this.customerStatus = customerStatus;
 		this.convSeq = convSeq;
 	}
+
+    public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber, String registrationDate, int customerStatus) {
+        this.customerSeq = customerSeq;
+        this.customerId = customerId;
+        this.pinNumber = pinNumber;
+        this.customerName = customerName;
+        this.phoneNumber = phoneNumber;
+        this.registrationDate = registrationDate;
+        this.customerStatus = customerStatus;
+    }
 
 	public int getCustomerSeq() {
 		return customerSeq;
@@ -68,11 +81,12 @@ public class CustomerDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Timestamp getRegistrationDate() {
+
+	public String getRegistrationDate() {
 		return registrationDate;
 	}
-
-	public void setRegistrationDate(Timestamp registrationDate) {
+	
+	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
@@ -98,6 +112,4 @@ public class CustomerDto {
 				+ ", customerName=" + customerName + ", phoneNumber=" + phoneNumber + ", registrationDate="
 				+ registrationDate + ", customerStatus=" + customerStatus + ", convSeq=" + convSeq + "]";
 	}
-
-    
 }

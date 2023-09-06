@@ -5449,3 +5449,59 @@ java.lang.ClassNotFoundException: org.springframework.ide.vscode.commons.protoco
 
 !ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 09:42:20.200
 !MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:08:44.474
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:09:45.544
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:10:05.480
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.jdt.ui 4 10001 2023-09-06 10:11:33.910
+!MESSAGE Internal Error
+!STACK 1
+Java Model Exception: Error in Java Model (code 969): CustomerDto(int, String, int, String, String, Timestamp, int, int) [in CustomerDto [in [Working copy] CustomerDto.java [in possg.com.a.dto [in src/main/java [in POSSG_BE]]]]] does not exist
+	at org.eclipse.jdt.internal.core.JavaElement.newNotPresentException(JavaElement.java:574)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:617)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:328)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:314)
+	at org.eclipse.jdt.internal.core.SourceRefElement.getSourceRange(SourceRefElement.java:233)
+	at org.eclipse.jdt.internal.core.Member.getJavadocRange(Member.java:301)
+	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContentFromSource(JavadocContentAccess2.java:645)
+	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:521)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo(JavadocHover.java:753)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.internalGetHoverInfo(JavadocHover.java:671)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo2(JavadocHover.java:663)
+	at org.eclipse.lsp4e.jdt.LSJavaHoverProvider.lambda$0(LSJavaHoverProvider.java:63)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.exec(CompletableFuture.java:1796)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:373)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1182)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1655)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1622)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:165)
+!SUBENTRY 1 org.eclipse.jdt.core 4 969 2023-09-06 10:11:33.911
+!MESSAGE CustomerDto(int, String, int, String, String, Timestamp, int, int) [in CustomerDto [in [Working copy] CustomerDto.java [in possg.com.a.dto [in src/main/java [in POSSG_BE]]]]] does not exist
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:11:45.546
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:12:34.762
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:13:55.308
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:14:48.880
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:15:06.822
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:15:14.127
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:16:07.802
+!MESSAGE Classpath changed for project: POSSG_BE
