@@ -1,8 +1,11 @@
 package possg.com.a.dto;
 
+<<<<<<< HEAD
 
 import java.sql.Timestamp;
 
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 public class DeliveryDto {
     private int orderSeq;
     private String userId;
@@ -11,15 +14,24 @@ public class DeliveryDto {
     private int quantity;
     private String productName;
     private String orderDate;
+<<<<<<< HEAD
     private String ref;
     private String location;
     private int price;
    
+=======
+    private int ref;
+    private String location;
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 
     // 생성자
     public DeliveryDto() {}
     
+<<<<<<< HEAD
     public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price) {
+=======
+    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, int ref, String location) {
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
         this.orderSeq = orderSeq;
         this.userId = userId;
         this.productSeq = productSeq;
@@ -29,7 +41,10 @@ public class DeliveryDto {
         this.orderDate = orderDate;
         this.ref = ref;
         this.location = location;
+<<<<<<< HEAD
         this.price = price;
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
     }
 
     // getter, setter
@@ -82,6 +97,7 @@ public class DeliveryDto {
 		this.productName = productName;
 	}
 
+<<<<<<< HEAD
 	public String getRef() {
 		return ref;
 	}
@@ -90,6 +106,8 @@ public class DeliveryDto {
 		this.ref = ref;
 	}
 
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 	public String getOrderDate() {
 		return orderDate;
 	}
@@ -98,6 +116,17 @@ public class DeliveryDto {
 		this.orderDate = orderDate;
 	}
 
+<<<<<<< HEAD
+=======
+	public int getRef() {
+		return ref;
+	}
+
+	public void setRef(int ref) {
+		this.ref = ref;
+	}
+
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 	public String getLocation() {
 		return location;
 	}
@@ -106,6 +135,7 @@ public class DeliveryDto {
 		this.location = location;
 	}
 
+<<<<<<< HEAD
 
     public int getPrice() {
 		return price;
@@ -116,6 +146,11 @@ public class DeliveryDto {
 	}
 
 	// toString()
+=======
+	
+
+    // toString()
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
     @Override
     public String toString() {
         return "DeliveryDTO{" +
@@ -128,7 +163,10 @@ public class DeliveryDto {
                 ", orderDate=" + orderDate +
                 ", ref=" + ref +
                 ", location='" + location + '\'' +
+<<<<<<< HEAD
                 ", price='" + price + '\'' +
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
                 '}';
     }
 }

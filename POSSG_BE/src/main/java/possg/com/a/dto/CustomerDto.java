@@ -1,8 +1,11 @@
 package possg.com.a.dto;
 
+<<<<<<< HEAD
 import java.sql.Timestamp;
 
 
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 public class CustomerDto {
     private int customerSeq;
     private String customerId;
@@ -11,12 +14,16 @@ public class CustomerDto {
     private String phoneNumber;
     private String registrationDate;
     private int customerStatus;
+<<<<<<< HEAD
     private int convSeq;
 
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 
     // 생성자
     public CustomerDto() {}
 
+<<<<<<< HEAD
 
 	public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber,
 			String registrationDate, int customerStatus, int convSeq) {
@@ -31,6 +38,8 @@ public class CustomerDto {
 		this.convSeq = convSeq;
 	}
 
+=======
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
     public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber, String registrationDate, int customerStatus) {
         this.customerSeq = customerSeq;
         this.customerId = customerId;
@@ -41,6 +50,11 @@ public class CustomerDto {
         this.customerStatus = customerStatus;
     }
 
+<<<<<<< HEAD
+=======
+    // Getter, Setter
+
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 	public int getCustomerSeq() {
 		return customerSeq;
 	}
@@ -81,11 +95,18 @@ public class CustomerDto {
 		this.phoneNumber = phoneNumber;
 	}
 
+<<<<<<< HEAD
 
 	public String getRegistrationDate() {
 		return registrationDate;
 	}
 	
+=======
+	public String getRegistrationDate() {
+		return registrationDate;
+	}
+
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
@@ -97,6 +118,7 @@ public class CustomerDto {
 	public void setCustomerStatus(int customerStatus) {
 		this.customerStatus = customerStatus;
 	}
+<<<<<<< HEAD
 
 	public int getConvSeq() {
 		return convSeq;
@@ -112,4 +134,20 @@ public class CustomerDto {
 				+ ", customerName=" + customerName + ", phoneNumber=" + phoneNumber + ", registrationDate="
 				+ registrationDate + ", customerStatus=" + customerStatus + ", convSeq=" + convSeq + "]";
 	}
+=======
+	
+    // toString()
+    @Override
+    public String toString() {
+        return "CustomerDtos{" +
+                "customerSeq=" + customerSeq +
+                ", customerId='" + customerId + '\'' +
+                ", pinNumber=" + pinNumber +
+                ", customerName='" + customerName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", registrationDate=" + registrationDate +
+                ", customerStatus=" + customerStatus +
+                '}';
+    }
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 }
