@@ -43,6 +43,7 @@ public class CostController {
 	public String updatecost(CostDto dto, @CookieValue("accessToken") String accessToken) {
 		System.out.println("ConvenienceController updatecost " + new Date());
 		
+		System.out.println(accessToken);
 		accessToken = accessToken.replace("Bearer ", "");
 		 
 		 JwtParser jwtParser = Jwts.parserBuilder()
@@ -51,7 +52,9 @@ public class CostController {
 	    	
 	        Claims refreshClaims = jwtParser.parseClaimsJws(accessToken).getBody();
 		 
-	        int convSeq = refreshClaims.get("convSeq", Integer.class);		 
+	        int convSeq = refreshClaims.get("convSeq", Integer.class);	
+	        
+	        System.out.println(convSeq);
 		 	 
 		 dto.setConvSeq(convSeq);
 
