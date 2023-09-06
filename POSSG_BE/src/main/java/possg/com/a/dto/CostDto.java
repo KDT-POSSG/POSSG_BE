@@ -27,9 +27,12 @@ public class CostDto {
         this.costYear = costYear;
         this.costMonth = costMonth;
     }
+<<<<<<< HEAD
+=======
 
     
     // Getter, Setter
+>>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
     
     public int getCostSeq() {
 		return costSeq;
