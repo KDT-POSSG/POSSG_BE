@@ -5505,3 +5505,39 @@ Java Model Exception: Error in Java Model (code 969): CustomerDto(int, String, i
 
 !ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:16:07.802
 !MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:21:39.044
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:21:59.848
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:22:17.008
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:22:25.341
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:22:32.188
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:22:48.693
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:23:05.182
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:23:09.216
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:23:28.598
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:23:33.294
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:24:57.113
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:25:02.076
+!MESSAGE Classpath changed for project: POSSG_BE

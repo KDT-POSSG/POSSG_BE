@@ -10,19 +10,15 @@ public class ConvenienceDto {
     private String phoneNumber;
     private String registrationDate;
     private int convStatus;
-<<<<<<< HEAD
     private String convKey;
     private String newPwd;
     private String convLocation;
     private double latitude;	//위도
     private double longtitude; //경도
-=======
->>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
 
     // 생성자
     public ConvenienceDto() {}
 
-<<<<<<< HEAD
 	public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName,
 			String phoneNumber, String registrationDate, int convStatus, String convKey, String newPwd, String convLocation) {
 		super();
@@ -60,8 +56,6 @@ public class ConvenienceDto {
 		this.longtitude = longtitude;
 	}
 
-=======
->>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
     public ConvenienceDto(int convSeq, String userId, String pwd, String representativeName, String branchName, String phoneNumber, String registrationDate, int convStatus) {
         this.convSeq = convSeq;
         this.userId = userId;
@@ -138,7 +132,7 @@ public class ConvenienceDto {
 	public void setConvStatus(int convStatus) {
 		this.convStatus = convStatus;
 	}
-<<<<<<< HEAD
+	
 	public String getConvKey() {
 		return convKey;
 	}
@@ -188,24 +182,4 @@ public class ConvenienceDto {
 				+ longtitude + "]";
 	}  
 
-
 }
-
-=======
-
-	// toString()
-    @Override
-    public String toString() {
-        return "ConvenienceDto{" +
-                "convSeq=" + convSeq +
-                ", userId='" + userId + '\'' +
-                ", pwd='" + pwd + '\'' +
-                ", representativeName='" + representativeName + '\'' +
-                ", branchName='" + branchName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", convStatus=" + convStatus +
-                '}';
-    }
-}
->>>>>>> 5c7b5eca8cde3bbdf8f27e932958c0fee9f5c3de
