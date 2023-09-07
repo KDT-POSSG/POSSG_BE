@@ -149,52 +149,6 @@ public class ProductController {
 	    }
 		return resultList;
 	}
-	    /*
-    	// 이전 상품 이름과 현재 상품 이름이 다르면
-    	if (!prevProductName.equals(dto.getProductName())) {
-    		
-    		// 이전 상품 정보가 있으면 결과 리스트에 추가
-            if (productMap != null) {
-                productMap.put("totalStock", totalStock);//dto.getTotalStock()
-                productMap.put("details", productDetails);
-                resultList.add(productMap);
-            }
-            
-            // 새로운 상품 정보를 저장할 맵과 리스트를 초기화
-            productMap = new LinkedHashMap<>();
-            productDetails = new ArrayList<>();
-            totalStock = 0;
-            // 상품 이름을 맵에 저장
-            productMap.put("product_name", dto.getProductName());
-            productMap.put("img_url", dto.getImgUrl());
-            
-        }
-    	// 상세 정보를 저장할 맵을 생성 (상품고유번호, 상품명, 재고, 유통기한, 가격, 카테고리, 할인정보, 할인율
-    	Map<String, Object> detail = new HashMap<>();
-    	detail.put("product_seq", dto.getProductSeq());
-        detail.put("product_name", dto.getProductName());
-        detail.put("stock", dto.getStockQuantity());
-        detail.put("expiration_date", dto.getExpirationDate());
-        detail.put("price", dto.getPrice());
-        detail.put("category", dto.getCategoryId());
-        detail.put("promotion_info", dto.getPromotionInfo());
-        detail.put("discount_rate", dto.getDiscountRate());
-        // 상세 정보를 리스트에 추가
-        productDetails.add(detail);
-        // 총 재고량을 업데이트
-        totalStock = dto.getTotalStock();
-        
-        // 이전 상품 이름을 업데이트
-        prevProductName = dto.getProductName(); // 이전 product_name 업데이트
-    }
-    // 마지막 상품 정보를 결과 리스트에 추가
-    if (productMap != null) {
-        productMap.put("totalStock", totalStock);
-        productMap.put("details", productDetails);
-        resultList.add(productMap);
-    }
-    */
-	    
 	
 	/* 점주 발주 */
 	// 발주 상품 리스트 획득
@@ -374,7 +328,7 @@ public class ProductController {
 	@PostMapping("addConvOrderList")
 	public String addConvOrderList(@RequestBody String remark) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
-	    
+	  
 		// call_status가 '0'인 발주 상품 목록을 가져옴
 		List<CallProductConvDto> callList = service.getRefCallProductConvList("0");
 	    
@@ -491,13 +445,51 @@ public class ProductController {
 
 }
 
+/*
+// 이전 상품 이름과 현재 상품 이름이 다르면
+if (!prevProductName.equals(dto.getProductName())) {
+	
+	// 이전 상품 정보가 있으면 결과 리스트에 추가
+    if (productMap != null) {
+        productMap.put("totalStock", totalStock);//dto.getTotalStock()
+        productMap.put("details", productDetails);
+        resultList.add(productMap);
+    }
+    
+    // 새로운 상품 정보를 저장할 맵과 리스트를 초기화
+    productMap = new LinkedHashMap<>();
+    productDetails = new ArrayList<>();
+    totalStock = 0;
+    // 상품 이름을 맵에 저장
+    productMap.put("product_name", dto.getProductName());
+    productMap.put("img_url", dto.getImgUrl());
+    
+}
+// 상세 정보를 저장할 맵을 생성 (상품고유번호, 상품명, 재고, 유통기한, 가격, 카테고리, 할인정보, 할인율
+Map<String, Object> detail = new HashMap<>();
+detail.put("product_seq", dto.getProductSeq());
+detail.put("product_name", dto.getProductName());
+detail.put("stock", dto.getStockQuantity());
+detail.put("expiration_date", dto.getExpirationDate());
+detail.put("price", dto.getPrice());
+detail.put("category", dto.getCategoryId());
+detail.put("promotion_info", dto.getPromotionInfo());
+detail.put("discount_rate", dto.getDiscountRate());
+// 상세 정보를 리스트에 추가
+productDetails.add(detail);
+// 총 재고량을 업데이트
+totalStock = dto.getTotalStock();
 
-
-
-
-
-
-
+// 이전 상품 이름을 업데이트
+prevProductName = dto.getProductName(); // 이전 product_name 업데이트
+}
+// 마지막 상품 정보를 결과 리스트에 추가
+if (productMap != null) {
+productMap.put("totalStock", totalStock);
+productMap.put("details", productDetails);
+resultList.add(productMap);
+}
+*/
 
 
 
