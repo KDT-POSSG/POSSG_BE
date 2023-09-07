@@ -1,0 +1,16 @@
+package possg.com.a.dto;
+
+// 결제 조회용
+public class PaymentParam {
+	private String customerSeq;
+	private String customerName;
+	private String branchName;
+	private String receiptId;
+	private String pg;
+	private String method;
+	private int price;
+	private String purchsedAt;
+	private String cardCompany;
+	private String cardNum;
+	private String del;
+}

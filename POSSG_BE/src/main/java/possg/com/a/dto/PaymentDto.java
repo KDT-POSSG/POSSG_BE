@@ -4,6 +4,7 @@ public class PaymentDto {
 	private String receiptId; // 결제 고유번호
     private int userSeq; // customer 테이블에서 참조
     private int productSeq; // product 테이블에서 참조
+    private int convSeq;  // 편의점 고유번호
     private String pg; // 결제사
     private String method; // 결제 방법 (카카오페이, 네이버페이, 실물카드, 깊티 ...)
     private String discountInfo; // 할인 정보
@@ -12,18 +13,21 @@ public class PaymentDto {
     private String purchasedAt; // 결제시간
     private String receiptUrl; // 결제 영수증 URL
     private int ref; // 결제 묶음
-    private int cardNum; // 카드 번호
-    private int del; // 결제 취소 여부 (0, 1: 삭제)
+    private String cardNum; // 카드 번호
+    private String cardCompany; // 카드 회사
+    private String del; // 결제 취소 여부 (결제완료, 결제취소..)
     
     public PaymentDto() {
 	}
     
-	public PaymentDto(String receiptId, int userSeq, int productSeq, String pg, String method, String discountInfo,
-			int price, int count, String purchasedAt, String receiptUrl, int ref, int cardNum, int del) {
+	public PaymentDto(String receiptId, int userSeq, int productSeq, int convSeq, String pg, String method,
+			String discountInfo, int price, int count, String purchasedAt, String receiptUrl, int ref, String cardNum,
+			String cardCompany, String del) {
 		super();
 		this.receiptId = receiptId;
 		this.userSeq = userSeq;
 		this.productSeq = productSeq;
+		this.convSeq = convSeq;
 		this.pg = pg;
 		this.method = method;
 		this.discountInfo = discountInfo;
@@ -33,8 +37,10 @@ public class PaymentDto {
 		this.receiptUrl = receiptUrl;
 		this.ref = ref;
 		this.cardNum = cardNum;
+		this.cardCompany = cardCompany;
 		this.del = del;
 	}
+
 	public String getReceiptId() {
 		return receiptId;
 	}
@@ -53,6 +59,15 @@ public class PaymentDto {
 	public void setProductSeq(int productSeq) {
 		this.productSeq = productSeq;
 	}
+	
+	public int getConvSeq() {
+		return convSeq;
+	}
+
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
+	}
+
 	public String getPg() {
 		return pg;
 	}
@@ -101,25 +116,40 @@ public class PaymentDto {
 	public void setRef(int ref) {
 		this.ref = ref;
 	}
-	public int getCardNum() {
+	
+	public String getCardNum() {
 		return cardNum;
 	}
-	public void setCardNum(int cardNum) {
+
+	public void setCardNum(String cardNum) {
 		this.cardNum = cardNum;
 	}
-	public int getDel() {
+
+	public String getCardCompany() {
+		return cardCompany;
+	}
+
+	public void setCardCompany(String cardCompany) {
+		this.cardCompany = cardCompany;
+	}
+
+	public String getDel() {
 		return del;
 	}
-	public void setDel(int del) {
+
+
+
+	public void setDel(String del) {
 		this.del = del;
 	}
+
+
 	@Override
 	public String toString() {
 		return "PaymentDto [receiptId=" + receiptId + ", userSeq=" + userSeq + ", productSeq=" + productSeq + ", pg="
 				+ pg + ", method=" + method + ", discountInfo=" + discountInfo + ", price=" + price + ", count=" + count
 				+ ", purchasedAt=" + purchasedAt + ", receiptUrl=" + receiptUrl + ", ref=" + ref + ", cardNum="
-				+ cardNum + ", del=" + del + "]";
+				+ cardNum + ", cardCompany=" + cardCompany + ", del=" + del + "]";
 	}
 	
-   
 }
