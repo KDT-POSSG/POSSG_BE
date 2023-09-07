@@ -89,7 +89,16 @@ CREATE TABLE Delivery (
 	location VARCHAR(255) not null, 							-- 배송지
     foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
+);
 
+CREATE TABLE Delivery_list (
+	seq INT auto_increment primary key,							-- seq
+	del_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
+	del_date Timestamp not null,								-- 발주 날짜
+	del_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
+	del_total_number INT not null,								-- 발주 상품 수량
+	del_total_price INT not null,								-- 발주 총 가격		
+	del_remark VARCHAR(255)									    -- 비고
 );
 
 -- 결제 정보 테이블 --
