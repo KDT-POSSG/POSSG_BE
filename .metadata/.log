@@ -5541,3 +5541,438 @@ Java Model Exception: Error in Java Model (code 969): CustomerDto(int, String, i
 
 !ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:25:02.076
 !MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:30:17.701
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.068
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/application-client_9.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.068
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/jobXML_2_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.069
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.069
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jaxb/bindingschema_3_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.077
+!MESSAGE The given URI https://jakarta.ee/xml/ns/validation/validation-configuration-3.0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-06 10:40:22.079
+!MESSAGE The given URI http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_1.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:41:48.129
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:42:55.074
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:43:09.696
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:43:38.354
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:45:19.657
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:46:08.652
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:47:53.414
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:48:04.546
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:48:29.518
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:48:42.484
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.lsp4e 2 0 2023-09-06 10:49:27.503
+!MESSAGE Javadoc unavailable. Failed to obtain it.
+!STACK 0
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2096)
+	at org.eclipse.lsp4e.jdt.LSJavaHoverProvider.getHoverInfo2(LSJavaHoverProvider.java:65)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:89)
+	at org.eclipse.jface.text.TextViewerHoverManager$1.run(TextViewerHoverManager.java:155)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:50:04.337
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.lsp4e 2 0 2023-09-06 10:51:39.674
+!MESSAGE Javadoc unavailable. Failed to obtain it.
+!STACK 0
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2096)
+	at org.eclipse.lsp4e.jdt.LSJavaHoverProvider.getHoverInfo2(LSJavaHoverProvider.java:65)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:89)
+	at org.eclipse.jface.text.TextViewerHoverManager$1.run(TextViewerHoverManager.java:155)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:51:48.121
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:52:46.524
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.lsp4e 2 0 2023-09-06 10:52:48.640
+!MESSAGE Javadoc unavailable. Failed to obtain it.
+!STACK 0
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2096)
+	at org.eclipse.lsp4e.jdt.LSJavaHoverProvider.getHoverInfo2(LSJavaHoverProvider.java:65)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:89)
+	at org.eclipse.jface.text.TextViewerHoverManager$1.run(TextViewerHoverManager.java:155)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:55:03.525
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.lsp4e 2 0 2023-09-06 10:57:11.915
+!MESSAGE Javadoc unavailable. Failed to obtain it.
+!STACK 0
+java.lang.InterruptedException
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2096)
+	at org.eclipse.lsp4e.jdt.LSJavaHoverProvider.getHoverInfo2(LSJavaHoverProvider.java:65)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:89)
+	at org.eclipse.jface.text.TextViewerHoverManager$1.run(TextViewerHoverManager.java:155)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 10:57:53.858
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 11:01:19.060
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 11:16:48.554
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 11:17:45.600
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 11:23:34.509
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.jface 2 0 2023-09-06 11:37:54.071
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-09-06 11:37:54.071
+!MESSAGE A conflict occurred for CTRL+SHIFT+C:
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(org.eclipse.tm4e.languageconfiguration.toggleLineCommentCommand,Toggle Line Comment,
+		,
+		Category(org.eclipse.tm4e.languageconfiguration.category,TM4E Language Configuration,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.tm4e.languageconfiguration.toggleLineCommentCommand"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(org.springframework.tooling.boot.ls.ToggleComment,Toggle Comment,
+		,
+		Category(org.springframework.ide.eclipse.commands,Spring Generic Text Editor,Spring Language Server Commands,true),
+		WorkbenchHandlerServiceHandler("org.springframework.tooling.boot.ls.ToggleComment"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 13:25:24.653
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 13:27:26.926
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 13:38:37.064
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 13:40:33.020
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 14:25:55.456
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 15:33:24.713
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 15:33:42.348
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 15:33:54.264
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 15:34:49.629
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 16:18:59.682
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 16:19:30.028
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:07:09.337
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:07:19.829
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:16:17.504
+!MESSAGE Classpath changed for project: POSSG_BE
+!SESSION 2023-09-06 17:53:26.784 -----------------------------------------------
+eclipse.buildId=4.19.0.202306150758
+java.version=17.0.7
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  -product org.springframework.boot.ide.branding.sts4
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.sts4
+
+!ENTRY org.eclipse.emf.ecore 2 0 2023-09-06 17:53:28.506
+!MESSAGE Both 'org.eclipse.jst.j2ee.core' and 'org.eclipse.jst.j2ee.core' register a package for 'application.xmi'
+
+!ENTRY org.eclipse.jface 2 0 2023-09-06 17:53:48.950
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-09-06 17:53:48.950
+!MESSAGE A conflict occurred for CTRL+SHIFT+T:
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.navigate.open.type,Open Type,
+		Open a type in a Java editor,
+		Category(org.eclipse.ui.category.navigate,Navigate,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.navigate.open.type"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.lsp4e.symbolinworkspace,Go to Symbol in Workspace,
+		,
+		Category(org.eclipse.lsp4e.category,Language Servers,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.lsp4e.symbolinworkspace"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-09-06 17:53:48.950
+!MESSAGE A conflict occurred for ALT+SHIFT+X R:
+Binding(ALT+SHIFT+X R,
+	ParameterizedCommand(Command(org.eclipse.wst.server.launchShortcut.run,Run on Server,
+		Run the current selection on a server,
+		Category(org.eclipse.debug.ui.category.run,Run/Debug,Run/Debug command category,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.wst.server.launchShortcut.run"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(ALT+SHIFT+X R,
+	ParameterizedCommand(Command(org.eclipse.rap.tools.launch.RAPLaunchShortcut.run,Run RAP Application,
+		Run RAP Application,
+		Category(org.eclipse.debug.ui.category.run,Run/Debug,Run/Debug command category,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.rap.tools.launch.RAPLaunchShortcut.run"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-09-06 17:53:48.950
+!MESSAGE A conflict occurred for ALT+SHIFT+D R:
+Binding(ALT+SHIFT+D R,
+	ParameterizedCommand(Command(org.eclipse.wst.server.launchShortcut.debug,Debug on Server,
+		Debug the current selection on a server,
+		Category(org.eclipse.debug.ui.category.run,Run/Debug,Run/Debug command category,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.wst.server.launchShortcut.debug"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(ALT+SHIFT+D R,
+	ParameterizedCommand(Command(org.eclipse.rap.tools.launch.RAPLaunchShortcut.debug,Debug RAP Application,
+		Debug RAP Application,
+		Category(org.eclipse.debug.ui.category.run,Run/Debug,Run/Debug command category,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.rap.tools.launch.RAPLaunchShortcut.debug"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2023-09-06 17:53:52.134
+!MESSAGE Command list starting LS: org.springframework.tooling.boot.ls
+START:
+C:\sts-4.19.0.RELEASE\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_17.0.7.v20230425-1502\jre\bin\javaw.exe
+-cp
+C:\sts-4.19.0.RELEASE\plugins\org.springframework.tooling.boot.ls_1.47.0.202306150731\servers\spring-boot-language-server\BOOT-INF\classes;C:\sts-4.19.0.RELEASE\plugins\org.springframework.tooling.boot.ls_1.47.0.202306150731\servers\spring-boot-language-server\BOOT-INF\lib\*
+-Dsts.lsp.client=eclipse
+-Dlsp.completions.indentation.enable=true
+-Xmx1024m
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:TieredStopAtLevel=1
+-Xlog:jni+resolve=off
+-Dspring.config.location=file:C:\sts-4.19.0.RELEASE\plugins\org.springframework.tooling.boot.ls_1.47.0.202306150731\servers\spring-boot-language-server\BOOT-INF\classes\application.properties
+-XX:ErrorFile=D:/final/POSSG_BE/.metadata/.plugins/org.springframework.tooling.boot.ls/fatal-error-spring-boot_1693990432134
+org.springframework.ide.vscode.boot.app.BootLanguageServerBootApp
+--languageserver.hover-timeout=225
+END
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:53:52.134
+!MESSAGE DelegatingStreamConnectionProvider - Starting Boot LS
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2023-09-06 17:53:52.152
+!MESSAGE Started org.springframework.tooling.boot.ls LS process 14264
+
+!ENTRY org.eclipse.lsp4e 4 0 2023-09-06 17:53:52.173
+!MESSAGE org.springframework.ide.vscode.commons.protocol.spring.SpringModelLanguageServer cannot be found by org.springframework.tooling.boot.ls_1.47.0.202306150731
+!STACK 0
+java.lang.ClassNotFoundException: org.springframework.ide.vscode.commons.protocol.spring.SpringModelLanguageServer cannot be found by org.springframework.tooling.boot.ls_1.47.0.202306150731
+	at org.eclipse.osgi.internal.loader.BundleLoader.generateException(BundleLoader.java:541)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass0(BundleLoader.java:536)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:416)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:168)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.loadClass(EquinoxBundle.java:622)
+	at org.eclipse.lsp4e.LanguageServersRegistry$ExtensionLanguageServerDefinition.getServerInterface(LanguageServersRegistry.java:196)
+	at org.eclipse.lsp4e.LanguageServerWrapper.lambda$1(LanguageServerWrapper.java:291)
+	at java.base/java.util.concurrent.CompletableFuture$UniRun.tryFire(CompletableFuture.java:787)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1773)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1760)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:373)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1182)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1655)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1622)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:165)
+
+!ENTRY org.eclipse.egit.ui 2 0 2023-09-06 17:53:53.258
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\교육생23'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:53:53.350
+!MESSAGE Boot project ADDED: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:53:53.351
+!MESSAGE Starting Boot LS...
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-06 17:53:53.354
+!MESSAGE Started Boot LS process
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 09:56:43.248
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 10:02:09.240
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 10:03:21.599
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.jface 2 0 2023-09-07 10:58:17.526
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-09-07 10:58:17.526
+!MESSAGE A conflict occurred for CTRL+SHIFT+C:
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(org.eclipse.tm4e.languageconfiguration.toggleLineCommentCommand,Toggle Line Comment,
+		,
+		Category(org.eclipse.tm4e.languageconfiguration.category,TM4E Language Configuration,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.tm4e.languageconfiguration.toggleLineCommentCommand"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(org.springframework.tooling.boot.ls.ToggleComment,Toggle Comment,
+		,
+		Category(org.springframework.ide.eclipse.commands,Spring Generic Text Editor,Spring Language Server Commands,true),
+		WorkbenchHandlerServiceHandler("org.springframework.tooling.boot.ls.ToggleComment"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.textEditorScope,,,system)
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:03:32.907
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:04:22.353
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:06:37.164
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:07:42.821
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:09:11.125
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:19:56.022
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:40:45.563
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:40:54.683
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:41:13.914
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 11:43:33.899
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.722
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/application-client_9.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.724
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/jobXML_2_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.726
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.726
+!MESSAGE The given URI https://jakarta.ee/xml/ns/jaxb/bindingschema_3_0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.733
+!MESSAGE The given URI https://jakarta.ee/xml/ns/validation/validation-configuration-3.0.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.eclipse.wildwebdeveloper.xml 2 0 2023-09-07 13:04:05.737
+!MESSAGE The given URI http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_1.xsd from org.eclipse.jst.standard.schemas could not be resolved for local access
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:26:32.541
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:35:07.896
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:35:08.955
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:36:35.907
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:41:05.114
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:41:06.168
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:41:08.968
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:53:36.025
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:54:02.528
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:54:40.099
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:54:50.975
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:55:05.889
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-07 13:56:10.775
+!MESSAGE Classpath changed for project: POSSG_BE

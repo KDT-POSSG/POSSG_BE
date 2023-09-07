@@ -9,7 +9,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,8 @@ import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.service.ConvenienceService;
 
 @Component
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 	
 	@Value("${custom.security.key}")
@@ -50,12 +54,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+        	.httpBasic().disable()
+        	.csrf().disable()
+         	.cors().and()
             .authorizeRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/").permitAll()
-            )
-            .csrf().disable();
-        
+                	.requestMatchers("/register").permitAll()
+                	.requestMatchers("/login").permitAll()
+                	                	
+            );
 
         return http.build();
     }
@@ -65,13 +72,7 @@ public class SecurityConfig {
 	  private final Long expiredTime = 1000 * 60L * 60L * 24L; // 유효기간 1일
 	  
 	  @Autowired
-	  ConvenienceService service;
-	  
-	  
-	  
-	  
-	  
-	  
+	  ConvenienceService service;	  	  
 	  /**
 	   * Member 정보를 담은 JWT 토큰을 생성한다.
 	   *
@@ -79,8 +80,7 @@ public class SecurityConfig {
 	   * @return String JWT 토큰
 	   */
 	  public String generateJwtToken(ConvenienceDto dto) {
-		  System.out.println("generateJwtToken~~~~~~~");
-		  System.out.println("generateJwtToken~~~~~~~" + securityKey);
+		  System.out.println("securityKey" + securityKey);
 	    Date now = new Date();
 	    
 	    return Jwts.builder()
@@ -120,9 +120,9 @@ public class SecurityConfig {
 	  
 	  private Map<String, Object> createClaims(ConvenienceDto dto) {
 		    Map<String, Object> claims = new HashMap<>();
-		    
+		    // claim에 유저 정보 넣기
 		    claims.put("userName", dto.getRepresentativeName()); // username
-		    claims.put("userId", dto.getUserId()); // 인가정보
+		    claims.put("userId", dto.getUserId()); 
 		    claims.put("branchName", dto.getBranchName());
 		    claims.put("pwd", dto.getPwd());
 		    claims.put("phoneNum", dto.getPhoneNumber());
