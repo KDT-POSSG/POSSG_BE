@@ -1,9 +1,0 @@
-
-# port number setting
-server.port=3000
-
-# db setting
-spring.datasource.hikari.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.hikari.jdbc-url=jdbc:mysql://localhost:	/mydb?serverTimeZone=Asia/Seoul
-spring.datasource.hikari.username=root
-spring.datasource.hikari.password=1234

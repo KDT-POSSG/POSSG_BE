@@ -1,0 +1,7 @@
+package possg.com.a.dto;
+
+public class PaymentParam {
+	private String customerId;
+	private String customerName;
+	
+}

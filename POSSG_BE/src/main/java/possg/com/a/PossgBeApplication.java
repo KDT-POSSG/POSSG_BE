@@ -11,6 +11,7 @@ public class PossgBeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PossgBeApplication.class, args);
 		TokenUtil.getToken();
+		
 	}
 
 }
