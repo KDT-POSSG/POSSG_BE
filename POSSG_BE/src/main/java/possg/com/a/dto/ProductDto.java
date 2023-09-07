@@ -12,6 +12,9 @@ public class ProductDto {
     private int promotionInfo;
     private String barcode;
     private String imgUrl;
+    
+    private int totalStock;
+    private int mainCheck;
 
     // 생성자
     public ProductDto() {}
@@ -124,13 +127,29 @@ public class ProductDto {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
+	
+	public int getTotalStock() {
+		return totalStock;
+	}
 
+	public void setTotalStock(int totalStock) {
+		this.totalStock = totalStock;
+	}
+	
+	public int getMainCheck() {
+        return mainCheck;
+    }
+
+	public void setMainCheck(int mainCheck) {
+		this.mainCheck = mainCheck;
+	}
+	
 	@Override
 	public String toString() {
 		return "ProductDto [productSeq=" + productSeq + ", categoryId=" + categoryId + ", productName=" + productName
 				+ ", price=" + price + ", priceDiscount=" + priceDiscount + ", stockQuantity=" + stockQuantity
 				+ ", expirationDate=" + expirationDate + ", discountRate=" + discountRate + ", promotionInfo="
-				+ promotionInfo + ", barcode=" + barcode + ", imgUrl=" + imgUrl + "]";
+				+ promotionInfo + ", barcode=" + barcode + ", imgUrl=" + imgUrl + "totalStock= " + totalStock + "mainCheck" + mainCheck + "]";
 	}
 
 }

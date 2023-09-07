@@ -50,6 +50,10 @@ public class ProductService {
 		return dao.addCallProductCustomer(customerDto);
 	}
 	
+	public List<ProductDto> getAllProductStock(ProductParam param){
+		return dao.getAllProductStock(param);
+	}
+	
 	public ConvenienceDto getConvenienceInfo(String branchName) {
 		return dao.getConvenienceInfo(branchName);
 	}

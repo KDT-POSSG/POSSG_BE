@@ -29,6 +29,8 @@ public interface ProductDao {
 	
 	int addCallProductCustomer(CallProductCustomerDto cusotmerDto);
 	
+	List<ProductDto> getAllProductStock(ProductParam param);
+	
 	ConvenienceDto getConvenienceInfo(String branchName);
 	List<ConvenienceDto> getAllConvenience();
 	
