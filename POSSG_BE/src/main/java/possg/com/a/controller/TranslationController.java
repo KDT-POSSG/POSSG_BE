@@ -41,7 +41,7 @@ public class TranslationController {
 			try {
 		        // Papago API에 필요한 정보를 설정
 				String clientId = "NiFtuZ11rBQSEvLhORYw";
-		        String clientSecret = "X80LHHz6oN";
+		        String clientSecret = "";
 		        String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
 	
 		        // HTTP 클라이언트를 생성
