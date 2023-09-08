@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -30,6 +31,7 @@ import possg.com.a.service.ConvenienceService;
 @Component
 @Configuration
 @EnableWebSecurity
+@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class SecurityConfig {
 	
 	@Value("${custom.security.key}")
@@ -56,13 +58,12 @@ public class SecurityConfig {
         http
         	.httpBasic().disable()
         	.csrf().disable()
-         	.cors().and()
-            .authorizeRequests(authorizeRequests ->
-                authorizeRequests
-                	.requestMatchers("/register").permitAll()
-                	.requestMatchers("/login").permitAll()
-                	                	
-            );
+         	.cors()
+         	.and()
+         	.authorizeRequests(authorizeRequests ->
+            authorizeRequests
+            .requestMatchers("/public/**").permitAll()
+        );
 
         return http.build();
     }
@@ -95,6 +96,7 @@ public class SecurityConfig {
 	// Refresh Token 생성 로직 예시
 	  public String generateRefreshToken(ConvenienceDto dto) {
 	      Date now = new Date();
+	      Long expiredTime = 1000 * 60L * 60L * 24L * 14L; // 2주
 	      
 	      return Jwts.builder()
 	          .setSubject(dto.getRepresentativeName())
@@ -124,10 +126,7 @@ public class SecurityConfig {
 		    claims.put("userName", dto.getRepresentativeName()); // username
 		    claims.put("userId", dto.getUserId()); 
 		    claims.put("branchName", dto.getBranchName());
-		    claims.put("pwd", dto.getPwd());
-		    claims.put("phoneNum", dto.getPhoneNumber());
 		    claims.put("regiDate", dto.getRegistrationDate());
-		    claims.put("convKey", dto.getConvKey());
 		    claims.put("convSeq", dto.getConvSeq());
 		    
 		    /*claims.put("userdata", service.mypage(securityKey));*/

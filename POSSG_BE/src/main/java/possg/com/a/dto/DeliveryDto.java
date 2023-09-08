@@ -115,19 +115,13 @@ public class DeliveryDto {
 	}
 
 
-    @Override
-    public String toString() {
-        return "DeliveryDTO{" +
-                "orderSeq=" + orderSeq +
-                ", userId='" + userId + '\'' +
-                ", productSeq='" + productSeq + '\'' +
-                ", orderStatus=" + orderStatus +
-                ", quantity=" + quantity +
-                ", productName='" + productName + '\'' +
-                ", orderDate=" + orderDate +
-                ", ref=" + ref +
-                ", location='" + location + '\'' +
-                ", price='" + price + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "DeliveryDto [orderSeq=" + orderSeq + ", userId=" + userId + ", productSeq=" + productSeq
+				+ ", orderStatus=" + orderStatus + ", quantity=" + quantity + ", productName=" + productName
+				+ ", orderDate=" + orderDate + ", ref=" + ref + ", location=" + location + ", price=" + price
+				+ "]";
+	}
+
+	
 }

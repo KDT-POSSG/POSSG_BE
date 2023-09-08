@@ -158,8 +158,8 @@
 			<dependency>
 			    <groupId>javax.servlet</groupId>
 			    <artifactId>javax.servlet-api</artifactId>
-			    <version>4.0.1</version> <!-- 현재 사용 중인 서블릿 API 버전에 맞게 업데이트 -->
-			    <scope>provided</scope> <!-- 서블릿 컨테이너가 제공하는 라이브러리를 사용하므로 provided 스코프를 사용합니다. -->
+			    <version>4.0.1</version>
+			    <scope>provided</scope> 
 			</dependency>
 		<dependency>
 		    <groupId>org.jsoup</groupId>
@@ -178,7 +178,6 @@
 		    <artifactId>log4j</artifactId>
 		    <version>1.2.17</version>
 		</dependency>
-
 	</dependencies>
 	
 	<build>

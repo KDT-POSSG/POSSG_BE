@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import possg.com.a.dao.DeliveryDao;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.DeliveryDto;
+import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 
 @Service
@@ -30,6 +31,17 @@ public class DeliveryService {
 		return dao.allDeliveryList(ref);
 	}
 	
+	public List<DeliveryDto> selectDelivery(DeliveryDto dto) {
+		return dao.selectDelivery(dto);
+	}
+	
+	public int insertDeliveryList(DeliveryListDto dto) {
+		return dao.insertDeliveryList(dto);
+	}
+	
+	public int updateDelivery(DeliveryDto dto) {
+		return dao.updateDelivery(dto);
+	}
 	
 	
 	
