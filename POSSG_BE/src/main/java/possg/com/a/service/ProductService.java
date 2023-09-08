@@ -25,8 +25,14 @@ public class ProductService {
 	public List<ProductDto> productList(ProductParam param){
 		return dao.productList(param);
 	}
-	public int getAllProduct(ProductParam param) {
-		return dao.getAllProduct(param);
+	public List<ProductDto> getAllProduct(){
+		return dao.getAllProduct();
+	}
+	public int updateProductRomanName(ProductDto dto) {
+		return dao.updateProductRomanName(dto);
+	}
+	public int getProductTotalNumber(ProductParam param) {
+		return dao.getProductTotalNumber(param);
 	}
 	public int addProduct(ProductDto dto) {
 		return dao.addProduct(dto);

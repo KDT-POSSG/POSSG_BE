@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.crizin.KoreanCharacter;
+import net.crizin.KoreanRomanizer;
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CallProductCustomerDto;
@@ -40,17 +42,31 @@ public class ProductController {
 	
 	// 상품 목록 획득
 	@GetMapping("productList")
-	public List<ProductDto> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
+	public Map<String, Object> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
 		System.out.println("ProductController ProductList " + new Date());
 		System.out.println("ProductParam= " + param);
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
-
-		/*
-		//글의 총 수
-		int count = service.getAllProduct(param);
-		int pageProduct = count / 12;
-		if((count % 12) > 0) {
+		int cnt = 0;
+		if (param.getCountry() != 0) {
+			for(ProductDto dto : list) {
+				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				dto.setProductTranslationName(temp);
+				if (cnt > 3) {
+					break;
+				}
+				cnt ++;
+			}
+		}
+		System.out.println("ProductList= " + list);
+		// 상품의 총 수
+		int count = service.getProductTotalNumber(param);
+		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+		if (param.getPageSize() > count) {
+			param.setPageSize(count); 
+		}
+		int pageProduct = count / param.getPageSize();
+		if((count % param.getPageSize()) > 0) {
 			pageProduct = pageProduct + 1;
 		}
 		
@@ -60,8 +76,8 @@ public class ProductController {
 		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
-		*/
-		return list;
+		
+		//return list;
 	}
 	
 	// 새로운 상품을 추가
@@ -92,7 +108,7 @@ public class ProductController {
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
 	@GetMapping("getAllProductStock")
-	public List<Map<String, Object>> getAllProductStock(ProductParam param){
+	public Map<String, Object> getAllProductStock(ProductParam param){
 		System.out.println("ProductController getAllProductStock() " + new Date());
 		// DB에서 상품 정보를 가져옴
 		List<ProductDto> list = service.productList(param); 
@@ -112,14 +128,24 @@ public class ProductController {
         // 총 재고량을 저장할 변수
         int totalStock = 0;
         */
+        int cnt = 0;
         // 모든 상품 정보를 순회
 	    for (ProductDto dto : list) {
-	    	
+
 	    	List<ProductDto> nameDtoList = service.findProductName(dto);
 	    	
 	    	productMap = new LinkedHashMap<>();
             productDetails = new ArrayList<>();
             
+	    	if (param.getCountry() != 0 && cnt < 4) {
+				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				dto.setProductRomanName(temp);
+				// 번역 상품명
+				productMap.put("product_translation_name", dto.getProductRomanName());
+				
+				cnt ++;
+			}
+	 
             // 상품명
 	    	productMap.put("product_name", dto.getProductName());
 	    	// 상품 img 주소
@@ -133,6 +159,7 @@ public class ProductController {
             	Map<String, Object> detail = new HashMap<>();
             	detail.put("product_seq", nameDto.getProductSeq());
                 detail.put("product_name", nameDto.getProductName());
+                detail.put("product_roman_name", nameDto.getProductRomanName());
                 detail.put("stock", nameDto.getStockQuantity());
                 detail.put("expiration_date", nameDto.getExpirationDate());
                 detail.put("price", nameDto.getPrice());
@@ -147,7 +174,24 @@ public class ProductController {
             resultList.add(productMap);
             System.out.println("productDetails: " + productDetails);
 	    }
-		return resultList;
+	    // 편의점 보유 상품 총 개수
+	    int count = service.getProductTotalNumber(param);
+		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+		if (param.getPageSize() > count) {
+			param.setPageSize(count); 
+		}
+		int pageProduct = count / param.getPageSize();
+		if((count % param.getPageSize()) > 0) {
+			pageProduct = pageProduct + 1;
+		}
+  		
+  		Map<String, Object> map = new HashMap<String, Object>();
+  		map.put("ProductList", resultList);
+  		map.put("pageProduct", pageProduct);
+  		//map.put("pageNumber", param.getPageNumber());
+  		map.put("cnt", count); // react 중 pagination 사용시 활용
+  		return map;
+		//return resultList;
 	}
 	
 	/* 점주 발주 */
@@ -416,7 +460,22 @@ public class ProductController {
 	}
 	
 	
-	
+	// 로마자 변환 후 DB 입력
+	@GetMapping("updateProductRomanName")
+	public String updateProductRomanName() {
+		System.out.println("ProductController updateProductRomanName() " + new Date());
+		
+		List<ProductDto> productList = service.getAllProduct();
+		
+		for(ProductDto dto : productList) {
+			String romanName = KoreanRomanizer.romanize(dto.getProductName(), KoreanCharacter.ConsonantAssimilation.Regressive);
+			System.out.println("roman: " + romanName);
+			dto.setProductRomanName(romanName);
+			service.updateProductRomanName(dto);
+		}
+
+		return null;
+	}
 	
 	
 	
