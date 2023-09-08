@@ -58,6 +58,7 @@ CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
+	product_roman_name VARCHAR(255) not null,							-- 상품명 로마자
 	price INT not null,													-- 상품 가격
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
@@ -68,7 +69,8 @@ CREATE TABLE Product (
 	img_url VARCHAR(255),												-- 이미지 주소
     foreign key(category_id) references Category(category_id)			-- Category 테이블에서 참조
 );
-
+ALTER TABLE Product ADD product_roman_name VARCHAR(255) AFTER product_name;
+select * from Product;
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
