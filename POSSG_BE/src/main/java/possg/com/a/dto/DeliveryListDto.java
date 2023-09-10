@@ -8,13 +8,13 @@ public class DeliveryListDto {
     private int delTotalNumber;
     private int delTotalPrice;
     private String delRemark;
-    private String userId;
+    private int userId;
     
     public DeliveryListDto() {
 	}
       
 	public DeliveryListDto(int seq, String delRef, String delDate, int delStatus, int delTotalNumber, int delTotalPrice,
-			String delRemark, String userId) {
+			String delRemark, int userId) {
 		super();
 		this.seq = seq;
 		this.delRef = delRef;
@@ -82,11 +82,11 @@ public class DeliveryListDto {
 		this.delRemark = delRemark;
 	}
 
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

@@ -110,14 +110,14 @@ public class ConvenienceController {
 	        token.setRefresh(refreshToken);
 	        
 	        int refresh = service.insertToken(token);
-     
-	        // HTTP 요청 헤더 설정
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("accessToken", accessToken);
 	        
 	        if(refresh == 0) {
 	        	ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
-	        }	
+	        }
+     
+	        // HTTP 요청 헤더 설정
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.add("accessToken", accessToken);	           	
 
 	        return ResponseEntity.ok().headers(headers).body("YES");   
 	    }

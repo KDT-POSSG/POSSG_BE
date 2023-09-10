@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
@@ -27,9 +28,9 @@ public interface DeliveryDao {
 	
 	int updateDelivery(DeliveryDto dto);
 	
+	int deleteDelivery(DeliveryDto dto);
 	
-	
-	
+	CustomerDto selectCustomer(int userId);
 	
 	
 	

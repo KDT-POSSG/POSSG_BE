@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.DeliveryDao;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
@@ -41,6 +42,14 @@ public class DeliveryService {
 	
 	public int updateDelivery(DeliveryDto dto) {
 		return dao.updateDelivery(dto);
+	}
+	
+	public int deleteDelivery(DeliveryDto dto) {
+		return dao.deleteDelivery(dto);
+	}
+	
+	public CustomerDto selectCustomer(int userId) {
+		return dao.selectCustomer(userId);
 	}
 	
 	
