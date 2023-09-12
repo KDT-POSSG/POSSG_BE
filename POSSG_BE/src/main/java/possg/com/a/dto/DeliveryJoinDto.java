@@ -18,7 +18,7 @@ public class DeliveryJoinDto {
 	private int delTotalPrice;
 	private String delRemark;
 	
-	public DelivryJoinDto() {
+	public DeliveryJoinDto() {
 	}
 
 	public DeliveryJoinDto(int orderSeq, String userId, int productSeq, int orderStatus, int quantity,

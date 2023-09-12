@@ -7323,3 +7323,9 @@ java.lang.ClassNotFoundException: org.springframework.ide.vscode.commons.protoco
 
 !ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-12 09:56:24.862
 !MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-12 10:09:23.297
+!MESSAGE Classpath changed for project: POSSG_BE
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2023-09-12 10:09:38.332
+!MESSAGE Classpath changed for project: POSSG_BE
