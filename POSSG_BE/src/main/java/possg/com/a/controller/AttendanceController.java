@@ -35,6 +35,7 @@ public class AttendanceController {
 		return "NO";
 	};
 	
+	// 
 	@PostMapping("leavework")
 	public String leavework(@RequestParam int employeeSeq) {
 		System.out.println("AttendanceController attendance " + new Date());

@@ -58,7 +58,6 @@ CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
-	product_roman_name VARCHAR(255) not null,							-- 상품명 로마자
 	price INT not null,													-- 상품 가격
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
@@ -69,8 +68,7 @@ CREATE TABLE Product (
 	img_url VARCHAR(255),												-- 이미지 주소
     foreign key(category_id) references Category(category_id)			-- Category 테이블에서 참조
 );
-ALTER TABLE Product ADD product_roman_name VARCHAR(255) AFTER product_name;
-select * from Product;
+
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
@@ -177,7 +175,7 @@ CREATE TABLE PT(
 );
 
 
--- 점주 발주 상품 목록 테이블 --
+-- 점주 발주 테이블 --
 CREATE TABLE call_product_Conv (
 	call_seq INT auto_increment primary key,					-- 편의점 발주 고유번호
 	user_id	VARCHAR(255),										-- 편의점 점주 아이디 (주문자)
@@ -186,7 +184,7 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-  	call_date Timestamp not null,								-- 발주 날짜	
+  call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
@@ -194,11 +192,9 @@ CREATE TABLE call_product_Conv (
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
-select * from call_product_conv;
 
-select * from call_product_conv_order_list;
+	
 
--- 발주 주문 목록 --
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
 	call_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음

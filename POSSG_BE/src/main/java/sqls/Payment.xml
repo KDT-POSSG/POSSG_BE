@@ -3,44 +3,22 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.PaymentDao">	<!-- 초기설정 -->
 	
-	<!-- 결제 정보 추가 -->
-    <insert id="addpayment" parameterType="possg.com.a.dto.PaymentDto">
+	<!-- 카카오 결제 정보 추가 -->
+    <insert id="addkakaopayment" parameterType="possg.com.a.dto.PaymentDto">
         INSERT INTO Payment (
-            receipt_id, user_seq, product_seq, conv_seq, pg, method, discount_info, 
-            price, count, purchased_at, receipt_url, ref, card_num, card_company, del
+            receipt_id, user_seq, product_seq, pg, method, discount_info, 
+            price, count, purchased_at, receipt_url, ref, card_num, del
         )
         VALUES (
-            #{receiptId}, #{userSeq}, #{productSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, 
-            #{price}, #{count}, #{purchasedAt}, #{receiptUrl}, #{ref}, #{cardNum}, #{cardCompany}, "결제완료"
+            #{receiptId}, #{userSeq}, #{productSeq}, #{pg}, #{method}, #{discountInfo}, 
+            #{price}, #{count}, #{purchasedAt}, #{receiptUrl}, #{ref}, #{cardNum}, 0
         )
     </insert>
     
-    <!-- 결제 취소 -->
-    <update id="cancelpayment" parameterType="java.lang.String">
+    <!-- 카카오 결제 취소 -->
+    <update id="cancelkakaopayment" parameterType="java.lang.String">
     	UPDATE Payment
-    	SET del = "결제취소"
-    	where receipt_id = #{receiptId}
+    	SET del = 1
+    	where payment_seq = #{paymentSeq}
     </update>
-    
-    <!-- 전체 결제 목록 조회 -->
-    <select id="paymentlist" parameterType="java.lang.Integer"
-    resultType="possg.com.a.dto.PaymentParam">
-    	select 
-    		cu.customer_seq AS customerSeq,
-    		cu.customer_name AS customerName,
-    		c.branch_name AS branchName,
-    		c.representative_name AS representativeName,
-    		p.receipt_id AS receiptId,
-    		p.pg AS pg,
-    		p.method AS method,
-    		p.price AS price,
-    		p.purchased_at AS purchasedAt,
-    		p.card_company AS cardCompany,
-    		p.card_num AS cardNum,
-    		p.del AS del
-    	FROM Payment p
-    	JOIN Convenience c ON p.conv_seq = c.conv_seq
-    	JOIN Customer cu ON cu.customer_seq = p.user_seq
-    	WHERE p.conv_seq = #{convSeq} 
-    </select>
 </mapper>
