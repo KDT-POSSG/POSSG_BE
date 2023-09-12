@@ -1,5 +1,7 @@
 package possg.com.a.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -8,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.ConvenienceDao;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.SmsDto;
+import possg.com.a.dto.TokenDto;
 
 
 @Service
@@ -83,6 +87,26 @@ public class ConvenienceService {
 	
 	public int updateCodeStatus(ConvenienceDto dto) {
 		return dao.updateCodeStatus(dto);
+	}
+	
+	public int insertToken(TokenDto dto) {
+		return dao.insertToken(dto);
+	}
+	
+	public List<TokenDto> selectToken(String userId) {
+		return dao.selectToken(userId);
+	}
+	
+	public int insertSms(int smsNum) {
+		return dao.insertSms(smsNum);
+	}
+	
+	public int selectSms(int smsNum) {
+		return dao.selectSms(smsNum);
+	}
+	
+	public int deleteSms(int smsNum) {
+		return dao.deleteSms(smsNum);
 	}
 
 }

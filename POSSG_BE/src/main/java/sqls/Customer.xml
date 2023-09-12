@@ -3,15 +3,92 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.CustomerDao">	<!-- 초기설정 -->
 
+<!-- 간편회원가입 -->
 <insert id="addCustomer" parameterType="possg.com.a.dto.CustomerDto">
 	insert into Customer(customer_id, pin_number, customer_name, phone_number, registration_date, customer_status, conv_seq)
 	values(#{customerId}, #{pinNumber}, #{customerName}, #{phoneNumber}, now(), 1, #{convSeq})
 </insert>
 
+<!-- 전화번호로 유저 정보 가져오기 -->
 <select id="getCustomer" parameterType="possg.com.a.dto.CustomerDto" resultType="possg.com.a.dto.CustomerDto">
 	select *
 	from Customer
-	where phone_number = #{phoneNumber}
+	where phone_number = #{phoneNumber} and customer_status != 0
 </select>
+
+
+
+<!-- 배달 -->
+<!-- 개인 웹 회원가입(신규) -->
+<insert id="addWebCustomer" parameterType="possg.com.a.dto.CustomerDto">
+	insert into Customer(customer_id, pin_number, customer_name, phone_number, registration_date, customer_status, pwd)
+	values(#{customerId}, #{pinNumber}, #{customerName}, #{phoneNumber}, now(), 1, SHA2(#{pwd}, 256))
+</insert>
+
+<!-- 개인 웹 회원가입(기존 간편가입 이력 있는 고객) -->
+<update id="existingCustomers" parameterType="possg.com.a.dto.CustomerDto">
+	update Customer
+	set customer_id = #{customerId},
+	pin_number = #{pinNumber},
+	customer_name = #{customerName},
+	pwd = SHA2(#{pwd}, 256)
+	where phone_number = #{phoneNumber}
+</update>
+
+<!-- 고객 로그인 -->
+<select id="customerLogin" parameterType="possg.com.a.dto.CustomerDto"
+	resultType="possg.com.a.dto.CustomerDto">
+	select *
+	from Customer
+	where customer_id=#{customerId} and pwd=SHA2(#{pwd}, 256) and customer_status != 0
+</select>
+
+<!-- 로그아웃하면 refresh토큰 삭제 -->
+<delete id="deleteRefresh" parameterType="possg.com.a.dto.CustomerTokenDto">
+	delete 
+	from customer_token
+	where customer_id=#{customerId}
+</delete>
+
+<!-- 토큰저장 -->
+<insert id="customerRefresh" parameterType="possg.com.a.dto.CustomerTokenDto">
+	insert into customer_token(refresh, customer_id)
+	values(#{refresh}, #{customerId})
+</insert>
+
+<!-- access토큰의 아이디를 파싱하여 userId로 보내주면 db에 저장된 customer_id랑 비교해서 같은 refresh토큰만 선택 -->
+<select id="customerSelectToken" parameterType="possg.com.a.dto.CustomerTokenDto" resultType="String">
+	select refresh
+	from customer_token
+	where customer_id = #{customerId}
+</select>
+
+<!-- 배달 주소 등록 -->
+<update id="updateLocation" parameterType="possg.com.a.dto.CustomerDto">
+	update Customer
+	set location = #{location}
+	where customer_id = #{customerId}
+</update>
+
+<!-- 배달할 지점 customer에 저장 -->
+<update id="customerDeliveryBranchName" parameterType="possg.com.a.dto.CustomerDto">
+	update Customer
+	set branch_name = #{branchName}
+	where customer_id = #{customerId}
+</update>
+
+<!-- 점포 고르기 할때 만약 이미 장바구니에 다른점포물건이 담겨있을경우 장바구니 초기화-->
+<delete id="deliveryDelete" parameterType="Integer">
+	delete 
+	from Delivery
+	where user_id = #{userId} and order_status = 0 and ref = 0
+</delete>
+
+<!-- 회원탈퇴 -->
+<update id="deleteCustomer" parameterType="possg.com.a.dto.CustomerDto">
+	update Customer
+	set customer_status = 0
+	where customer_id = #{customerId}
+</update>
 
 </mapper>

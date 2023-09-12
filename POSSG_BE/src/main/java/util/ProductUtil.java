@@ -80,9 +80,9 @@ public class ProductUtil {
 
                     System.out.println("----------------");      
                     
-                    ProductDto dto = new ProductDto(0, category_id, product_name, product_name, product_name, price, price_discount,
+                    ProductDto dto = new ProductDto(0, category_id, product_name, price, price_discount,
                     									stock_quantity, expiration_date, discount_rate,
-                    									promotion_info, barcode, img_url, 0);
+                    									promotion_info, barcode, img_url);
             		
                     // 동일한 제목이 있으면 해당 제목 return
                     boolean compare = findProductName(dto, proService);
