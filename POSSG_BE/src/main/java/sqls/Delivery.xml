@@ -95,7 +95,7 @@ values(
 	FROM delivery as o
 	inner join convenience j on o.branch_name = j.branch_name
 	inner join delivery_list p on o.ref = p.del_ref
-	where j.branch_name = #{branchName};
+	where j.branch_name = #{branchName}
 </select>
 
 
