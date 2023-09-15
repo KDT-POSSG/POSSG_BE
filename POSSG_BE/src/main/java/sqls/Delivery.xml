@@ -3,38 +3,113 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.DeliveryDao">
 
-<!-- 배달점포 입점 -->
-<update id="convAddDelivery" parameterType="possg.com.a.dto.ConvenienceDto">
-update Convenience
-set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
-where conv_seq = #{convSeq}
-</update>
-
-<!-- 주문접수 -->
+<!-- 배달 회원 기능 -->
+<!-- 장바구니에 넣기 -->
 <insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price)
+insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price, branch_name)
 values(
     (select customer_seq from Customer where customer_seq = #{userId}),
-    (select product_seq from Product where product_seq = #{productSeq}),
-    1, #{quantity}, 
-    (select product_name from Product where product_seq = #{productSeq}), 
-    now(), #{ref}, #{location},
-    (select price from Product where product_seq = #{productSeq})
+    (select product_seq from Product where product_name = #{productName}),
+    0, #{quantity}, 
+    (select product_name from Product where product_name = #{productName}), 
+    now(), 0, #{location}, #{price}, #{branchName}
 )
 </insert>
 
+<!-- 장바구니 상품 가져오기 -->
+<select id="selectDelivery" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
+	select *
+	from delivery
+	where ref = 0 and user_id = #{userId} and order_status = 0
+</select>
+
+<!-- 장바구니 배달 주문 시 ref 갱신 -->
+<update id="updateDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+	update Delivery
+	set ref = #{ref},
+	order_status = 1
+	where ref = 0 and user_id = #{userId} and order_status = 0
+</update>
+ 
+ <!-- 장바구니 삭제 -->
+<delete id="deleteDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+	delete
+	from Delivery
+	where ref = 0 and user_id = #{userId} and product_name = #{productName} and order_status = 0
+</delete>
+
+<!-- 배달주문 하기 -->
+<insert id="insertDeliveryList" parameterType="possg.com.a.dto.DeliveryListDto">
+	insert delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark)
+	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark})
+</insert>
+
+<select id="selectCustomer" parameterType="Integer" resultType="possg.com.a.dto.CustomerDto">
+	select *
+	from Customer
+	where customer_seq = #{customerSeq}
+</select>
+
+<!-- 배달취소 하기  del_status가 0 일때만 가능 0909여기까지하다말았음-->
 
 
 
+
+<!-- 배달 점주 기능 -->
+
+<!-- 배달점포 입점 -->
+<update id="convAddDelivery" parameterType="possg.com.a.dto.ConvenienceDto">
+	update Convenience
+	set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
+	where conv_seq = #{convSeq}
+</update>
 
   <!-- 상세 배달 목록 -->
 <select id="allDeliveryList" parameterType="String" resultType="possg.com.a.dto.DeliveryDto">
 	select *
 	from Delivery
-	where ref = #{ref}
+	where ref = #{ref} and 
 	<!-- order by order_seq desc -->
 	<!-- limit ${(pageNumber* 10)}, 10 -->
 </select>
+
+
+<!-- 해당 지점의 점포에 배달주문건 추출 -->
+<select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
+	SELECT  o.order_seq,
+    o.user_id,
+    o.product_seq,
+    o.order_status,
+    o.quantity,
+    o.product_name,
+    o.ref,
+    o.location,
+    o.price,
+    o.branch_name,
+    p.seq,
+    p.del_date,
+    p.del_status,
+    p.del_total_number,
+    p.del_total_price,
+    p.del_remark
+	FROM delivery as o
+	inner join convenience j on o.branch_name = j.branch_name
+	inner join delivery_list p on o.ref = p.del_ref
+	where j.branch_name = #{branchName}
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- 글의 총수 -->
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"

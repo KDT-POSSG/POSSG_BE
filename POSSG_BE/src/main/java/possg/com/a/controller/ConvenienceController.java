@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,13 +43,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.MessageDto;
+import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.SmsRequestDto;
 import possg.com.a.dto.SmsResponseDto;
+import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.VerificationCode;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class ConvenienceController {
 
 	@Autowired
@@ -87,10 +92,9 @@ public class ConvenienceController {
 	
 	
 	@PostMapping("login")
-	public ResponseEntity<Map<String, String>> login(@RequestBody ConvenienceDto conv, HttpServletResponse response) {
+	public ResponseEntity<?> login(@RequestBody ConvenienceDto conv) {
 		System.out.println("ConvenienceController login() " + new Date());
-	    ConvenienceDto dto = service.login(conv);
-	    
+	    ConvenienceDto dto = service.login(conv);    
 
 	    if (dto != null) {
 	        // Access Token 생성
@@ -100,61 +104,85 @@ public class ConvenienceController {
 	        String refreshToken = securityConfig.generateRefreshToken(dto);
 	        System.out.println(refreshToken);
 	        
-	        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-            accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setMaxAge(86400); // 토큰 유효 시간 (초 단위)
-            response.addCookie(accessTokenCookie);
-
-            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setMaxAge(86400 * 7); // 토큰 유효 시간 (초 단위)
-            response.addCookie(refreshTokenCookie);
-
-	        Map<String, String> tokens = new HashMap<>();
-	        tokens.put("accessToken", accessToken);
-	        tokens.put("refreshToken", refreshToken);
+	        TokenDto token = new TokenDto();
+	      
+	        token.setUserId(conv.getUserId());
+	        token.setRefresh(refreshToken);
 	        
-	        return ResponseEntity.ok(tokens);
+	        int refresh = service.insertToken(token);
+	        
+	        if(refresh == 0) {
+	        	ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
+	        }
+     
+	        // HTTP 요청 헤더 설정
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.add("accessToken", accessToken);	           	
+
+	        return ResponseEntity.ok().headers(headers).body("YES");   
 	    }
 	    System.out.println("login fail");
-	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 	}
 
 	@PostMapping("refresh")
-	public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestParam("refreshToken")String refreshToken, HttpServletResponse response) {		
+	public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestHeader("accessToken")String accessToken) {		
 		System.out.println("ConvenienceController refresh() " + new Date());
-	    try {
-	        // Refresh Token을 파싱하여 유효성 검사
+	   
 	    	
+	    	if(accessToken != null) {
+	        // Refresh Token을 파싱하여 유효성 검사	    	
 	    	JwtParser jwtParser = Jwts.parserBuilder()
 	    		    .setSigningKey(securityConfig.securityKey) // 여기서 secretKey는 생성한 시크릿 키입니다.
 	    		    .build();
-	    	
-	    	
-	        Claims refreshClaims = jwtParser.parseClaimsJws(refreshToken).getBody();
-
+	    	System.out.println(jwtParser);
+	    	// userId 파싱
+	        Claims refreshClaims = jwtParser.parseClaimsJws(accessToken).getBody();	        	        
 	        String userId = refreshClaims.get("userId", String.class);
+	        
+	        // 유효기간 파싱
+	        Date expirationDate = refreshClaims.getExpiration();        
+	        Date date = new Date();
+	        
+	        // 유저가 아님 
+	        if(userId == null) {
+	        	System.out.println("넌 유저가 아니다");
+	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }	        	        	        	        
 
 	        ConvenienceDto userDto = service.mypage(userId); // 사용자 정보 가져오기 등
+	        List<TokenDto> userToken = service.selectToken(userId);
 	        
+	        System.out.println(userToken);
+	        
+	        // 로그인 아이디랑 일치하는 토큰이 없는거
+	        if(userToken == null) {
+	        	System.out.println("유효한 refresh토큰이 없습니다.");
+	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+	        	        
 	        // 새로운 Access Token 발급
-	        String newAccessToken = securityConfig.generateRefreshToken(userDto);
-	        
-	        Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
-            accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setMaxAge(86400); // 토큰 유효 시간 (초 단위)
-            response.addCookie(accessTokenCookie);
-
+	        String newAccessToken = securityConfig.generateJwtToken(userDto);
+	       
 	        Map<String, String> tokens = new HashMap<>();
 
 	        tokens.put("accessToken", newAccessToken);
+	        
+	     // 토큰 기간이 만료됨
+	        if(expirationDate.before(date)) {
+	        	System.out.println("토큰이 만료됨");	        	
+	        	// 그래도 유저인게 확인되면 토큰발행
+	        	if(userId != null) {
+	        		return ResponseEntity.ok(tokens);
+	        	}	        		
+	        }
 
 	        return ResponseEntity.ok(tokens);
-	    } catch (Exception e) {
+	    } 
 	    	
 	    	System.out.println("refresh fail");
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    }
+	    
 	}
 	
 	 @PostMapping("addUser") 
@@ -224,9 +252,9 @@ public class ConvenienceController {
 	 public String updateMypage(@RequestBody ConvenienceDto conv) {
 		 System.out.println("ConvenienceController updateMypage() " + new Date());
 		 
-		 System.out.println(conv);
+		 System.out.println(conv);	 
 		 
-		 int count = service.updateMypage(conv);
+		 int count = service.updateMypage(conv); 
 		 
 		 if(count != 0) {
 			 return "YES";
@@ -308,15 +336,19 @@ public class ConvenienceController {
 	    public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
 		 System.out.println("ConvenienceController sendSms() " + new Date());
 		 String temp = messageDto.getTo();
-		 String formattedNumber = temp.replaceAll("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3");
+		
+		 System.out.println(temp);
 		 		 
 		 ConvenienceDto conv = service.mypage(messageDto.getContent());
 		 String phoneNum = conv.getPhoneNumber();	
 	    int veri = number();
 
-		 if(messageDto.getContent().equals(conv.getUserId()) && phoneNum.equals(formattedNumber)) {
+		 if(messageDto.getContent().equals(conv.getUserId()) && phoneNum.equals(temp)) {
 			 verificationCodeGenerationTime = System.currentTimeMillis();
-	            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);	            
+	            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
+	            
+	            
+	            service.insertSms(veri);
 	            
 	            return ResponseEntity.ok(response);   
 		 }
@@ -328,7 +360,7 @@ public class ConvenienceController {
 	    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 		 System.out.println("ConvenienceController sendSms() " + new Date());
 		 
-		 int veri = number();	   		
+		 int veri = number();		 
 		 
 			 verificationCodeGenerationTime = System.currentTimeMillis();
 			 	System.out.println("send time" + verificationCodeGenerationTime);
@@ -342,12 +374,26 @@ public class ConvenienceController {
 	 public String Authentication(@RequestParam int CodeNumber) {		 
 		 System.out.println("ConvenienceController Authentication() " + new Date());
 		 
-		 
+		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
 		 System.out.println(CodeNumber);
+		 
+		 int smsNum = service.selectSms(CodeNumber);
+		 
+		 System.out.println(smsNum);
+		 
+		 if(smsNum == 0) {
+			 System.out.println("db에 일치하는 인증번호가 없습니다.");
+			 return "NO";
+		 }	 
 	
 		 long currentTime = System.currentTimeMillis();
+		 System.out.println(currentTime);
 		 
-		 if(currentTime - verificationCodeGenerationTime <= 300000) {			
+		 System.out.println(verificationCodeGenerationTime);
+		  
+		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
+			 				 
+			 service.deleteSms(CodeNumber);		 
 			 
 				 return "YES";
 			 

@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,18 +19,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.CustomerDto;
 import possg.com.a.service.ConvenienceService;
 
 @Component
 @Configuration
 @EnableWebSecurity
+@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class SecurityConfig {
 	
 	@Value("${custom.security.key}")
@@ -56,13 +59,12 @@ public class SecurityConfig {
         http
         	.httpBasic().disable()
         	.csrf().disable()
-         	.cors().and()
-            .authorizeRequests(authorizeRequests ->
-                authorizeRequests
-                	.requestMatchers("/register").permitAll()
-                	.requestMatchers("/login").permitAll()
-                	                	
-            );
+         	.cors()
+         	.and()
+         	.authorizeRequests(authorizeRequests ->
+            authorizeRequests
+            .requestMatchers("/public/**").permitAll()
+        );
 
         return http.build();
     }
@@ -79,6 +81,7 @@ public class SecurityConfig {
 	   * @param member Member 정보를 담은 객체
 	   * @return String JWT 토큰
 	   */
+	  // accessToken
 	  public String generateJwtToken(ConvenienceDto dto) {
 		  System.out.println("securityKey" + securityKey);
 	    Date now = new Date();
@@ -92,9 +95,10 @@ public class SecurityConfig {
 	        .compact();
 	  }
 	  
-	// Refresh Token 생성 로직 예시
+	// Refresh Token 생성 로직
 	  public String generateRefreshToken(ConvenienceDto dto) {
 	      Date now = new Date();
+	      Long expiredTime = 1000 * 60L * 60L * 24L * 14L; // 2주
 	      
 	      return Jwts.builder()
 	          .setSubject(dto.getRepresentativeName())
@@ -105,6 +109,50 @@ public class SecurityConfig {
 	          .signWith(SignatureAlgorithm.HS256, securityKey)
 	          .compact();
 	  }
+	  
+	  // customer token accessToken
+	  public String generateCustomerToken(CustomerDto dto) {
+		  System.out.println("securityKey" + securityKey);
+	    Date now = new Date();
+	    
+	    Long expiredTime = 1000 * 60L * 60L * 2L; // 2시간
+	    
+	    return Jwts.builder()
+	        .setSubject(dto.getCustomerName()) // 보통 username
+	        .setHeader(createHeader())
+	        .setClaims(CustomerClaims(dto)) // 클레임, 토큰에 포함될 정보
+	        .setExpiration(new Date(now.getTime() + expiredTime)) // 만료일
+	        .signWith(SignatureAlgorithm.HS256, securityKey)
+	        .compact();
+	  }
+	  
+	  // customer refreshToken
+	  public String generateCustomerRefreshToken(CustomerDto dto) {
+	      Date now = new Date();
+	      Long expiredTime = 1000 * 60L * 60L * 24L * 14L; // 2주
+	      
+	      return Jwts.builder()
+	          .setSubject(dto.getCustomerName())
+	          .setHeader(createHeader())
+	          .setClaims(CustomerClaims(dto)) // 사용자 ID 등의 정보 포함
+	          .setIssuedAt(now)
+	          .setExpiration(new Date(now.getTime() + expiredTime)) // 적절한 유효기간 설정
+	          .signWith(SignatureAlgorithm.HS256, securityKey)
+	          .compact();
+	  }
+	  
+	  private Map<String, Object> CustomerClaims(CustomerDto dto) {
+		    Map<String, Object> claims = new HashMap<>();
+		    // claim에 유저 정보 넣기
+		    claims.put("customerId", dto.getCustomerId()); // username
+		    claims.put("phoneNum", dto.getPhoneNumber());
+		    claims.put("customerSeq", dto.getCustomerSeq());
+		    claims.put("location", dto.getLocation());	    
+		    /*claims.put("userdata", service.mypage(securityKey));*/
+		    return claims;
+		  }
+	  
+	  
 	  
 	  
 	  // token header
@@ -124,10 +172,7 @@ public class SecurityConfig {
 		    claims.put("userName", dto.getRepresentativeName()); // username
 		    claims.put("userId", dto.getUserId()); 
 		    claims.put("branchName", dto.getBranchName());
-		    claims.put("pwd", dto.getPwd());
-		    claims.put("phoneNum", dto.getPhoneNumber());
 		    claims.put("regiDate", dto.getRegistrationDate());
-		    claims.put("convKey", dto.getConvKey());
 		    claims.put("convSeq", dto.getConvSeq());
 		    
 		    /*claims.put("userdata", service.mypage(securityKey));*/
