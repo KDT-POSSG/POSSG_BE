@@ -8,10 +8,10 @@ import possg.com.a.util.TokenUtil;
 @SpringBootApplication
 public class PossgBeApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) { 
 		SpringApplication.run(PossgBeApplication.class, args);
 		TokenUtil.getToken();
-		
+	
 	}
 
 }
