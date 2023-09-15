@@ -16,7 +16,8 @@ public class Webconfigurer implements WebMvcConfigurer{
 		.allowedOrigins("*")
 		.allowedMethods("GET", "POST", "PUT", "DELETE")
         .allowedHeaders("*")
-        .exposedHeaders("accessToken");	//모두허용
+		.exposedHeaders("accessToken");	//모두허용
+
 	}
 	
 	

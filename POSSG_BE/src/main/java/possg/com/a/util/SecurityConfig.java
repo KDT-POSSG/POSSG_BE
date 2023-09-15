@@ -4,19 +4,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,42 +28,32 @@ import possg.com.a.service.ConvenienceService;
 @Component
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class SecurityConfig {
-	
+		
 	@Value("${custom.security.key}")
     public String securityKey;
-
+	
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    private final DataSource dataSource;
-    
-    public SecurityConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new JdbcUserDetailsManager(dataSource);
-    }
-
-    @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-        	.httpBasic().disable()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http       	
         	.csrf().disable()
-         	.cors()
-         	.and()
+        	.cors().and()
          	.authorizeRequests(authorizeRequests ->
-            authorizeRequests
-            .requestMatchers("/public/**").permitAll()
-        );
+            authorizeRequests        
+            	.requestMatchers("/login/**", "/register/**", "/findPw/**", "/findId/**").permitAll()
+            	//.requestMatchers("/public/**").permitAll()
+            	.anyRequest().authenticated()
+         		);            
 
         return http.build();
     }
+    
+    
+    
+    
+    
 	
 		
 	
@@ -175,7 +161,6 @@ public class SecurityConfig {
 		    claims.put("regiDate", dto.getRegistrationDate());
 		    claims.put("convSeq", dto.getConvSeq());
 		    
-		    /*claims.put("userdata", service.mypage(securityKey));*/
 		    return claims;
 		  }
 	  
@@ -197,22 +182,14 @@ public class SecurityConfig {
 	  
 	  public String getbranchNameFromToken(String token) {
 		  return (String) getClaims(token).get("branchName");
-	  }
-	  
-	  public String getpwdFromToken(String token) {
-		  return (String) getClaims(token).get("pwd");
-	  }
+	  }	  
 	  
 	  public String getphoneNumFromToken(String token) {
 		  return (String) getClaims(token).get("phoneNum");
 	  }
 	  
-	  public String getregiDateFromToken(String token) {
-		  return (String) getClaims(token).get("regiDate");
-	  }
-	  
-	  public String getconvKeyFromToken(String token) {
-		  return (String) getClaims(token).get("convKey");
+	  public String getconvSeqFromToken(String token) {
+		  return (String) getClaims(token).get("convSeq");
 	  }
 	  
 	  

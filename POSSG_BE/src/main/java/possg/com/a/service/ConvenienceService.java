@@ -62,14 +62,17 @@ public class ConvenienceService {
 	
 	
 	// 비밀번호 업데이트
-	public void changePassword(ConvenienceDto dto) {
+	public void findPassword(ConvenienceDto dto) {
 	    // newPassword 필드의 값이 null이 아닌 경우에만 password 필드로 복사
 	    if (dto.getNewPwd() != null) {
 	        dto.setPwd(dto.getNewPwd());
 	    }
-	    dao.changePassword(dto);
+	    dao.findPassword(dto);
 	}
 	
+	public ConvenienceDto changePassword(String userId) {
+		return dao.changePassword(userId);
+	}
 	// 비밀번호 찾기
 	public ConvenienceDto findUserByAddressAndUserId(String phoneNumber, String userId) {
 	    return dao.findUserByAddressAndUserId(phoneNumber, userId);
@@ -108,5 +111,10 @@ public class ConvenienceService {
 	public int deleteSms(int smsNum) {
 		return dao.deleteSms(smsNum);
 	}
+	
+	public int logout(String userId) {
+		return dao.logout(userId);
+	}
+
 
 }

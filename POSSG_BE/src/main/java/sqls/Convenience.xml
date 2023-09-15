@@ -18,7 +18,7 @@
 <update id="updateCodeStatus" parameterType="possg.com.a.dto.AccountNumDto">
     UPDATE account_num
 	SET code_status = 1
-	WHERE account_code = #{convKey};
+	WHERE user_id = #{userId};
 </update>
 
 <select id="login" parameterType="possg.com.a.dto.ConvenienceDto"
@@ -54,17 +54,23 @@
     	update Convenience
     	set 
     	representative_name=#{representativeName}, 
-    	phone_number=#{phoneNumber},
-    	pwd=SHA2(#{pwd}, 256) 
+    	phone_number=#{phoneNumber}
     	where user_id=#{userId}
 </update>
 
 <!-- 비밀번호 업데이트 -->
-	<update id="changePassword" parameterType="possg.com.a.dto.ConvenienceDto">
+	<update id="findPassword" parameterType="possg.com.a.dto.ConvenienceDto">
 		UPDATE Convenience
-		SET pwd = #{pwd}
+		SET pwd = SHA2(#{pwd}, 256)
 		WHERE user_id = #{userId}
 	</update>
+
+<!-- 비밀번호 유효성 체크 -->
+<select id="changePassword" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+select *
+from Convenience
+where user_id = #{userId}
+</select>
 
 
 <!-- key중복체크 -->
@@ -106,6 +112,11 @@
 </delete>
 
 
+<delete id="logout" parameterType="String">
+	delete 
+	from token
+	where user_id = #{userId}	
+</delete>
 
 
 

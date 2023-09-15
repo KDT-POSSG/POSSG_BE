@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
-import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.TokenDto;
 
 @Mapper
@@ -25,7 +24,9 @@ public interface ConvenienceDao {
 	ConvenienceDto findUserByAddressAndPhoneNumber(String representativeName, String phoneNumber);
 	
 	// 패스워드 업데이트
-	void changePassword(ConvenienceDto dto);
+	void findPassword(ConvenienceDto dto);
+	
+	ConvenienceDto changePassword(String dto);
 		
 	// 비밀번호 찾기
 	ConvenienceDto findUserByAddressAndUserId(String phoneNumber, String userId);
@@ -50,5 +51,7 @@ public interface ConvenienceDao {
 	int selectSms(int smsNum);
 	
 	int deleteSms(int smsNum);
+	
+	int logout(String userId);
 
 }

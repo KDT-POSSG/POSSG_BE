@@ -40,19 +40,12 @@ public class CostController {
 	}
 	
 	@PostMapping("updatecost")
-	public String updatecost(CostDto dto, @CookieValue("accessToken") String accessToken) {
+	public String updatecost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("ConvenienceController updatecost " + new Date());
 		
-		System.out.println(accessToken);
-		accessToken = accessToken.replace("Bearer ", "");
+		Claims cliam = tokenParser(tokenHeader);
 		 
-		 JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityConfig.securityKey)
-	    		    .build();
-	    	
-	        Claims refreshClaims = jwtParser.parseClaimsJws(accessToken).getBody();
-		 
-	        int convSeq = refreshClaims.get("convSeq", Integer.class);	
+	        int convSeq = cliam.get("convSeq", Integer.class);	
 	        
 	        System.out.println(convSeq);
 		 	 
@@ -68,5 +61,21 @@ public class CostController {
 		return "NO";		
 	}
 	
+	
+	//토큰 추출하는 로직
+	public Claims tokenParser(String tokenHeader) {
+		
+		// "Bearer " 문자열을 제거하여 실제 토큰을 추출
+	    String access = tokenHeader.replace("Bearer ", "");
+
+	    // JWT 토큰 검증
+	    	JwtParser jwtParser = Jwts.parserBuilder()
+	    		    .setSigningKey(securityConfig.securityKey)
+	    		    .build();
+
+	        Claims claims = jwtParser.parseClaimsJws(access).getBody();
+	        
+	        return claims;
+	}	
 	
 }

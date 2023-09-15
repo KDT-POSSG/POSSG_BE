@@ -10,6 +10,9 @@ import possg.com.a.dao.DeliveryDao;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
+
+import possg.com.a.dto.DeliveryJoinDto;
+
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 
@@ -52,22 +55,23 @@ public class DeliveryService {
 		return dao.selectCustomer(userId);
 	}
 	
+	public List<DeliveryJoinDto> convenienceDeliveryList(DeliveryParam param) {
+		return dao.convenienceDeliveryList(param);
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public int updateCountDelivery(DeliveryDto dto) {
+		return dao.updateCountDelivery(dto);
+	}
+		
 	public int getDeliveryCount(DeliveryParam param) {
 		return dao.getDeliveryCount(param);
 	}
+	
+	public int statusUpdate(DeliveryJoinDto dto) {
+		return dao.statusUpdate(dto);
+	}
+	
+	/*
 	
 	public List<DeliveryDto> getAllDeliveryOrderList(){
 		return dao.getAllDeliveryOrderList();
@@ -77,5 +81,7 @@ public class DeliveryService {
 	public List<DeliveryDto> getRefDeliveryOrderList(String delRef){
 		return dao.getRefDeliveryOrderList(delRef);
 	}
+
+	*/
 	
 }
