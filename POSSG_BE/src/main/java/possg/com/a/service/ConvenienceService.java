@@ -116,6 +116,5 @@ public class ConvenienceService {
 		return dao.logout(userId);
 	}
 
-	
 
 }

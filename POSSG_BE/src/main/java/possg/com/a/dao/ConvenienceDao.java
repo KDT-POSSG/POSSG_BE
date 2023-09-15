@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
-import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.TokenDto;
 
 @Mapper

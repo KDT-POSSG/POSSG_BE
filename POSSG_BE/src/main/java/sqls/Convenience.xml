@@ -111,13 +111,12 @@ where user_id = #{userId}
 	where sms_num = #{smsNum}
 </delete>
 
+
 <delete id="logout" parameterType="String">
 	delete 
 	from token
 	where user_id = #{userId}	
 </delete>
-
-
 
 
 

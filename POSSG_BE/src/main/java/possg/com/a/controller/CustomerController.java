@@ -71,6 +71,7 @@ public class CustomerController {
 		return "NO";
 	}
 	
+
 	// 웹에서 고객가입#
 	@PostMapping("addWebCustomer")
 	public String addWebCustomer(CustomerDto dto) {
@@ -141,7 +142,7 @@ public class CustomerController {
             String customerId = claim.get("customerId", String.class);
 
             dto.setCustomerId(customerId);
-		
+
 		int count = service.deleteRefresh(dto);
 		
 		if(count != 0) {
@@ -154,7 +155,7 @@ public class CustomerController {
 	@PostMapping("updateLocation")
 	public String updateLocation(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController updateLocation " + new Date());
-		
+
 		if(tokenHeader == null && dto == null) {
 			return "NO";
 		}
@@ -163,7 +164,7 @@ public class CustomerController {
 
         // 사용자 ID 추출
         String customerId = claim.get("customerId", String.class);      
-            
+          
             dto.setCustomerId(customerId);           
             System.out.println(dto);
 		int count = service.updateLocation(dto);
@@ -182,7 +183,7 @@ public class CustomerController {
 		if(dto == null) {
 			return "NO";
 		}
-		
+
 		Claims claim = tokenParser(tokenHeader);			 			 	 
 
         // 사용자 ID 추출
@@ -236,7 +237,6 @@ public class CustomerController {
 	
 	
 	// 혹시나 시간남으면 고객이 배달시킨 목록도 표기 9월 16일 쯤 하지 않을까
-	
 	
 	// 고유 번호생성
 	public String generateUUID() {
