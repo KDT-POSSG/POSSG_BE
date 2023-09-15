@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="possg.com.a.dao.DeliveryDao">
+
+<!-- 배달점포 입점 -->
+<update id="convAddDelivery" parameterType="possg.com.a.dto.ConvenienceDto">
+update Convenience
+set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
+where conv_seq = #{convSeq}
+</update>
+
+<!-- 주문접수 -->
+<insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price)
+values(
+    (select customer_seq from Customer where customer_seq = #{userId}),
+    (select product_seq from Product where product_seq = #{productSeq}),
+    1, #{quantity}, 
+    (select product_name from Product where product_seq = #{productSeq}), 
+    now(), #{ref}, #{location},
+    (select price from Product where product_seq = #{productSeq})
+)
+</insert>
+
+
+
+
+
+  <!-- 상세 배달 목록 -->
+<select id="allDeliveryList" parameterType="String" resultType="possg.com.a.dto.DeliveryDto">
+	select *
+	from Delivery
+	where ref = #{ref}
+	<!-- order by order_seq desc -->
+	<!-- limit ${(pageNumber* 10)}, 10 -->
+</select>
+
+<!-- 글의 총수 -->
+<select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
+		resultType="java.lang.Integer">
+		select count(*) from Delivery 
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 배달주문 전체 목록 -->
+<select id="getAllDeliveryOrderList" resultType="possg.com.a.dto.DeliveryDto">
+	select * from Delivery_list
+	where del_ref != '-1'
+</select>
+
+<!-- 주어진 delRef에 해당하는 발주 주문 목록 획득 -->
+<select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
+	select * from Delivery_list
+	where del_ref = #{delRef}
+	order by del_ref desc
+</select>
+
+
+
+
+
+</mapper>

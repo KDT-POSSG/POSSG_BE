@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="possg.com.a.dao.CostDao">
+
+<!-- 월세 관리비 입력 -->
+<insert id="addcost" parameterType="possg.com.a.dto.CostDto">
+	insert into Cost(rent, water_bill, electricity_bill, gas_bill, total_labor_cost, security_maintenance_fee, conv_seq, cost_year, cost_month)
+	values(#{rent}, #{waterBill}, #{electricityBill}, #{gasBill}, #{totalLaborCost}, #{securityMaintenanceFee},(select conv_seq from Convenience where conv_seq = #{convSeq}), #{costYear}, #{costMonth})
+</insert>
+
+<update id="updatecost" parameterType="possg.com.a.dto.CostDto">
+	update Cost
+	set rent = #{rent},
+	water_bill = #{waterBill},
+	electricity_bill = #{electricityBill},
+	gas_bill = #{gasBill},
+	total_labor_cost = #{totalLaborCost},
+	security_maintenance_fee = #{securityMaintenanceFee}
+	
+	where conv_seq = #{convSeq} AND cost_year = #{costYear} AND cost_month = #{costMonth}
+</update>
+
+
+
+</mapper>
