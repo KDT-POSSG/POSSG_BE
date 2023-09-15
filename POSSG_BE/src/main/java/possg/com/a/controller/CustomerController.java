@@ -39,23 +39,16 @@ public class CustomerController {
      @Autowired
      DeliveryService deliservice;
 	
-     // 편의점에서 간편 가입
+     // 편의점에서 간편 가입#
 	@PostMapping("addCustomer")
 	public String addcustomer(CustomerDto dto, @RequestHeader("accessToken") String accessToken) {
 		System.out.println("CustomerController addcustomer " + new Date());
 		
 		System.out.println(dto);
 		
-		//토큰 파싱
-		accessToken = accessToken.replace("Bearer ", "");
+		 Claims claim = tokenParser(accessToken);	
 		 
-		 JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityConfig.securityKey)
-	    		    .build();
-	    	
-	        Claims refreshClaims = jwtParser.parseClaimsJws(accessToken).getBody();
-		 
-	        int convSeq = refreshClaims.get("convSeq", Integer.class);		 
+	     int convSeq = claim.get("convSeq", Integer.class);		 
 		 	 
 		 dto.setConvSeq(convSeq);		
 		 
@@ -78,7 +71,7 @@ public class CustomerController {
 		return "NO";
 	}
 	
-	// 웹에서 고객가입
+	// 웹에서 고객가입#
 	@PostMapping("addWebCustomer")
 	public String addWebCustomer(CustomerDto dto) {
 		System.out.println("CustomerController addWebCustomer " + new Date());
@@ -139,8 +132,15 @@ public class CustomerController {
 	
 	// 로그아웃 access는 프론트에서 지우고
 	@PostMapping("deleteRefresh")
-	public String deleteRefresh(CustomerTokenDto dto) {
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteRefresh " + new Date());
+		
+			Claims claim = tokenParser(tokenHeader);			 			 	 
+
+            // 사용자 ID 추출
+            String customerId = claim.get("customerId", String.class);
+
+            dto.setCustomerId(customerId);
 		
 		int count = service.deleteRefresh(dto);
 		
@@ -155,28 +155,14 @@ public class CustomerController {
 	public String updateLocation(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController updateLocation " + new Date());
 		
-		if(tokenHeader == null) {
+		if(tokenHeader == null && dto == null) {
 			return "NO";
 		}
 		
-		if(dto == null) {
-			return "NO";
-		}
-		
-		// "Bearer " 문자열을 제거하여 실제 토큰을 추출
-        String accessToken = tokenHeader.replace("Bearer ", "");
+		Claims claim = tokenParser(tokenHeader);			 			 	 
 
-        // JWT 토큰 검증
-        	JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityConfig.securityKey)
-	    		    .build();
-
-            Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
-
-            // 사용자 ID 추출
-            String customerId = claims.get("customerId", String.class);
-            
-            System.out.println(customerId);
+        // 사용자 ID 추출
+        String customerId = claim.get("customerId", String.class);      
             
             dto.setCustomerId(customerId);           
             System.out.println(dto);
@@ -197,19 +183,11 @@ public class CustomerController {
 			return "NO";
 		}
 		
-		// "Bearer " 문자열을 제거하여 실제 토큰을 추출
-        String accessToken = tokenHeader.replace("Bearer ", "");
+		Claims claim = tokenParser(tokenHeader);			 			 	 
 
-        // JWT 토큰 검증
-        	JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityConfig.securityKey)
-	    		    .build();
-
-            Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
-
-            // 사용자 ID 추출
-            String customerId = claims.get("customerId", String.class);
-            int customerSeq = claims.get("customerSeq", Integer.class);
+        // 사용자 ID 추출
+        String customerId = claim.get("customerId", String.class);
+            int customerSeq = claim.get("customerSeq", Integer.class);
             
             DeliveryDto deliSeq = new DeliveryDto();
             
@@ -238,8 +216,15 @@ public class CustomerController {
 	
 	// 회원탈퇴
 	@PostMapping("deleteCustomer")
-	public String deleteCustomer(CustomerDto dto) {
-		System.out.println("CustomerController deleteCustomer " + new Date());	
+	public String deleteCustomer(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
+		System.out.println("CustomerController deleteCustomer " + new Date());
+		
+		Claims claim = tokenParser(tokenHeader);			 			 	 
+
+        // 사용자 ID 추출
+        String customerId = claim.get("customerId", String.class);
+        
+        dto.setCustomerId(customerId);
 		
 		int count = service.deleteCustomer(dto);
 		
@@ -250,6 +235,8 @@ public class CustomerController {
 	}
 	
 	
+	// 혹시나 시간남으면 고객이 배달시킨 목록도 표기 9월 16일 쯤 하지 않을까
+	
 	
 	// 고유 번호생성
 	public String generateUUID() {
@@ -257,5 +244,21 @@ public class CustomerController {
         String randomUUIDString = uuid.toString();
         return randomUUIDString;
     }
+	
+	//customerSeq 추출하는 로직
+		public Claims tokenParser(String tokenHeader) {
+			
+			// "Bearer " 문자열을 제거하여 실제 토큰을 추출
+		    String access = tokenHeader.replace("Bearer ", "");
+
+		    // JWT 토큰 검증
+		    	JwtParser jwtParser = Jwts.parserBuilder()
+		    		    .setSigningKey(securityConfig.securityKey)
+		    		    .build();
+
+		        Claims claims = jwtParser.parseClaimsJws(access).getBody();
+		        
+		        return claims;
+		}	
 
 }

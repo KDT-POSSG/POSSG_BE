@@ -1,20 +1,21 @@
 package possg.com.a.controller;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -22,6 +23,7 @@ import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
+import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 import possg.com.a.dto.ProductDto;
@@ -58,6 +60,11 @@ public class DeliveryController {
 		ProductDto product = new ProductDto();
 		
 		product.setProductName(dto.getProductName());
+
+		DeliveryDto delivery = new DeliveryDto();
+		delivery.setUserId(customerSeq);
+		
+		List<DeliveryDto> deli = service.selectDelivery(delivery);
 		
 		List<ProductDto> prodto = productService.findProductName(product);
 		
@@ -66,6 +73,24 @@ public class DeliveryController {
 		dto.setLocation(userId.getLocation());
 		dto.setBranchName(userId.getBranchName());
 		
+		// 장바구니에 이미 같은 이름의 상품이 있을경우
+		boolean isProductNameFound = false;
+
+		for (DeliveryDto deliveryDto : deli) {
+		    if (deliveryDto.getProductName().equals(dto.getProductName())) {
+		        isProductNameFound = true;
+		        break;
+		    }
+		}
+
+		if (isProductNameFound) {
+		    int count = service.updateCountDelivery(dto);
+
+		    if (count != 0) {
+		        return "YES";
+		    }
+		        return "NO";		    
+		}
 		
 		System.out.println(dto);
 		// 성공 실패
@@ -177,27 +202,118 @@ public class DeliveryController {
 			}		
 			return "NO";
 		}
-	/*
-		// convenience token에서 branch_name을 추출해서 delivery테이블에 branch_name 같고 order_status != 0 인 목록을 가져와서 ref같은거 끼리 묶어서 보여주기
-		@GetMapping("convenienceDeliveryList")
-		public List<DeliveryDto> convenienceDeliveryList(@RequestHeader("accessToken") String tokenHeader){
-			System.out.println("DeliveryController convenienceDeliveryList " + new Date());
-			
-			// "Bearer " 문자열을 제거하여 실제 토큰을 추출
-		    String accessToken = tokenHeader.replace("Bearer ", "");
+	
+		// convenience token에서 branch_name을 추출해서 delivery테이블에 branch_name 같고 order_status != 0 인 목록을 가져와서 ref같은거 끼리 묶어서 보여주기\
 
-		    // JWT 토큰 검증
-		    	JwtParser jwtParser = Jwts.parserBuilder()
-		    		    .setSigningKey(securityConfig.securityKey)
-		    		    .build();
+		@GetMapping("convenienceDeliveryList")
+		public Map<String, Object> convenienceDeliveryList(DeliveryParam param, @RequestHeader("accessToken") String tokenHeader) {
+		    System.out.println("DeliveryController convenienceDeliveryList " + new Date());
+
+		    if (tokenHeader != null) {
+		        // "Bearer " 문자열을 제거하여 실제 토큰을 추출
+		        String accessToken = tokenHeader.replace("Bearer ", "");
+
+		        // JWT 토큰 검증
+		        JwtParser jwtParser = Jwts.parserBuilder()
+		                .setSigningKey(securityConfig.securityKey)
+		                .build();
 
 		        Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
 
 		        // 지점명 추출
 		        String branchName = claims.get("branchName", String.class);
-	
+		        
+		        param.setBranchName(branchName);
+		        
+		        System.out.println(param);
+		        
+		        // 모든 데이터 추출
+		        List<DeliveryJoinDto> dto = service.convenienceDeliveryList(param);
+		                
+		        // 그룹화된 데이터를 담을 List
+		        List<Map<String, Object>> groupedData = new ArrayList<>();
+
+		        for (DeliveryJoinDto deliveryJoinDto : dto) {
+		            // 필드 값 설정
+		            Map<String, Object> deliveryMap = new LinkedHashMap<>();
+		            deliveryMap.put("userId", deliveryJoinDto.getUserId());
+		            deliveryMap.put("orderStatus", deliveryJoinDto.getOrderStatus());
+		            deliveryMap.put("ref", deliveryJoinDto.getRef());
+		            deliveryMap.put("location", deliveryJoinDto.getLocation());
+		            deliveryMap.put("branchName", deliveryJoinDto.getBranchName());
+		            deliveryMap.put("seq", deliveryJoinDto.getSeq());
+		            deliveryMap.put("delDate", deliveryJoinDto.getDelDate());
+		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
+		            deliveryMap.put("delTotalNumber", deliveryJoinDto.getDelTotalNumber());
+		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
+		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
+
+		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
+
+		            // 중복된 seq 값을 그룹으로 묶기
+		            for (DeliveryJoinDto item : dto) {
+		                if (item.getSeq() == deliveryJoinDto.getSeq()) {
+		                    Map<String, Object> detail = new HashMap<>();
+		                    detail.put("product_name", item.getProductName());
+		                    detail.put("quantity", item.getQuantity());
+		                    detail.put("price", item.getPrice());
+		                    detail.put("product_seq", item.getProductSeq());
+		                    deliveryDetails.add(detail);
+		                }
+		            }
+
+		            deliveryMap.put("details", deliveryDetails);
+
+		            // 그룹화된 데이터를 추가
+		            groupedData.add(deliveryMap);
+		        }
+
+		        // 중복된 데이터를 그룹화
+		        List<Map<String, Object>> uniqueGroupedData = new ArrayList<>();
+		        for (Map<String, Object> dataMap : groupedData) {
+		            if (!uniqueGroupedData.contains(dataMap)) {
+		                uniqueGroupedData.add(dataMap);
+		            }
+		        }
+		        
+		     // 편의점 보유 상품 총 개수
+			    int count = service.getDeliveryCount(param);
+				
+			    
+			    int AllPage = count / 10;
+				if((count % 10) > 0) {
+					AllPage = AllPage + 1;
+				}				
+								
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("DeliveryList", uniqueGroupedData);
+				map.put("AllPage", AllPage);
+				map.put("PageNumber", param.getPageNumber());
+				map.put("Cnt", count);	//리액트 할때 추가해줬던거
+				
+				
+		        // 결과 반환
+		        if (!uniqueGroupedData.isEmpty()) {
+		            return map;
+		        } else {
+		            return null;
+		        }
+		    }
+		    return null;
 		}
-		*/
+		
+		@PostMapping("statusUpdate")
+		public String statusUpdate(DeliveryJoinDto dto, @RequestHeader("accessToken") String accessToken) {
+			 System.out.println("DeliveryController statusUpdate " + new Date());			
+						 
+	        int statusUpdate = service.statusUpdate(dto);
+	        
+	      if(statusUpdate != 0) {
+	    	  return "YES";
+	      }
+	        return "NO";	        	        
+		}
+
 
 		// 배달목록 누르면 detail 페이지 상세보기
 		@GetMapping("allDeliveryList")
@@ -223,19 +339,6 @@ public class DeliveryController {
 			return "NO";
 		}
 	
-	
-	/*
-	// 배달 상품 리스트
-	@PostMapping("getAllDeliveryOrderList")
-	public List<DeliveryDto> getAllDeliveryOrderList(){
-		System.out.println("DeliveryController getAllDeliveryOrderList() " + new Date());
-		
-		List<DeliveryDto> list = service.getAllDeliveryOrderList();
-		
-		return list;
-	}
-	*/
-		
 	// customerSeq 추출하는 로직
 	public int tokenParser(String tokenHeader) {
 		

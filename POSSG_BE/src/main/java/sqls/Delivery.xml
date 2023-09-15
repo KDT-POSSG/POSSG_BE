@@ -16,6 +16,14 @@ values(
 )
 </insert>
 
+<!-- 중복으로 장바구니에 담을 시 갯수랑 가격만 업데이트 -->
+<update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+	update Delivery
+	set quantity = quantity + #{quantity},
+	price = price + #{price}
+	where product_name = #{productName} and order_status = 0 and ref = 0 and user_id = #{userId}
+</update>
+
 <!-- 장바구니 상품 가져오기 -->
 <select id="selectDelivery" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
 	select *
@@ -68,15 +76,13 @@ values(
 <select id="allDeliveryList" parameterType="String" resultType="possg.com.a.dto.DeliveryDto">
 	select *
 	from Delivery
-	where ref = #{ref} and 
-	<!-- order by order_seq desc -->
-	<!-- limit ${(pageNumber* 10)}, 10 -->
+	where ref = #{ref}
 </select>
 
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
-<select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
-	SELECT  o.order_seq,
+<select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
+	SELECT  p.seq,
     o.user_id,
     o.product_seq,
     o.order_status,
@@ -86,7 +92,6 @@ values(
     o.location,
     o.price,
     o.branch_name,
-    p.seq,
     p.del_date,
     p.del_status,
     p.del_total_number,
@@ -95,54 +100,71 @@ values(
 	FROM delivery as o
 	inner join convenience j on o.branch_name = j.branch_name
 	inner join delivery_list p on o.ref = p.del_ref
-	where j.branch_name = #{branchName}
+		
+			<if test="orderStatus == 1 ">
+				where j.branch_name = #{branchName} and o.order_status = 1
+			</if>
+			
+			<if test="orderStatus == 2 ">
+				where j.branch_name = #{branchName} and o.order_status = 2
+			</if>
+			
+			<if test="orderStatus == 3 ">
+				where j.branch_name = #{branchName} and o.order_status = 3
+			</if>
+			
+			<if test="orderStatus == 4 ">
+				where j.branch_name = #{branchName} and o.order_status = 4
+			</if>
+
+	order by p.seq desc
+	limit ${(pageNumber* 10)}, 10
 </select>
 
+<!-- 배송진행 상태 업데이트 -->
+<update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
+	update delivery as o, delivery_list as p
+	 set o.order_status = o.order_status + 1,
+    p.del_status = p.del_status + 1
+	where o.ref = #{ref} and p.del_ref = #{ref}
+</update>
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 글의 총수 -->
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
 		resultType="java.lang.Integer">
-		select count(*) from Delivery 
+		select count(*) 
+		from  delivery as o
+		inner join delivery_list  p on o.ref = p.del_ref
+		
+		<if test="orderStatus == 1 ">
+			where o.branch_name = #{branchName} and o.order_status = 1
+		</if>
+		
+		<if test="orderStatus == 2 ">
+			where o.branch_name = #{branchName} and o.order_status = 2
+		</if>
+		
+		<if test="orderStatus == 3 ">
+			where o.branch_name = #{branchName} and o.order_status = 3
+		</if>
+		
+		<if test="orderStatus == 4 ">
+			where o.branch_name = #{branchName} and o.order_status = 4
+		</if>
+		
 </select>
+<!--
 
-
-
-
-
-
-
-
-
-
-
-
-<!-- 배달주문 전체 목록 -->
 <select id="getAllDeliveryOrderList" resultType="possg.com.a.dto.DeliveryDto">
 	select * from Delivery_list
 	where del_ref != '-1'
 </select>
 
-<!-- 주어진 delRef에 해당하는 발주 주문 목록 획득 -->
 <select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
 	select * from Delivery_list
 	where del_ref = #{delRef}
 	order by del_ref desc
 </select>
 
-
-
-
+  -->
 
 </mapper>

@@ -7,7 +7,7 @@ public class DeliveryJoinDto {
 	private int orderStatus;
 	private int quantity;
 	private String productName;
-	private int ref;
+	private String ref;
 	private String location;
 	private int price;
 	private String branchName;
@@ -22,7 +22,7 @@ public class DeliveryJoinDto {
 	}
 
 	public DeliveryJoinDto(int orderSeq, String userId, int productSeq, int orderStatus, int quantity,
-			String productName, int ref, String location, int price, String branchName, int seq, String delDate,
+			String productName, String ref, String location, int price, String branchName, int seq, String delDate,
 			int delStatus, int delTotalNumber, int delTotalPrice, String delRemark) {
 		super();
 		this.orderSeq = orderSeq;
@@ -91,11 +91,11 @@ public class DeliveryJoinDto {
 		this.productName = productName;
 	}
 
-	public int getRef() {
+	public String getRef() {
 		return ref;
 	}
 
-	public void setRef(int ref) {
+	public void setRef(String ref) {
 		this.ref = ref;
 	}
 

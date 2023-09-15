@@ -38,18 +38,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.MessageDto;
-import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.SmsRequestDto;
 import possg.com.a.dto.SmsResponseDto;
 import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.SecurityConfig;
-import possg.com.a.util.VerificationCode;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000") //CROS 설정
@@ -76,6 +71,7 @@ public class ConvenienceController {
 	 public long verificationCodeGenerationTime;	// 인증번호 보낼 시점 시간 저장
 	
 	
+	 // 아이디 유무#
 	@PostMapping("idcheck")
 	public String idcheck(String userId) {
 		System.out.println("ConvenienceController idcheck " + new Date());
@@ -90,7 +86,7 @@ public class ConvenienceController {
 		return "NO";
 	}
 	
-	
+	//로그인#
 	@PostMapping("login")
 	public ResponseEntity<?> login(@RequestBody ConvenienceDto conv) {
 		System.out.println("ConvenienceController login() " + new Date());
@@ -111,6 +107,13 @@ public class ConvenienceController {
 	        
 	        int refresh = service.insertToken(token);
 	        
+	        ConvenienceDto requestDto = new ConvenienceDto();
+	        
+	        requestDto.setBranchName(dto.getBranchName());
+	        requestDto.setConvSeq(dto.getConvSeq());
+	        
+	        System.out.println(requestDto);
+	        
 	        if(refresh == 0) {
 	        	ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 	        }
@@ -119,12 +122,28 @@ public class ConvenienceController {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("accessToken", accessToken);	           	
 
-	        return ResponseEntity.ok().headers(headers).body("YES");   
+	        return ResponseEntity.ok().headers(headers).body(requestDto);
 	    }
 	    System.out.println("login fail");
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 	}
+	
+	// 로그아웃
+	@GetMapping("logout")
+	public String logout(@RequestHeader("accessToken") String accessToken) {
+		System.out.println("ConvenienceController logout() " + new Date());
+		
+		String userId= tokenParser(accessToken);
+		
+		int count = service.logout(userId);
+		
+		if(count != 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 
+	// 리프레쉬 토큰 #----------------------------수정해야할듯-------------------------------
 	@PostMapping("refresh")
 	public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestHeader("accessToken")String accessToken) {		
 		System.out.println("ConvenienceController refresh() " + new Date());
@@ -185,6 +204,7 @@ public class ConvenienceController {
 	    
 	}
 	
+	// 회원가입#
 	 @PostMapping("addUser") 
 	 public String adduser(@RequestBody ConvenienceDto conv) {
 	 System.out.println("ConvenienceController adduser() " + new Date());
@@ -208,12 +228,17 @@ public class ConvenienceController {
 	 } 
 	 return "NO"; 
 	 }
-	 
+
+	 // 폐점#
 	 @PostMapping("updateCodeStatus")
-	 public String updateCodeStatus(ConvenienceDto conv) {
+	 public String updateCodeStatus(@RequestHeader("accessToken") String accessToken) {                                                                        
 		 System.out.println("ConvenienceController updateCodeStatus() " + new Date());
 		 
-		 System.out.println(conv);
+		 String userId = tokenParser(accessToken);
+		 
+		 ConvenienceDto conv = new ConvenienceDto();
+
+		 conv.setUserId(userId);
 		 
 		 int count = service.updateCodeStatus(conv);
 		 
@@ -223,6 +248,8 @@ public class ConvenienceController {
 		 return "NO";
 	 }
 	 
+	 
+	 // 아이디 찾기#
 	 @PostMapping("findId")
 		public ResponseEntity<?> findId(@RequestParam(value="representativeName", required=false) String representativeName,
 		                                @RequestParam(value="phoneNumber", required=false) String phoneNumber) {
@@ -247,12 +274,15 @@ public class ConvenienceController {
 		        return new ResponseEntity<>(response, HttpStatus.OK);
 		    }
 		}
-	 
+
+	 // 내 정보 변경#
 	 @PostMapping("updateMypage")
-	 public String updateMypage(@RequestBody ConvenienceDto conv) {
+	 public String updateMypage(@RequestBody ConvenienceDto conv , @RequestHeader("accessToken") String accessToken) {
 		 System.out.println("ConvenienceController updateMypage() " + new Date());
 		 
-		 System.out.println(conv);	 
+		 String userId = tokenParser(accessToken);
+		 
+		 conv.setUserId(userId);
 		 
 		 int count = service.updateMypage(conv); 
 		 
@@ -262,6 +292,7 @@ public class ConvenienceController {
 		 return "NO";
 	 }
 	 
+	 // 내정보 보여주기#
 	 @GetMapping("myPage")
 	    public ConvenienceDto mypage(@RequestHeader("accessToken") String tokenHeader) {
 	        // "Bearer " 문자열을 제거하여 실제 토큰을 추출
@@ -290,33 +321,7 @@ public class ConvenienceController {
 	            return user;	          
 	    }
 	 
-	 /*
-	 @GetMapping("myPage")
-	 public ConvenienceDto mypage(@RequestHeader("accessToken") String tokenHeader) {
-		 System.out.println("ConvenienceController mypage() " + new Date());
-		 
-		 String accessToken = tokenHeader.replace("Bearer ", "");
-		 
-		 System.out.println(accessToken);
-		 
-		 JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityConfig.securityKey) // 여기서 secretKey는 생성한 시크릿 키입니다.
-	    		    .build();
-	    	
-	    	
-	        Claims refreshClaims = jwtParser.parseClaimsJws(accessToken).getBody();
-		 
-		 String userId = refreshClaims.get("userId", String.class);
-
-		 ConvenienceDto user = service.mypage(userId);
-		 
-		 if(userId.equals(user.getUserId())) {
-			 return user;
-		 }
-		 
-		 return null;
-	 }
-	 */
+	// 본사 인증키 확인#
 	 @PostMapping("keyCheck")
 	 public String keycheck(String convKey) {
 		 System.out.println("ConvenienceController keycheck() " + new Date());	 
@@ -332,6 +337,7 @@ public class ConvenienceController {
 	 }
 
 	 
+	 // 비밀번호 찾기 sms 보내기#
 	 @PostMapping("send")
 	    public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
 		 System.out.println("ConvenienceController sendSms() " + new Date());
@@ -355,7 +361,7 @@ public class ConvenienceController {
 		 return ResponseEntity.badRequest().body("SMS 전송 실패");
 	    }
 	 
-	 
+	 // 회원가입용 sms 보내기#
 	 @PostMapping("regiSend")
 	    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 		 System.out.println("ConvenienceController sendSms() " + new Date());
@@ -369,7 +375,7 @@ public class ConvenienceController {
 	    }
 	 
 
-	 
+	 // sms 확인하기#
 	 @PostMapping("Authentication")
 	 public String Authentication(@RequestParam int CodeNumber) {		 
 		 System.out.println("ConvenienceController Authentication() " + new Date());
@@ -401,26 +407,52 @@ public class ConvenienceController {
 		 return "NO";
 	 }
 	 
-	 // 인증 성공하면 비밀번호 찾기 창 열어주기 그리고 비밀번호 입력하면 비밀번호 변경시켜주고 통과	 
-	 @PostMapping("changePassword")
-	 public String changePassword(@RequestBody ConvenienceDto userDto) {
+	 // 문자인증 하면 비밀번호 변경#
+	 @PostMapping("findPassword")
+	 public String findPassword(@RequestBody ConvenienceDto userDto) {
 		 System.out.println("ConvenienceController changePassword() " + new Date());
 		   	   
 		   if(userDto != null) {
-			   
-			   ConvenienceDto id = new ConvenienceDto();
-			   id.setUserId(userDto.getUserId());
-			   
+	   
 			   // 비밀번호 변경
 			   String hashedPassword = sha256(userDto.getNewPwd());
-			   id.setPwd(hashedPassword);
+			   userDto.setPwd(hashedPassword);
 			   
-			   service.changePassword(id);
+			   service.findPassword(userDto);
 			   return "YES";
 		   }	  		   
 		   return "NO";
 		}
+	 
+	// 내 정보 변경에서 비밀번호 변경#
+		 @PostMapping("changePassword")
+		 public String changePassword(@RequestBody ConvenienceDto userDto, @RequestHeader("accessToken") String accessToken) {
+			 System.out.println("ConvenienceController changePassword() " + new Date());
+			   	   
+			   if(userDto != null) {
+				   
+				   String userId = tokenParser(accessToken);
+				   
+				   ConvenienceDto user = service.changePassword(userId);
+   
+				   String hashUser = sha256(user.getNewPwd());
+				   		
+				   if(userDto.getPwd() != hashUser && userDto.getPwd() == userDto.getNewPwd()) {
+					   return "NO";
+				   }
+				   
 
+				   userDto.setPwd(userDto.getNewPwd());
+				   userDto.setUserId(userId);
+				   
+				   service.findPassword(userDto);
+				   return "YES";
+			   }	  		   
+			   return "NO";
+			}
+
+		 
+		 //----------------------------- 여기서 부터는 함수 생성 로직입니다-------------------------
 	
 	 // 비밀번호 해시화 (SHA-256 사용) 
 	public static String sha256(String pw) { try {
@@ -477,6 +509,8 @@ public class ConvenienceController {
 	    return smsResponse;
 	}
 	
+	
+	
 	//인증번호 생성
 		public static int number() {
 				 
@@ -490,7 +524,6 @@ public class ConvenienceController {
 			     return verificationCodes; 
 			 }
  
-
  // 문자 알고리즘 암호화
  private String getSignature(String time) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
         String space = " ";
@@ -517,6 +550,25 @@ public class ConvenienceController {
 
         return encodeBase64String;
     } 
+ 
+ 	//customerSeq 추출하는 로직
+	public String tokenParser(String accessToken) {
+		
+		// "Bearer " 문자열을 제거하여 실제 토큰을 추출
+	    String access = accessToken.replace("Bearer ", "");
+
+	    // JWT 토큰 검증
+	    	JwtParser jwtParser = Jwts.parserBuilder()
+	    		    .setSigningKey(securityConfig.securityKey)
+	    		    .build();
+
+	        Claims claims = jwtParser.parseClaimsJws(access).getBody();
+
+	        // 사용자 ID 추출
+	        String userId = claims.get("userId", String.class);
+	        
+	        return userId;
+	}	
 	
 
 }

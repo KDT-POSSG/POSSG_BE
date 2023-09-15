@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
+import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 
@@ -32,11 +33,18 @@ public interface DeliveryDao {
 	
 	CustomerDto selectCustomer(int userId);
 	
+	List<DeliveryJoinDto> convenienceDeliveryList(DeliveryParam param);
 	
+	int updateCountDelivery(DeliveryDto dto);	
 	
 	int getDeliveryCount(DeliveryParam param);
 	
-	List<DeliveryDto> getAllDeliveryOrderList();
-	List<DeliveryDto> getRefDeliveryOrderList(String delRef);
+	int statusUpdate(DeliveryJoinDto dto);
+	
+	
+	
+	
+	// List<DeliveryDto> getAllDeliveryOrderList();
+	// List<DeliveryDto> getRefDeliveryOrderList(String delRef);
 
 }
