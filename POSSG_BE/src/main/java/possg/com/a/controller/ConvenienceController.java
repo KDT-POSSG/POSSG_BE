@@ -157,7 +157,7 @@ public class ConvenienceController {
 	    }
 	}
 	
-	 @PostMapping("adduser") 
+	 @PostMapping("addUser") 
 	 public String adduser(@RequestBody ConvenienceDto conv) {
 	 System.out.println("ConvenienceController adduser() " + new Date());
 	 
@@ -234,7 +234,36 @@ public class ConvenienceController {
 		 return "NO";
 	 }
 	 
-	 @GetMapping("mypage")
+	 @GetMapping("myPage")
+	    public ConvenienceDto mypage(@RequestHeader("accessToken") String tokenHeader) {
+	        // "Bearer " 문자열을 제거하여 실제 토큰을 추출
+	        String accessToken = tokenHeader.replace("Bearer ", "");
+
+	        // JWT 토큰 검증
+	        	JwtParser jwtParser = Jwts.parserBuilder()
+		    		    .setSigningKey(securityConfig.securityKey)
+		    		    .build();
+
+	            Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
+
+	            // 사용자 ID 추출
+	            String userId = claims.get("userId", String.class);
+	            
+	            System.out.println(userId);
+
+	            // 사용자 정보를 서비스에서 가져오기
+	            ConvenienceDto user = service.mypage(userId);
+	            System.out.println(user);
+	            
+	            if(user == null) {
+		        	   return null;
+		           }
+	            // 사용자 정보 반환
+	            return user;	          
+	    }
+	 
+	 /*
+	 @GetMapping("myPage")
 	 public ConvenienceDto mypage(@RequestHeader("accessToken") String tokenHeader) {
 		 System.out.println("ConvenienceController mypage() " + new Date());
 		 
@@ -259,8 +288,8 @@ public class ConvenienceController {
 		 
 		 return null;
 	 }
-	 
-	 @PostMapping("keycheck")
+	 */
+	 @PostMapping("keyCheck")
 	 public String keycheck(String convKey) {
 		 System.out.println("ConvenienceController keycheck() " + new Date());	 
 		 
@@ -295,7 +324,7 @@ public class ConvenienceController {
 	    }
 	 
 	 
-	 @PostMapping("regisend")
+	 @PostMapping("regiSend")
 	    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 		 System.out.println("ConvenienceController sendSms() " + new Date());
 		 
@@ -443,5 +472,23 @@ public class ConvenienceController {
         return encodeBase64String;
     } 
 	
+//customerSeq 추출하는 로직
+ public int tokenParser(String tokenHeader) {
+    
+    // "Bearer " 문자열을 제거하여 실제 토큰을 추출
+     String accessToken = tokenHeader.replace("Bearer ", "");
 
+     // JWT 토큰 검증
+        JwtParser jwtParser = Jwts.parserBuilder()
+               .setSigningKey(securityConfig.securityKey)
+               .build();
+
+         Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
+
+         // 사용자 ID 추출
+         int customerSeq = claims.get("customerSeq", Integer.class);
+         
+         return customerSeq;
+ }   
+ 
 }

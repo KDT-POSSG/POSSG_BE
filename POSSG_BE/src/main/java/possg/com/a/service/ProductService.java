@@ -50,10 +50,6 @@ public class ProductService {
 		return dao.addCallProductCustomer(customerDto);
 	}
 	
-	public List<ProductDto> getAllProductStock(ProductParam param){
-		return dao.getAllProductStock(param);
-	}
-	
 	public ConvenienceDto getConvenienceInfo(String branchName) {
 		return dao.getConvenienceInfo(branchName);
 	}
@@ -76,8 +72,14 @@ public class ProductService {
 	public int updateRefCallProductConv(String callRef) {
 		return dao.updateRefCallProductConv(callRef);
 	}
+	public int cancelCallRefProductConv(String callRef) {
+		return dao.cancelCallRefProductConv(callRef);
+	}
 	public int deleteCallRefProductConv(String callRef) {
 		return dao.deleteCallRefProductConv(callRef);
+	}
+	public int deleteCallProduct(CallProductConvDto callDto) {
+		return dao.deleteCallProduct(callDto);
 	}
 	
 	public List<CallProductConvOrderListDto> getAllConvOrderList(){
@@ -91,6 +93,9 @@ public class ProductService {
 	}
 	public int updateConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.updateConvOrderList(orderDto);
+	}
+	public int cancelConvOrderList(String callRef) {
+		return dao.cancelConvOrderList(callRef);
 	}
 	public int deleteConvOrderList(String callRef) {
 		return dao.deleteConvOrderList(callRef);

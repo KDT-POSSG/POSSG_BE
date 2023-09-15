@@ -29,8 +29,6 @@ public interface ProductDao {
 	
 	int addCallProductCustomer(CallProductCustomerDto cusotmerDto);
 	
-	List<ProductDto> getAllProductStock(ProductParam param);
-	
 	ConvenienceDto getConvenienceInfo(String branchName);
 	List<ConvenienceDto> getAllConvenience();
 	
@@ -39,12 +37,15 @@ public interface ProductDao {
 	CallProductConvDto getSeqCallProductConv(int callSeq);
 	List<CallProductConvDto> findCallProductConvName(String name);
 	int updateRefCallProductConv(String callRef);
+	int cancelCallRefProductConv(String callRef);
 	int deleteCallRefProductConv(String callRef);
+	int deleteCallProduct(CallProductConvDto callDto);
 	
 	List<CallProductConvOrderListDto> getAllConvOrderList();
 	CallProductConvOrderListDto getRefConvOrderList(String callRef);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
+	int cancelConvOrderList(String callRef);
 	int deleteConvOrderList(String callRef);
 
 }

@@ -1,4 +1,10 @@
-GitRepositoriesView.GitDirectories=D\:\\finalProject\\POSSG_BE\\.git;
-GitRepositoriesView.GitDirectories.relative=.git;
+<<<<<<< HEAD
+GitRepositoriesView.GitDirectories=D\:\\final\\POSSG_BE\\.git;D\:\\final\\.git;
+GitRepositoriesView.GitDirectories.relative=.git;D\:\\final\\.git;
+=======
+GitRepositoriesView.GitDirectories=C\:\\Users\\\uAD50\uC721\uC0DD38\\git\\POSSG_BE\\.git;
+GitRepositoriesView.GitDirectories.relative=C\:\\Users\\\uAD50\uC721\uC0DD38\\git\\POSSG_BE\\.git;
+RepositorySearchDialogSearchPath=C\:\\Users\\\uAD50\uC721\uC0DD38\\git
+>>>>>>> a23132cb6d4352796134b1f0e6ce7d8a24bf1cd8
 core_autoIgnoreDerivedResources=false
 eclipse.preferences.version=1

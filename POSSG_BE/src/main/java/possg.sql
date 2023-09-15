@@ -17,10 +17,15 @@ CREATE TABLE Convenience (
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
 	-- day_night int 							-- 주야간 (삭제 예정)
 );
+select * from Convenience;
 
-INSERT INTO Convenience (conv_seq, user_id, pwd, representative_name, branch_name
+ALTER TABLE Convenience drop emp_name;
+
+update Convenience set emp_name='temp2' where conv_seq=3;
+
+INSERT INTO Convenience (conv_seq,emp_name, user_id, pwd, representative_name, branch_name
 								, phone_number, registration_date, conv_status) 
-VALUES (0, 'ghfrlfehd', '10101010', '홍길동', '수영구 이마트', '01011112222', '20230805', 1);
+VALUES (0,1, 'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
 
 
 -- 고객 테이블 --
@@ -89,7 +94,16 @@ CREATE TABLE Delivery (
 	location VARCHAR(255) not null, 							-- 배송지
     foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
+);
 
+CREATE TABLE Delivery_list (
+	seq INT auto_increment primary key,							-- seq
+	del_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
+	del_date Timestamp not null,								-- 발주 날짜
+	del_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
+	del_total_number INT not null,								-- 발주 상품 수량
+	del_total_price INT not null,								-- 발주 총 가격		
+	del_remark VARCHAR(255)									    -- 비고
 );
 
 -- 결제 정보 테이블 --
@@ -120,7 +134,15 @@ CREATE TABLE Employee (
 	termination_date TIMESTAMP,									-- 직원 해고일
 	salary INT not null											-- 직원 월급
 );
+ALTER TABLE Employee
+add foreign key(conv_seq) references Convenience(conv_seq);
 
+select * from Employee;
+
+ALTER TABLE Employee ADD conv_seq int AFTER employee_seq;
+
+INSERT INTO Employee (emp_name, conv_seq, birth_date, gender, phone_number, hire_date, salary) 
+VALUES ('temp',1 ,'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
 -- 지출(분석) 테이블 -- 
 CREATE TABLE Cost (
 	cost_seq INT auto_increment	primary key, 				-- 지출 고유 번호
@@ -166,7 +188,7 @@ CREATE TABLE PT(
 );
 
 
--- 점주 발주 상품 목록 테이블 --
+-- 점주 발주 테이블 --
 CREATE TABLE call_product_Conv (
 	call_seq INT auto_increment primary key,					-- 편의점 발주 고유번호
 	user_id	VARCHAR(255),										-- 편의점 점주 아이디 (주문자)
@@ -175,7 +197,7 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-  	call_date Timestamp not null,								-- 발주 날짜	
+  call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
@@ -183,11 +205,9 @@ CREATE TABLE call_product_Conv (
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
-select * from call_product_conv;
 
-select * from call_product_conv_order_list;
+	
 
--- 발주 주문 목록 --
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
 	call_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
