@@ -472,5 +472,23 @@ public class ConvenienceController {
         return encodeBase64String;
     } 
 	
+//customerSeq 추출하는 로직
+ public int tokenParser(String tokenHeader) {
+    
+    // "Bearer " 문자열을 제거하여 실제 토큰을 추출
+     String accessToken = tokenHeader.replace("Bearer ", "");
 
+     // JWT 토큰 검증
+        JwtParser jwtParser = Jwts.parserBuilder()
+               .setSigningKey(securityConfig.securityKey)
+               .build();
+
+         Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
+
+         // 사용자 ID 추출
+         int customerSeq = claims.get("customerSeq", Integer.class);
+         
+         return customerSeq;
+ }   
+ 
 }

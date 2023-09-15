@@ -33,7 +33,7 @@ import possg.com.a.service.ConvenienceService;
 public class SecurityConfig {
 	
 	@Value("${custom.security.key}")
-    public String securityKey;
+    public static String securityKey;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -115,24 +115,40 @@ public class SecurityConfig {
 		    header.put("regDate", System.currentTimeMillis());
 		    return header;
 		  }
-	  
+
 	  // claim
 	  
 	  private Map<String, Object> createClaims(ConvenienceDto dto) {
 		    Map<String, Object> claims = new HashMap<>();
 		    // claim에 유저 정보 넣기
-		    claims.put("userName", dto.getRepresentativeName()); // username
-		    claims.put("userId", dto.getUserId()); 
-		    claims.put("branchName", dto.getBranchName());
-		    claims.put("pwd", dto.getPwd());
-		    claims.put("phoneNum", dto.getPhoneNumber());
-		    claims.put("regiDate", dto.getRegistrationDate());
-		    claims.put("convKey", dto.getConvKey());
-		    claims.put("convSeq", dto.getConvSeq());
+	          claims.put("userName", dto.getRepresentativeName()); // username
+	          claims.put("userId", dto.getUserId()); 
+	          claims.put("branchName", dto.getBranchName());
+	          claims.put("regiDate", dto.getRegistrationDate());
+	          claims.put("convSeq", dto.getConvSeq());  
 		    
 		    /*claims.put("userdata", service.mypage(securityKey));*/
 		    return claims;
 		  }
+	  
+	  // token에서 원하는 값 추출하는 로직
+	   public static Claims tokenParser(String tokenHeader) {
+	      
+	      // "Bearer " 문자열을 제거하여 실제 토큰을 추출
+	       String accessToken = tokenHeader.replace("Bearer ", "");
+
+	       // JWT 토큰 검증
+	          JwtParser jwtParser = Jwts.parserBuilder()
+	                 .setSigningKey(securityKey)
+	                 .build();
+
+	           Claims claims = jwtParser.parseClaimsJws(accessToken).getBody();
+
+	           // 사용자 ID 추출
+	           //int customerSeq = claims.get("customerSeq", Integer.class);
+	           
+	           return claims;
+	   }   
 	  
 	  private Claims getClaims(String token) {
 		  JwtParser jwtParser = Jwts.parserBuilder()
