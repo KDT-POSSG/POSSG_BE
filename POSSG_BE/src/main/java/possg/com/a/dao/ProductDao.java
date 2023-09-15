@@ -17,7 +17,9 @@ import possg.com.a.dto.ProductParam;
 public interface ProductDao {
 
 	List<ProductDto> productList(ProductParam param);
-	int getAllProduct(ProductParam param);
+	List<ProductDto> getAllProduct(ProductParam param);
+	int updateProductRomanName(ProductDto dto);
+	int getProductTotalNumber(ProductParam param);
 	
 	int addProduct(ProductDto dto);
 	
@@ -26,6 +28,8 @@ public interface ProductDao {
 	int getTotalStock(String name);
 	int addCallProductConv(CallProductConvDto convDto);
 	int updateCallProductConv(CallProductConvDto convDto);
+	
+	List<ProductDto> getAllProductStock(ProductParam param);
 	
 	int addCallProductCustomer(CallProductCustomerDto cusotmerDto);
 	

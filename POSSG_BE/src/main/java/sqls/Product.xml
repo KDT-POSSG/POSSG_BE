@@ -75,64 +75,6 @@
 	limit ${(pageNumber * 20)}, 20
 </select>
 
-<!-- 모든 상품 목록 획득 -->
-<select id="getAllProduct" parameterType="possg.com.a.dto.ProductParam"
-	resultType="java.lang.Integer">
-	select count(*)
-	from Product
-	<where>
-		<if test="choice != null and choice != '' and search != null and search != '' ">
-			<if test="choice == 'product_name'">
-				product_name like concat('%', #{search}, '%')
-			</if>				
-		</if>
-		<if test="promotionInfo != null and promotionInfo != ''">
-            and promotion_info = #{promotionInfo}
-        </if>
-        <if test="categoryId != null and categoryId != ''">
-            and category_id = #{categoryId}
-        </if>
-		<choose>
-			<when test="minPrice >= 0 and maxPrice > 0">
-				and price between #{minPrice} and #{maxPrice}
-			</when>
-			<when test="minPrice > maxPrice">
-				and 1=0
-			</when>
-			<when test="minPrice >= 0 and maxPrice == 0">
-	        and price >= #{minPrice}
-	   		</when>
-			<otherwise>
-			</otherwise>
-		</choose>
-	</where>
-	order by 
-		case when stock_quantity = 0 then 1 else 0 end,
-	<choose>
-		<when test="sortOrder == 'leastExpiry'">
-			expiration_date asc
-		</when>
-		<when test="sortOrder == 'mostExpiry'">
-			expiration_date desc
-		</when>
-		<when test="sortOrder == 'lowestPrice'">
-			price_discount asc
-		</when>
-		<when test="sortOrder == 'highestPrice'">
-			price_discount desc
-		</when>
-		<when test="sortOrder == 'discountRate'">
-			discount_rate desc
-		</when>
-		<when test="sortOrder == 'newest'">
-			product_seq asc
-		</when>
-		<otherwise>
-			product_seq desc
-		</otherwise>
-	</choose>
-</select>
-
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
 <select id="getLastProduct" resultType="Integer">
 	select max(product_seq) from Product;
