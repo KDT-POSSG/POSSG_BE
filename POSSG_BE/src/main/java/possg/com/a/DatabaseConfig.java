@@ -51,16 +51,14 @@ public class DatabaseConfig {
 	public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
-	
-	
+
 	@Bean
 	@ConfigurationProperties(prefix = "mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg() {
 	    org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
 	    config.setMapUnderscoreToCamelCase(true);
 	    return config;
-	}
-
-	
+	}	
 	
 }
+

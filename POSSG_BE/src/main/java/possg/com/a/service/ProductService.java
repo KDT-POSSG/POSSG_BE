@@ -25,8 +25,14 @@ public class ProductService {
 	public List<ProductDto> productList(ProductParam param){
 		return dao.productList(param);
 	}
-	public int getAllProduct(ProductParam param) {
+	public List<ProductDto> getAllProduct(ProductParam param) {
 		return dao.getAllProduct(param);
+	}
+	public int updateProductRomanName(ProductDto dto) {
+		return dao.updateProductRomanName(dto);
+	}
+	public int getProductTotalNumber(ProductParam param) {
+		return dao.getProductTotalNumber(param);
 	}
 	public int addProduct(ProductDto dto) {
 		return dao.addProduct(dto);
@@ -48,6 +54,10 @@ public class ProductService {
 	
 	public int addCallProductCustomer(CallProductCustomerDto customerDto) {
 		return dao.addCallProductCustomer(customerDto);
+	}
+	
+	public List<ProductDto> getAllProductStock(ProductParam param){
+		return dao.getAllProductStock(param);
 	}
 	
 	public ConvenienceDto getConvenienceInfo(String branchName) {
