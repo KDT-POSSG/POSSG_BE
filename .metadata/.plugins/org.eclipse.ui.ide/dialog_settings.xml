@@ -115,8 +115,8 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
-			<item value="D:\final\POSSG_BE"/>
 			<item value="D:\final\POSSG_BE\POSSG_BE"/>
+			<item value="D:\final\POSSG_BE"/>
 		</list>
 	</section>
 	<section name="ExternalProjectImportWizard">
