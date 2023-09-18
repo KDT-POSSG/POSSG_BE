@@ -86,11 +86,10 @@ public class ProductUtil {
             		
                     // 동일한 제목이 있으면 해당 제목 return
                     boolean compare = findProductName(dto, proService);
-            		/*
-                    if(compare) {
+            		if(compare) {
             			System.out.println("\n product skip check: \n" );
             			break;
-            		}*/
+            		}
             		dtoList.add(dto);
                 }
 

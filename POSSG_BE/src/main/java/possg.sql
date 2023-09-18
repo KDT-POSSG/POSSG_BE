@@ -17,15 +17,10 @@ CREATE TABLE Convenience (
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
 	-- day_night int 							-- 주야간 (삭제 예정)
 );
-select * from Convenience;
 
-ALTER TABLE Convenience drop emp_name;
-
-update Convenience set emp_name='temp2' where conv_seq=3;
-
-INSERT INTO Convenience (conv_seq,emp_name, user_id, pwd, representative_name, branch_name
+INSERT INTO Convenience (conv_seq, user_id, pwd, representative_name, branch_name
 								, phone_number, registration_date, conv_status) 
-VALUES (0,1, 'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
+VALUES (0, 'ghfrlfehd', '10101010', '홍길동', '수영구 이마트', '01011112222', '20230805', 1);
 
 
 -- 고객 테이블 --
@@ -134,15 +129,7 @@ CREATE TABLE Employee (
 	termination_date TIMESTAMP,									-- 직원 해고일
 	salary INT not null											-- 직원 월급
 );
-ALTER TABLE Employee
-add foreign key(conv_seq) references Convenience(conv_seq);
 
-select * from Employee;
-
-ALTER TABLE Employee ADD conv_seq int AFTER employee_seq;
-
-INSERT INTO Employee (emp_name, conv_seq, birth_date, gender, phone_number, hire_date, salary) 
-VALUES ('temp',1 ,'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
 -- 지출(분석) 테이블 -- 
 CREATE TABLE Cost (
 	cost_seq INT auto_increment	primary key, 				-- 지출 고유 번호

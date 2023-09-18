@@ -147,15 +147,6 @@
 	where call_ref = '0' and call_status != '-1';
 </update>
 
-<!-- 발주 상품 주문 취소 -->
-<!-- 주어진 callRef에 해당하는 발주 상품의 call_status를 '-1'로 설정 -->
-<update id="cancelCallRefProductConv" parameterType="String">
-    update Call_product_conv
-    set call_status = '0'
-    where call_ref = #{callRef} and call_status != '-1'
-</update>
-
-<!-- 발주 상품 수령 완료 -->
 <!-- 주어진 callRef에 해당하는 발주 상품의 call_status를 '-1'로 설정 -->
 <update id="deleteCallRefProductConv" parameterType="String">
     update Call_product_conv
@@ -196,15 +187,6 @@
     WHERE call_ref = #{callRef} and call_status != '-1'
 </update>
 
-<!-- 점주 발주 취소 -->
-<update id="cancelConvOrderList" parameterType="String">
-    UPDATE Call_product_conv_order_list
-    SET call_status = '0'
-    WHERE call_ref = #{callRef} and call_status != '-1'
-</update>
-
-
-<!-- 발주 주문 상품 수령 완료 -->
 <!-- 주어진 callRef에 해당하는 발주 주문의 call_status를 '-1'로 설정 -->
 <update id="deleteConvOrderList" parameterType="String">
     update Call_product_conv_order_list
@@ -235,39 +217,6 @@
 <!--  모든 편의점 정보 획득 -->
 <select id="getAllConvenience" resultType="possg.com.a.dto.ConvenienceDto">
 	select * from Convenience;
-</select>
-
-<!-- 모든 상품의 갯수 -->
-<select id="getProductTotalNumber" parameterType="possg.com.a.dto.ProductParam"
-	resultType="java.lang.Integer">
-	select count(distinct product_name)
-	from Product
-	<where>
-		<if test="choice != null and choice != '' and search != null and search != '' ">
-			<if test="choice == 'productName'">
-				product_name like concat('%', #{search}, '%')
-			</if>				
-		</if>
-		<if test="promotionInfo != null and promotionInfo != ''">
-            and promotion_info = #{promotionInfo}
-        </if>
-        <if test="categoryId != null and categoryId != ''">
-            and category_id = #{categoryId}
-        </if>
-		<choose>
-			<when test="minPrice >= 0 and maxPrice > 0">
-				and price between #{minPrice} and #{maxPrice}
-			</when>
-			<when test="minPrice > maxPrice">
-				and 1=0
-			</when>
-			<when test="minPrice >= 0 and maxPrice == 0">
-	        and price >= #{minPrice}
-	   		</when>
-			<otherwise>
-			</otherwise>
-		</choose>
-	</where>
 </select>
 
 

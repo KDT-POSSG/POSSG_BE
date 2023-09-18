@@ -1,5 +1,7 @@
 package possg.com.a.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -8,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.ConvenienceDao;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.SmsDto;
+import possg.com.a.dto.TokenDto;
 
 
 @Service
@@ -58,14 +62,17 @@ public class ConvenienceService {
 	
 	
 	// 비밀번호 업데이트
-	public void changePassword(ConvenienceDto dto) {
+	public void findPassword(ConvenienceDto dto) {
 	    // newPassword 필드의 값이 null이 아닌 경우에만 password 필드로 복사
 	    if (dto.getNewPwd() != null) {
 	        dto.setPwd(dto.getNewPwd());
 	    }
-	    dao.changePassword(dto);
+	    dao.findPassword(dto);
 	}
 	
+	public ConvenienceDto changePassword(String userId) {
+		return dao.changePassword(userId);
+	}
 	// 비밀번호 찾기
 	public ConvenienceDto findUserByAddressAndUserId(String phoneNumber, String userId) {
 	    return dao.findUserByAddressAndUserId(phoneNumber, userId);
@@ -84,5 +91,30 @@ public class ConvenienceService {
 	public int updateCodeStatus(ConvenienceDto dto) {
 		return dao.updateCodeStatus(dto);
 	}
+	
+	public int insertToken(TokenDto dto) {
+		return dao.insertToken(dto);
+	}
+	
+	public List<TokenDto> selectToken(String userId) {
+		return dao.selectToken(userId);
+	}
+	
+	public int insertSms(int smsNum) {
+		return dao.insertSms(smsNum);
+	}
+	
+	public int selectSms(int smsNum) {
+		return dao.selectSms(smsNum);
+	}
+	
+	public int deleteSms(int smsNum) {
+		return dao.deleteSms(smsNum);
+	}
+	
+	public int logout(String userId) {
+		return dao.logout(userId);
+	}
+
 
 }

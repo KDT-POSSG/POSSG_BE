@@ -50,8 +50,6 @@
 	    SELECT
 	        a.att_seq AS attSeq,
 	        a.employee_seq AS employeeSeq,
-	        e.birth_date AS birthDate,
-	        e.salary AS salary,
 	        e.emp_name AS empName,
 	        e.gender AS gender,
 	        e.phone_number AS phoneNumber,
