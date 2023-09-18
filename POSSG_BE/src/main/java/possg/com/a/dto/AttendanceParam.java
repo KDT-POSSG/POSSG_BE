@@ -1,7 +1,5 @@
 package possg.com.a.dto;
 
-import java.util.Date;
-
 // 근태 조회 결과 파라미터
 public class AttendanceParam {
 	private int attSeq;
@@ -9,8 +7,6 @@ public class AttendanceParam {
     private String branchName;
     private String empName;
     private String gender;
-    private String birthDate;
-    private int salary;
     private String phoneNumber;
     private String attendance;
     private String leaveWork;
@@ -22,19 +18,14 @@ public class AttendanceParam {
     	
     }
 
-	
-
 	public AttendanceParam(int attSeq, int employeeSeq, String branchName, String empName, String gender,
-			String birthDate, int salary, String phoneNumber, String attendance, String leaveWork, String workHours,
-			String remark, String matter) {
+			String phoneNumber, String attendance, String leaveWork, String workHours, String remark, String matter) {
 		super();
 		this.attSeq = attSeq;
 		this.employeeSeq = employeeSeq;
 		this.branchName = branchName;
 		this.empName = empName;
 		this.gender = gender;
-		this.birthDate = birthDate;
-		this.salary = salary;
 		this.phoneNumber = phoneNumber;
 		this.attendance = attendance;
 		this.leaveWork = leaveWork;
@@ -42,7 +33,6 @@ public class AttendanceParam {
 		this.remark = remark;
 		this.matter = matter;
 	}
-
 
 
 	public int getAttSeq() {
@@ -136,27 +126,13 @@ public class AttendanceParam {
 		this.matter = matter;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public int getSalary() {
-		return salary;
-	}
-
-	public void setSalary(int salary) {
-		this.salary = salary;
-	}
-	
 	@Override
 	public String toString() {
 		return "AttendanceParam [attSeq=" + attSeq + ", employeeSeq=" + employeeSeq + ", branchName=" + branchName
-				+ ", empName=" + empName + ", gender=" + gender + ", birthDate=" + birthDate + ", salary=" + salary
-				+ ", phoneNumber=" + phoneNumber + ", attendance=" + attendance + ", leaveWork=" + leaveWork
-				+ ", workHours=" + workHours + ", remark=" + remark + ", matter=" + matter + "]";
+				+ ", empName=" + empName + ", gender=" + gender + ", phoneNumber=" + phoneNumber + ", attendance="
+				+ attendance + ", leaveWork=" + leaveWork + ", workHours=" + workHours + ", remark=" + remark
+				+ ", matter=" + matter + "]";
 	}
+
+    
 }

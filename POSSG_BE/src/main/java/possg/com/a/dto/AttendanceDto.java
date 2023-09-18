@@ -10,9 +10,7 @@ public class AttendanceDto {
     private String matter;
 
     // 생성자
-    public AttendanceDto() {
-    	
-    }
+    public AttendanceDto() {}
 
 	public AttendanceDto(int attSeq, int employeeSeq, String attendance, String leaveWork, String workHours,
 			String remark, String matter) {
