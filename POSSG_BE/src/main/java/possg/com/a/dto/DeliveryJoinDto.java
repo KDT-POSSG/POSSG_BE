@@ -17,13 +17,14 @@ public class DeliveryJoinDto {
 	private int delTotalNumber;
 	private int delTotalPrice;
 	private String delRemark;
+	private String delRef;
 	
 	public DeliveryJoinDto() {
 	}
 
 	public DeliveryJoinDto(int orderSeq, String userId, int productSeq, int orderStatus, int quantity,
 			String productName, String ref, String location, int price, String branchName, int seq, String delDate,
-			int delStatus, int delTotalNumber, int delTotalPrice, String delRemark) {
+			int delStatus, int delTotalNumber, int delTotalPrice, String delRemark, String delRef) {
 		super();
 		this.orderSeq = orderSeq;
 		this.userId = userId;
@@ -41,6 +42,7 @@ public class DeliveryJoinDto {
 		this.delTotalNumber = delTotalNumber;
 		this.delTotalPrice = delTotalPrice;
 		this.delRemark = delRemark;
+		this.delRef = delRef;
 	}
 
 	public int getOrderSeq() {
@@ -171,14 +173,23 @@ public class DeliveryJoinDto {
 		this.delRemark = delRemark;
 	}
 
+	public String getDelRef() {
+		return delRef;
+	}
+
+	public void setDelRef(String delRef) {
+		this.delRef = delRef;
+	}
+
 	@Override
 	public String toString() {
 		return "DeliveryJoinDto [orderSeq=" + orderSeq + ", userId=" + userId + ", ProductSeq=" + ProductSeq
 				+ ", orderStatus=" + orderStatus + ", quantity=" + quantity + ", productName=" + productName + ", ref="
 				+ ref + ", location=" + location + ", price=" + price + ", branchName=" + branchName + ", seq=" + seq
 				+ ", delDate=" + delDate + ", delStatus=" + delStatus + ", delTotalNumber=" + delTotalNumber
-				+ ", delTotalPrice=" + delTotalPrice + ", delRemark=" + delRemark + "]";
+				+ ", delTotalPrice=" + delTotalPrice + ", delRemark=" + delRemark + ", delRef=" + delRef + "]";
 	}
+
 	
 	
 

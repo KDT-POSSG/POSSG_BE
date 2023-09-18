@@ -31,8 +31,8 @@ public class DeliveryService {
 		return dao.callAddDelivery(dto);
 	}
 	
-	public List<DeliveryDto> allDeliveryList(String ref) {
-		return dao.allDeliveryList(ref);
+	public List<DeliveryDto> allDeliveryList(DeliveryDto dto) {
+		return dao.allDeliveryList(dto);
 	}
 	
 	public List<DeliveryDto> selectDelivery(DeliveryDto dto) {

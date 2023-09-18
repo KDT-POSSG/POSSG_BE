@@ -23,7 +23,7 @@ public interface DeliveryDao {
 	int callAddDelivery(DeliveryDto dto);
 	
 	
-	List<DeliveryDto> allDeliveryList(String ref);
+	List<DeliveryDto> allDeliveryList(DeliveryDto dto);
 	
 	List<DeliveryDto> selectDelivery(DeliveryDto dto);
 	

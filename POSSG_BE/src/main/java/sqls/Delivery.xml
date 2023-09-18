@@ -16,7 +16,7 @@ values(
 )
 </insert>
 
-<!-- 중복으로 장바구니에 담을 시 갯수랑 가격만 업데이트 -->
+<!-- 중복으로 장바구니에 담을 시 갯수랑 가격만 업데이트  할인도 적용시켜야함-->
 <update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
 	update Delivery
 	set quantity = quantity + #{quantity},
@@ -73,10 +73,10 @@ values(
 </update>
 
   <!-- 상세 배달 목록 -->
-<select id="allDeliveryList" parameterType="String" resultType="possg.com.a.dto.DeliveryDto">
+<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
 	select *
 	from Delivery
-	where ref = #{ref}
+	where ref = #{ref} and branch_name = #{branchName}
 
 </select>
 
@@ -98,25 +98,12 @@ values(
     p.del_total_number,
     p.del_total_price,
     p.del_remark
+    p.del_ref
 	FROM delivery as o
 	inner join convenience j on o.branch_name = j.branch_name
 	inner join delivery_list p on o.ref = p.del_ref
-		
-			<if test="orderStatus == 1 ">
-				where j.branch_name = #{branchName} and o.order_status = 1
-			</if>
-			
-			<if test="orderStatus == 2 ">
-				where j.branch_name = #{branchName} and o.order_status = 2
-			</if>
-			
-			<if test="orderStatus == 3 ">
-				where j.branch_name = #{branchName} and o.order_status = 3
-			</if>
-			
-			<if test="orderStatus == 4 ">
-				where j.branch_name = #{branchName} and o.order_status = 4
-			</if>
+	WHERE j.branch_name = #{branchName}
+	AND  o.order_status = #{orderStatus} AND o.order_status != 0
 
 	order by p.seq desc
 	limit ${(pageNumber* 10)}, 10

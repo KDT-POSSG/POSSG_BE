@@ -23,6 +23,7 @@ import possg.com.a.dto.DeliveryDto;
 import possg.com.a.service.CustomerService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.util.SecurityConfig;
+import possg.com.a.util.TokenCreate;
 
 @RestController
 public class CustomerController {
@@ -30,8 +31,12 @@ public class CustomerController {
 	@Autowired
 	CustomerService service;
 	
+	private final TokenCreate tokenCreate;
+	
 	@Autowired
-	SecurityConfig securityConfig;
+	public CustomerController(TokenCreate tokenCreate) {
+		this.tokenCreate = tokenCreate;
+	}
 	
 	 int startingNumber = 000000; // 초기 숫자 설정
      int numberOfIncrements = 1; // 몇 번 증가시킬지 설정
@@ -70,7 +75,7 @@ public class CustomerController {
 		}		
 		return "NO";
 	}
-	
+/*	
 
 	// 웹에서 고객가입#
 	@PostMapping("addWebCustomer")
@@ -150,7 +155,7 @@ public class CustomerController {
 		}
 		return "NO";
 	}
-
+*/
 	// 개인 웹로그인 시 주소 찍기 ------------------------------토큰확인하고 전화번호 확인-------------------------------------
 	@PostMapping("updateLocation")
 	public String updateLocation(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
@@ -253,7 +258,7 @@ public class CustomerController {
 
 		    // JWT 토큰 검증
 		    	JwtParser jwtParser = Jwts.parserBuilder()
-		    		    .setSigningKey(securityConfig.securityKey)
+		    		    .setSigningKey(tokenCreate.securityKey)
 		    		    .build();
 
 		        Claims claims = jwtParser.parseClaimsJws(access).getBody();
