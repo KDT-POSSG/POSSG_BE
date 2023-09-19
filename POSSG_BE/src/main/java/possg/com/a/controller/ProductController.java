@@ -1,5 +1,11 @@
 package possg.com.a.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,8 +23,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import net.crizin.KoreanCharacter;
+import net.crizin.KoreanRomanizer;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
@@ -29,6 +41,8 @@ import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
+import possg.com.a.util.SecurityConfig;
+import util.NaverCloudUtil;
 import util.ProductUtil;
 
 @RestController
@@ -165,10 +179,18 @@ public class ProductController {
 	
 	/* 점주 발주 */
 	// 발주 상품 리스트 획득
-	@PostMapping("getAllCallProductConvList")
+	@GetMapping("getAllCallProductConvList")
 	public List<CallProductConvDto> getAllCallProductConvList() {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
 		List<CallProductConvDto> dtoList = service.getAllCallProductConvList();
+		
+		return dtoList;
+	}
+	
+	@GetMapping("getRefCallProductConvList")
+	public List<CallProductConvDto> getRefCallProductConvList(@RequestParam String callRef) {
+		System.out.println("ProductController getRefCallProductConvList() " + new Date());
+		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(callRef);
 		
 		return dtoList;
 	}
@@ -179,8 +201,15 @@ public class ProductController {
 	// ProductDto: String productName, int productSeq, int priceDiscount
 	// CallProductConvDto: String userId, String rpName, String bName 
 	@PostMapping("addCallProductConvAuto")
-	public String addCallProductConvAuto(ProductDto productDto, ConvenienceDto convDto, int stockLimit) {
+	public String addCallProductConvAuto(ProductDto productDto, ConvenienceDto convDto, int stockLimit) {//@RequestHeader("accessToken") String tokenHeader
 		System.out.println("ProductController addCallProductConvAuto() " + new Date());
+		/*
+		// Type tempSeq = claims.get("tempSeq", Type.class)
+		Claims claims = SecurityConfig.tokenParser(tokenHeader);
+		String branchName = claims.get("branchName", String.class);
+		ConvenienceDto convDto = service.getConvenienceInfo(branchName);
+		*/
+		
 		// 해당 상품의 총 재고량을 가져옴
 		int totalStock = service.getTotalStock(productDto.getProductName());
 		// 임시로 재고 제한을 3으로 설정
@@ -209,7 +238,7 @@ public class ProductController {
 	// ProductDto: productName
 	// CallProductConvDto: userId, rpName, bName 
 	@PostMapping("addCallProductConv")
-	public String addCallProductConv(ProductDto productDto, ConvenienceDto convDto, @RequestBody int amount) {// @RequestBody Map<String, Object> payload
+	public String addCallProductConv(ProductDto productDto, ConvenienceDto convDto, @RequestParam int amount) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
 		/*
 		ProductDto productDto = new ObjectMapper().convertValue(payload.get("productDto"), ProductDto.class);
@@ -222,6 +251,7 @@ public class ProductController {
 	    
 		ProductDto insertProductDto = findProductName(productDto).get(0);
 		*/
+		//int amount = 1;
 		// 장바구니 등록 시간
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String formattedDate = sdf.format(new Date());
@@ -233,12 +263,13 @@ public class ProductController {
 		// 객체 입력하여 상품명 전달
 		ProductDto insertProductDto = findProductName(productDto).get(0);
 		System.out.println(insertProductDto);
+		ConvenienceDto insertConvDto = getConvenienceInfo(convDto.getBranchName());
 		// 발주 상품 정보 설정
-		// user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status
+		// user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
 		CallProductConvDto insertCallDto = new CallProductConvDto(0,
-				convDto.getUserId(), insertProductDto.getProductSeq(), amount, convDto.getRepresentativeName(),
-				convDto.getBranchName(), insertProductDto.getPriceDiscount()*amount, 
-				formattedDate.toString(), insertProductDto.getProductName(), "0", 0);
+				insertConvDto.getUserId(), insertProductDto.getProductSeq(), amount, insertConvDto.getRepresentativeName(),
+				insertConvDto.getBranchName(), insertProductDto.getPriceDiscount()*amount, 
+				formattedDate.toString(), insertProductDto.getProductName(), "0", 0, insertProductDto.getImgUrl());
 		// 발주 상품 정보를 데이터베이스에 추가
 		int count = service.addCallProductConv(insertCallDto);
 		System.out.println(count);
@@ -299,6 +330,19 @@ public class ProductController {
 			}
 			return "YES";
 		}
+		return "NO";
+	}
+	
+	// 점주 발주 상품 삭제
+	@PostMapping("deleteCallProduct")
+	public String delteCallProduct(CallProductConvDto callDto) {
+		System.out.println("ProductController delteCallProduct() " + new Date());
+		
+		int count = service.deleteCallProduct(callDto);
+		if(count > 0) {
+			return "YES";
+		}
+		
 		return "NO";
 	}
 	
@@ -386,8 +430,24 @@ public class ProductController {
 	    return "NO";
 	}
 	
+	// 점주 발주 취소
+	@PostMapping("cancelConvOrderList")
+	public String cancelConvOrderList(@RequestBody String callRef) {
+		System.out.println("ProductController cancelConvOrderList() " + new Date());
+		int count = service.cancelCallRefProductConv(callRef);
+		System.out.println("ProductController cancelConvOrderList() count: " + count);
+		if (count > 0) {
+			int orderCount = service.cancelConvOrderList(callRef);
+			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
+			if (orderCount > 0) {
+		        return "YES";
+		    }
+	    } 
+		
+		return "NO";
+	}
 	
-	// 점주 발주 주문 삭제
+	// 점주 발주 상품 수령 완료
 	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
 	@PostMapping("deleteConvOrderList")
 	public String deleteConvOrderList(@RequestBody String callRef) {
@@ -428,8 +488,54 @@ public class ProductController {
 		return dtoList;
 	}
 	
-	
 
+	// 음성인식 wav -> String
+	@PostMapping("/fileUpload")
+	public String fileUpload(@RequestParam("uploadFile")MultipartFile uploadFile,
+							HttpServletRequest request) throws IOException {
+		System.out.println("NaverCloudController fileUpload" + new Date());
+		
+		// tomcat
+		String uploadPath = request.getServletContext().getRealPath("/upload");
+		
+		// 파일명 취득
+		String filename = uploadFile.getOriginalFilename();
+		String filepath = uploadPath + File.separator + filename;
+		
+		System.out.println(filepath);
+		
+		//fileupload
+		try {
+		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filepath)));
+		os.write(uploadFile.getBytes());
+		os.close();
+		} catch (Exception e) {
+			return "file load fail";
+		}
+		
+		// Naver Cloud
+		String response = NaverCloudUtil.processSTT(filepath);
+		
+		return response;
+	}
+
+	@PostMapping("/tts")
+	public String tts(@RequestParam("message") String message,
+			@RequestParam("speaker") String speaker,
+	                  HttpServletRequest request) {
+	    System.out.println("NaverCloudController tts " + new Date());
+	    System.out.println(message);
+	    // tomcat
+	    String uploadPath = request.getServletContext().getRealPath("/upload");
+	    Map<String,String> msg = NaverCloudUtil.processTTS(message, uploadPath, speaker);
+
+	    // mp3 파일의 URL 생성
+	    String audioURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/" + msg.get("tempname") + ".mp3";
+	    System.out.println(audioURL);
+	    return audioURL;
+	}
+		
+	
 	// 로마자 변환 후 DB 입력
 	@GetMapping("updateProductRomanName")
 	public String updateProductRomanName(ProductParam param) {
@@ -446,7 +552,6 @@ public class ProductController {
 
 		return null;
 	}
-
 	
 
 	
