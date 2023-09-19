@@ -38,6 +38,7 @@ WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
 # Expose the port that your Spring Boot application listens on (adjust the port if necessary)
+# determine the port number
 EXPOSE 3000
 
 # Define the command to run your Spring Boot application
