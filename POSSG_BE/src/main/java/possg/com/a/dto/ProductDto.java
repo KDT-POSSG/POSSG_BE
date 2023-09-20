@@ -2,6 +2,7 @@ package possg.com.a.dto;
 
 public class ProductDto {
     private int productSeq;
+    private int convSeq;
     private int categoryId;
     private String productName;
     private String productRomanName;
@@ -27,11 +28,12 @@ public class ProductDto {
     
 	
 
-	public ProductDto(int productSeq, int categoryId, String productName, String productRomanName,
+	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
 			String productTranslationName, int price, int priceDiscount, int stockQuantity, String expirationDate,
 			double discountRate, int promotionInfo, String barcode, String imgUrl, int totalStock) {
 		super();
 		this.productSeq = productSeq;
+		this.convSeq = convSeq;
 		this.categoryId = categoryId;
 		this.productName = productName;
 		this.productRomanName = productRomanName;
@@ -53,6 +55,14 @@ public class ProductDto {
 
 	public void setProductSeq(int productSeq) {
 		this.productSeq = productSeq;
+	}
+
+	public int getConvSeq() {
+		return convSeq;
+	}
+
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public int getCategoryId() {
@@ -161,12 +171,12 @@ public class ProductDto {
 
 	@Override
 	public String toString() {
-		return "ProductDto [productSeq=" + productSeq + ", categoryId=" + categoryId + ", productName=" + productName
-				+ ", productRomanName=" + productRomanName + ", productTranslationName=" + productTranslationName
-				+ ", price=" + price + ", priceDiscount=" + priceDiscount + ", stockQuantity=" + stockQuantity
-				+ ", expirationDate=" + expirationDate + ", discountRate=" + discountRate + ", promotionInfo="
-				+ promotionInfo + ", barcode=" + barcode + ", imgUrl=" + imgUrl + ", totalStock=" + totalStock
-				+ "]";
+		return "ProductDto [productSeq=" + productSeq + ", convSeq=" + convSeq + ", categoryId=" + categoryId
+				+ ", productName=" + productName + ", productRomanName=" + productRomanName
+				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceDiscount="
+				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate
+				+ ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo + ", barcode=" + barcode
+				+ ", imgUrl=" + imgUrl  + ", amount=" + amount + "]";
 	}
 
 }

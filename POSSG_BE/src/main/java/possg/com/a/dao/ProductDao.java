@@ -36,17 +36,21 @@ public interface ProductDao {
 	ConvenienceDto getConvenienceInfo(String branchName);
 	List<ConvenienceDto> getAllConvenience();
 	
-	List<CallProductConvDto> getAllCallProductConvList();
-	List<CallProductConvDto> getRefCallProductConvList(String callRef);
-	CallProductConvDto getSeqCallProductConv(int callSeq);
-	List<CallProductConvDto> findCallProductConvName(String name);
-	int updateRefCallProductConv(String callRef);
-	int deleteCallRefProductConv(String callRef);
+	List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto);/////////////////////
+	List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto);
+	CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto);
+	List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto);
+	int updateRefCallProductConv(CallProductConvOrderListDto orderDto);
+	int cancelCallRefProductConv(CallProductConvOrderListDto orderDto);
+	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);
+	int deleteCallProduct(CallProductConvDto callDto);
 	
 	List<CallProductConvOrderListDto> getAllConvOrderList();
 	CallProductConvOrderListDto getRefConvOrderList(String callRef);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
-	int deleteConvOrderList(String callRef);
+
+	int cancelConvOrderList(CallProductConvOrderListDto orderDto);
+	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
 
 }

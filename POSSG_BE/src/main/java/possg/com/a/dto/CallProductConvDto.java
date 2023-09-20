@@ -2,7 +2,7 @@ package possg.com.a.dto;
 
 public class CallProductConvDto {
     private int callSeq;
-    private String userId;
+    private int convSeq;
     private int productSeq;
     private int amount;
     private String rpName;
@@ -16,11 +16,11 @@ public class CallProductConvDto {
     // 생성자
     public CallProductConvDto() {}
 
-	public CallProductConvDto(int callSeq, String userId, int productSeq, int amount, String rpName, String bName,
+	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
 			int price, String callDate, String productName, String callRef, int callStatus) {
 		super();
 		this.callSeq = callSeq;
-		this.userId = userId;
+		this.convSeq = convSeq;
 		this.productSeq = productSeq;
 		this.amount = amount;
 		this.rpName = rpName;
@@ -32,6 +32,23 @@ public class CallProductConvDto {
 		this.callStatus = callStatus;
 	}
 
+	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
+			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl) {
+		super();
+		this.callSeq = callSeq;
+		this.convSeq = convSeq;
+		this.productSeq = productSeq;
+		this.amount = amount;
+		this.rpName = rpName;
+		this.bName = bName;
+		this.price = price;
+		this.callDate = callDate;
+		this.productName = productName;
+		this.callRef = callRef;
+		this.callStatus = callStatus;
+		this.imgUrl = imgUrl;
+	}
+
 	public int getCallSeq() {
 		return callSeq;
 	}
@@ -40,12 +57,12 @@ public class CallProductConvDto {
 		this.callSeq = callSeq;
 	}
 
-	public String getUserId() {
-		return userId;
+	public int getConvSeq() {
+		return convSeq;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public int getProductSeq() {
@@ -122,7 +139,7 @@ public class CallProductConvDto {
 
 	@Override
 	public String toString() {
-		return "CallProductConvDto [callSeq=" + callSeq + ", userId=" + userId + ", productSeq=" + productSeq
+		return "CallProductConvDto [callSeq=" + callSeq + ", convSeq=" + convSeq + ", productSeq=" + productSeq
 				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", callDate="
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
 				+ "]";
