@@ -45,8 +45,8 @@ public class ProductService {
 		return dao.getTotalStock(name);
 	}
 	
-	public int addCallProductConv(CallProductConvDto convDto) {
-		return dao.addCallProductConv(convDto);
+	public int addCallProductConv(ProductDto dto) {
+		return dao.addCallProductConv(dto);
 	}
 	public int updateCallProductConv(CallProductConvDto convDto) {
 		return dao.updateCallProductConv(convDto);
@@ -67,8 +67,8 @@ public class ProductService {
 		return dao.getAllConvenience();
 	}
 	
-	public List<CallProductConvDto> getAllCallProductConvList(){
-		return dao.getAllCallProductConvList();
+	public List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto){
+		return dao.getAllCallProductConvList(convDto);
 	}
 	public List<CallProductConvDto> getRefCallProductConvList(String callRef){
 		return dao.getRefCallProductConvList(callRef);
@@ -82,8 +82,8 @@ public class ProductService {
 	public int updateRefCallProductConv(String callRef) {
 		return dao.updateRefCallProductConv(callRef);
 	}
-	public int cancelCallRefProductConv(String callRef) {
-		return dao.cancelCallRefProductConv(callRef);
+	public int cancelCallRefProductConv(CallProductConvOrderListDto orderDto) {
+		return dao.cancelCallRefProductConv(orderDto);
 	}
 	public int deleteCallRefProductConv(String callRef) {
 		return dao.deleteCallRefProductConv(callRef);
@@ -92,11 +92,11 @@ public class ProductService {
 		return dao.deleteCallProduct(callDto);
 	}
 	
-	public List<CallProductConvOrderListDto> getAllConvOrderList(){
-		return dao.getAllConvOrderList();
+	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvDto convDto){
+		return dao.getAllConvOrderList(convDto);
 	}
-	public CallProductConvOrderListDto getRefConvOrderList(String callRef){
-		return dao.getRefConvOrderList(callRef);
+	public CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto){
+		return dao.getRefConvOrderList(convDto);
 	}
 	public int addConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.addConvOrderList(orderDto);
@@ -104,8 +104,8 @@ public class ProductService {
 	public int updateConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.updateConvOrderList(orderDto);
 	}
-	public int cancelConvOrderList(String callRef) {
-		return dao.cancelConvOrderList(callRef);
+	public int cancelConvOrderList(CallProductConvOrderListDto orderDto) {
+		return dao.cancelConvOrderList(orderDto);
 	}
 	public int deleteConvOrderList(String callRef) {
 		return dao.deleteConvOrderList(callRef);
