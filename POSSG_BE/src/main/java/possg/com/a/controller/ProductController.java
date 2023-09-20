@@ -286,7 +286,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 리스트 업데이트
+	// 발주 대기 상품 리스트 업데이트
 	// input: convSeq, productName, amount, priceDiscount, callRef
 	@PostMapping("updateCallProductConv")
 	public String updateCallProductConv(CallProductConvDto convDto) {
@@ -342,7 +342,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 삭제
+	// 발주 대기 상품 삭제
 	@PostMapping("deleteCallProduct")
 	public String delteCallProduct(CallProductConvDto callDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
