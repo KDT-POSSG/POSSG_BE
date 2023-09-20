@@ -2,7 +2,7 @@ package possg.com.a.dto;
 
 public class ProductDto {
     private int productSeq;
-    private int conv_seq;
+    private int convSeq;
     private int categoryId;
     private String productName;
     private String productRomanName;
@@ -28,12 +28,12 @@ public class ProductDto {
     	this.productName = productName;
     }
 
-	public ProductDto(int productSeq, int conv_seq, int categoryId, String productName, String productRomanName,
+	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
 			String productTranslationName, int price, int priceDiscount, int stockQuantity, String expirationDate,
 			double discountRate, int promotionInfo, String barcode, String imgUrl) {
 		super();
 		this.productSeq = productSeq;
-		this.conv_seq = conv_seq;
+		this.convSeq = convSeq;
 		this.categoryId = categoryId;
 		this.productName = productName;
 		this.productRomanName = productRomanName;
@@ -56,12 +56,12 @@ public class ProductDto {
 		this.productSeq = productSeq;
 	}
 
-	public int getConv_seq() {
-		return conv_seq;
+	public int getConvSeq() {
+		return convSeq;
 	}
 
-	public void setConv_seq(int conv_seq) {
-		this.conv_seq = conv_seq;
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public int getCategoryId() {
@@ -186,7 +186,7 @@ public class ProductDto {
 
 	@Override
 	public String toString() {
-		return "ProductDto [productSeq=" + productSeq + ", conv_seq=" + conv_seq + ", categoryId=" + categoryId
+		return "ProductDto [productSeq=" + productSeq + ", convSeq=" + convSeq + ", categoryId=" + categoryId
 				+ ", productName=" + productName + ", productRomanName=" + productRomanName
 				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceDiscount="
 				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate

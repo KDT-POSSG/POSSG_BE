@@ -178,7 +178,8 @@ public class ProductController {
 	}
 	
 	/* 점주 발주 */
-	// 발주 상품 리스트 획득
+	// 발주 대기 목록 획득
+	// input: int convSeq
 	@GetMapping("getAllCallProductConvList")
 	public List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
@@ -187,10 +188,11 @@ public class ProductController {
 		return dtoList;
 	}
 	
+	// input: String callRef, int convSeq
 	@GetMapping("getRefCallProductConvList")
-	public List<CallProductConvDto> getRefCallProductConvList(@RequestParam String callRef) {
+	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto) {
 		System.out.println("ProductController getRefCallProductConvList() " + new Date());
-		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(callRef);
+		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(convDto);
 		
 		return dtoList;
 	}
@@ -230,6 +232,7 @@ public class ProductController {
 			System.out.println(insertProductDto);
 
 			// 발주 상품 정보를 추가
+			// input: int convSeq, int productSeq, int price, String callDate, String productName, String imgUrl
 			int count = service.addCallProductConv(insertProductDto);
 			System.out.println(count);
 			// 추가가 성공적으로 이루어진 경우
@@ -243,8 +246,7 @@ public class ProductController {
 		
 	// 점주 발주 상품 리스트에 추가
 	// input
-	// ProductDto: productName
-	// CallProductConvDto: userId, rpName, bName 
+	// ProductDto: int convSeq, int productSeq, int price, String callDate, String productName, String imgUrl
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(ProductDto productDto, @RequestParam int amount) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
@@ -274,7 +276,7 @@ public class ProductController {
 		insertProductDto.setAmount(amount);
 		System.out.println(insertProductDto);
 		// 발주 상품 정보 설정
-		// user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
+		// conv_seq, user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
 		// 발주 상품 정보를 데이터베이스에 추가
 		int count = service.addCallProductConv(insertProductDto);
 		System.out.println(count);
@@ -285,7 +287,7 @@ public class ProductController {
 	}
 	
 	// 점주 발주 상품 리스트 업데이트
-	// input: productName, amount, priceDiscount, callRef
+	// input: convSeq, productName, amount, priceDiscount, callRef
 	@PostMapping("updateCallProductConv")
 	public String updateCallProductConv(CallProductConvDto convDto) {
 		System.out.println("ProductController updateCallProductConv() " + new Date());
@@ -294,7 +296,8 @@ public class ProductController {
 		//List<CallProductConvDto> refTemp = service.getRefCallProductConvList(convDto.getCallRef());
 		
 		// 발주 신청 전 상품중 해당 상품명 정보 획득 (call_status == 0, product_name == 매개변수 상품명)
-		List<CallProductConvDto> nameTemp = service.findCallProductConvName(convDto.getProductName());
+		// input: String productName, int convSeq
+		List<CallProductConvDto> nameTemp = service.findCallProductConvName(convDto);
 		System.out.println("nameTemp: " + nameTemp);
 		// 상품명이 중복되거나 없는 경우 에러 처리
 		if (nameTemp.size() > 1 || nameTemp.isEmpty()) {
@@ -312,6 +315,7 @@ public class ProductController {
 		convDto.setPrice(productPrice * convDto.getAmount());
 		
 		// 발주 사항 업데이트
+		// input: int amount, int price, String productName, int convSeq
 		int count = service.updateCallProductConv(convDto);
 		System.out.println("발주 상품 목록 수정 성공");
 		// 업데이트 성공
@@ -378,7 +382,7 @@ public class ProductController {
 	/* 발주 */
 	
 	// 발주 리스트 획득
-	// input: int conv_seq
+	// input: int convSeq
 	@PostMapping("getAllConvOrderList")
 	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvDto convDto ) {
 		System.out.println("ProductController getAllConvOrderList() " + new Date());
@@ -386,21 +390,22 @@ public class ProductController {
 		return service.getAllConvOrderList(convDto);
 	}
 	
-	// 발주 주문 추가
+	// 발주 추가
 	// input: String remark
 	@PostMapping("addConvOrderList")
-	public String addConvOrderList(@RequestBody String remark) {
+	public String addConvOrderList(CallProductConvDto convDto, @RequestParam String remark) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
 	    
+		convDto.setCallRef("0");
 		// call_status가 '0'인 발주 상품 목록을 가져옴
-		List<CallProductConvDto> callList = service.getRefCallProductConvList("0");
+		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
 	    
 		// 비고(remark)이 null인 경우 빈 문자열로 설정
 	    if (remark == null) {
 	    	remark = "";
 	    }
 	    // user_id 추출
-	    String userId = callList.get(0).getUserId();
+	    int convSeq = callList.get(0).getConvSeq();
 	    // 발주 목록 묶음 (call_ref) 생성 로직
 	    // 주문 날짜(yyyyMMddHHmmss)
 	    String callRef = ProductUtil.generateCallRef();
@@ -418,7 +423,7 @@ public class ProductController {
 	    // call_product_conv_order_list에 추가
 	    // call_status, call_stock, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
-	    		new CallProductConvOrderListDto(0, userId, callRef, formattedDate, 
+	    		new CallProductConvOrderListDto(0, convSeq, callRef, formattedDate, 
 	    										1, totalProduct, totalPrice, remark);
 	    // 발주 목록을 데이터베이스에 추가
 	    int count = service.addConvOrderList(orderListDto);
@@ -426,7 +431,7 @@ public class ProductController {
 	    // 추가가 성공적으로 이루어진 경우
 	    if (count > 0) {
 	    	// 발주 상품 목록의 call_ref를 업데이트
-	    	int callCount = service.updateRefCallProductConv(callRef);
+	    	int callCount = service.updateRefCallProductConv(orderListDto);
 	    	System.out.println("ProductController addConvOrderList() callCount: " + callCount);
 	    	
 	    	// 업데이트가 성공적으로 이루어진 경우
@@ -438,9 +443,11 @@ public class ProductController {
 	}
 	
 	// 점주 발주 취소
+	// input: int convSeq, String call_ref
 	@PostMapping("cancelConvOrderList")
 	public String cancelConvOrderList(CallProductConvOrderListDto orderDto) {
 		System.out.println("ProductController cancelConvOrderList() " + new Date());
+		
 		int count = service.cancelCallRefProductConv(orderDto);
 		System.out.println("ProductController cancelConvOrderList() count: " + count);
 		if (count > 0) {
@@ -456,16 +463,17 @@ public class ProductController {
 	
 	// 점주 발주 상품 수령 완료
 	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
+	// input: int callReq, int convSeq
 	@PostMapping("deleteConvOrderList")
-	public String deleteConvOrderList(@RequestParam String callRef) {
+	public String deleteConvOrderList(CallProductConvOrderListDto orderConv) {
 		System.out.println("ProductController deleteConvOrderList() " + new Date());
-		System.out.println(callRef);
+		System.out.println(orderConv.getCallRef());
 		//callRef="202309051811";
-		int count = service.deleteCallRefProductConv(callRef);
+		int count = service.deleteCallRefProductConv(orderConv);
 		System.out.println("ProductController deleteConvOrderList() count: " + count);
 		if (count > 0) {
 			
-			int orderCount = service.deleteConvOrderList(callRef);
+			int orderCount = service.deleteConvOrderList(orderConv);
 			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
 			if (orderCount > 0) {
 		        return "YES";

@@ -49,4 +49,40 @@ select * from call_product_conv_order_list;
 
 delete from call_product_conv_order_list where call_ref=-1;
 
+
+ALTER TABLE Product drop branch_name;
+
+ALTER TABLE Product
+add foreign key(conv_seq) references Convenience(conv_seq);
+
+ALTER TABLE Product ADD conv_seq int not null AFTER product_seq;
+
+select * from Product where product_seq between 501 and 1000;
+
+update Product set conv_seq=3 where conv_seq=0 ;
+
+select * from server2 where regdate between '2017-12-30' and '2019-06-05';
+
+select * from Convenience;
+
+ALTER TABLE Convenience ADD branch_name VARCHAR(255) AFTER representative_name;
+
+ALTER TABLE Convenience drop emp_name;
+
+update Convenience set branch_name='수영역 이마트' where conv_seq=1;
+
+INSERT INTO Convenience (conv_seq,emp_name, user_id, pwd, representative_name, branch_name
+								, phone_number, registration_date, conv_status) 
+VALUES (0,1, 'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
+
+ALTER TABLE Employee
+add foreign key(conv_seq) references Convenience(conv_seq);
+
+select * from Employee;
+
+ALTER TABLE Employee ADD conv_seq int AFTER employee_seq;
+
+INSERT INTO Employee (emp_name, conv_seq, birth_date, gender, phone_number, hire_date, salary) 
+VALUES ('temp',1 ,'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
+
 */
