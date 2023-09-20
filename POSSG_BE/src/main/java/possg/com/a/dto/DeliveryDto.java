@@ -13,13 +13,15 @@ public class DeliveryDto {
     private String location;
     private int price;
     private String branchName;
+    private double discountRate;
+    private int promotionInfo;
    
 
 
     // 생성자
     public DeliveryDto() {}
 
-    public DeliveryDto(int orderSeq, int userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price, String branchName) {
+    public DeliveryDto(int orderSeq, int userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price, String branchName, double discountRate, int promotionInfo) {
         this.orderSeq = orderSeq;
         this.userId = userId;
         this.productSeq = productSeq;
@@ -31,6 +33,8 @@ public class DeliveryDto {
         this.location = location;
         this.price = price;
         this.branchName = branchName;
+        this.discountRate = discountRate;
+        this.promotionInfo = promotionInfo;
 
     }
 
@@ -124,12 +128,31 @@ public class DeliveryDto {
 		this.branchName = branchName;
 	}
 
+	public double getDiscountRate() {
+		return discountRate;
+	}
+
+	public void setDiscountRate(double discountRate) {
+		this.discountRate = discountRate;
+	}
+
+	public int getPromotionInfo() {
+		return promotionInfo;
+	}
+
+	public void setPromotionInfo(int promotionInfo) {
+		this.promotionInfo = promotionInfo;
+	}
+
 	@Override
 	public String toString() {
 		return "DeliveryDto [orderSeq=" + orderSeq + ", userId=" + userId + ", productSeq=" + productSeq
 				+ ", orderStatus=" + orderStatus + ", quantity=" + quantity + ", productName=" + productName
 				+ ", orderDate=" + orderDate + ", ref=" + ref + ", location=" + location + ", price=" + price
-				+ ", branchName=" + branchName + "]";
+				+ ", branchName=" + branchName + ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo
+				+ "]";
 	}
+
+	
 	
 }

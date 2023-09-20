@@ -240,6 +240,26 @@ public class CustomerController {
 		return "NO";
 	}
 	
+	// 로그아웃 access는 프론트에서 지우고
+	@PostMapping("deleteRefresh")
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
+		System.out.println("CustomerController deleteRefresh " + new Date());
+		
+			Claims claim = tokenCreate.getClaims(tokenHeader);			 			 	 
+
+            // 사용자 ID 추출
+            String customerId = claim.get("customerId", String.class);
+
+            dto.setCustomerId(customerId);
+
+		int count = service.deleteRefresh(dto);
+		
+		if(count != 0) {
+			return "YES";
+		}
+		return "NO";
+	}
+	
 	
 	// 혹시나 시간남으면 고객이 배달시킨 목록도 표기 9월 16일 쯤 하지 않을까
 	

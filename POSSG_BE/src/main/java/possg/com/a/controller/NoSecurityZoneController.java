@@ -23,6 +23,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,7 +109,6 @@ public class NoSecurityZoneController {
 
 	        // Refresh Token 생성
 	        String refreshToken = tokenCreate.generateRefreshToken(dto);
-	        System.out.println(refreshToken);
 	        
 	        TokenDto token = new TokenDto();
 	      
@@ -118,9 +120,7 @@ public class NoSecurityZoneController {
 	        ConvenienceDto requestDto = new ConvenienceDto();
 	        
 	        requestDto.setBranchName(dto.getBranchName());
-	        requestDto.setConvSeq(dto.getConvSeq());
-	        
-	        System.out.println(requestDto);
+	        requestDto.setConvSeq(dto.getConvSeq());	   
 	        
 	        if(refresh == 0) {
 	        	ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
@@ -136,29 +136,12 @@ public class NoSecurityZoneController {
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 	}
 	
-	// 로그아웃
-	@GetMapping("logout")
-	public String logout(@RequestHeader("accessToken") String accessToken) {
-		System.out.println("ConvenienceController logout() " + new Date());
-		
-		String userId= tokenParser(accessToken);
-		
-		int count = service.logout(userId);
-		
-		if(count != 0) {
-			return "YES";
-		}
-		return "NO";
-	}
-
-	
 	
 	// 회원가입#
-	 @PostMapping("addUser") 
-	 public String adduser(@RequestBody ConvenienceDto conv) {
-	 System.out.println("ConvenienceController adduser() " + new Date());
-	 
-	 Date currentTime = new Date();
+	@PostMapping("addUser") 
+	public String adduser(@RequestBody ConvenienceDto conv) {
+		System.out.println("ConvenienceController adduser() " + new Date());
+		Date currentTime = new Date();
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String formattedTime = dateFormat.format(currentTime);
     
@@ -206,107 +189,107 @@ public class NoSecurityZoneController {
 	 
 	// 본사 인증키 확인#
 		 @PostMapping("keyCheck")
-		 public String keycheck(String convKey) {
-			 System.out.println("ConvenienceController keycheck() " + new Date());	 
+	 public String keycheck(String convKey) {
+		 System.out.println("ConvenienceController keycheck() " + new Date());	 
+		 
+		 System.out.println(convKey);
+		 		 
+		 int count = service.keycheck(convKey);
+		 System.out.println(count);
+		 if(count != 0) {
+			 return "YES";
+		 }	 
+		 return "NO";
+	 }
+	 
+	 
+	 // 비밀번호 찾기 sms 보내기#
+	 @PostMapping("send")
+    public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
+	 System.out.println("ConvenienceController sendSms() " + new Date());
+	 String temp = messageDto.getTo();
+	
+	 System.out.println(temp);
+	 		 
+	 ConvenienceDto conv = service.mypage(messageDto.getContent());
+	 String phoneNum = conv.getPhoneNumber();	
+    int veri = number();
+
+	 if(messageDto.getContent().equals(conv.getUserId()) && phoneNum.equals(temp)) {
+		 verificationCodeGenerationTime = System.currentTimeMillis();
+            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
+            
+            
+            service.insertSms(veri);
+            
+            return ResponseEntity.ok(response);   
+	 }
+	 return ResponseEntity.badRequest().body("SMS 전송 실패");
+    }
+ 
+	 // 회원가입용 sms 보내기#
+ @PostMapping("regiSend")
+    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
+	 System.out.println("ConvenienceController sendSms() " + new Date());
+	 
+	 int veri = number();		 
+	 
+		 verificationCodeGenerationTime = System.currentTimeMillis();
+		 	System.out.println("send time" + verificationCodeGenerationTime);
+            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);  
+            return ResponseEntity.ok(response);   
+    }
+ 
+
+	 // sms 확인하기#
+	 @PostMapping("Authentication")
+	 public String Authentication(@RequestParam int CodeNumber) {		 
+		 System.out.println("ConvenienceController Authentication() " + new Date());
+		 
+		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
+		 System.out.println(CodeNumber);
+		 
+		 int smsNum = service.selectSms(CodeNumber);
+		 
+		 System.out.println(smsNum);
+		 
+		 if(smsNum == 0) {
+			 System.out.println("db에 일치하는 인증번호가 없습니다.");
+			 return "NO";
+		 }	 
+	
+		 long currentTime = System.currentTimeMillis();
+		 System.out.println(currentTime);
+		 
+		 System.out.println(verificationCodeGenerationTime);
+		  
+		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
+			 				 
+			 service.deleteSms(CodeNumber);		 
 			 
-			 System.out.println(convKey);
-			 		 
-			 int count = service.keycheck(convKey);
-			 System.out.println(count);
-			 if(count != 0) {
 				 return "YES";
-			 }	 
-			 return "NO";
-		 }
-		 
-		 
-		 // 비밀번호 찾기 sms 보내기#
-		 @PostMapping("send")
-		    public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
-			 System.out.println("ConvenienceController sendSms() " + new Date());
-			 String temp = messageDto.getTo();
-			
-			 System.out.println(temp);
-			 		 
-			 ConvenienceDto conv = service.mypage(messageDto.getContent());
-			 String phoneNum = conv.getPhoneNumber();	
-		    int veri = number();
-
-			 if(messageDto.getContent().equals(conv.getUserId()) && phoneNum.equals(temp)) {
-				 verificationCodeGenerationTime = System.currentTimeMillis();
-		            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
-		            
-		            
-		            service.insertSms(veri);
-		            
-		            return ResponseEntity.ok(response);   
-			 }
-			 return ResponseEntity.badRequest().body("SMS 전송 실패");
-		    }
-		 
-		 // 회원가입용 sms 보내기#
-		 @PostMapping("regiSend")
-		    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
-			 System.out.println("ConvenienceController sendSms() " + new Date());
 			 
-			 int veri = number();		 
-			 
-				 verificationCodeGenerationTime = System.currentTimeMillis();
-				 	System.out.println("send time" + verificationCodeGenerationTime);
-		            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);  
-		            return ResponseEntity.ok(response);   
-		    }
-		 
-
-		 // sms 확인하기#
-		 @PostMapping("Authentication")
-		 public String Authentication(@RequestParam int CodeNumber) {		 
-			 System.out.println("ConvenienceController Authentication() " + new Date());
-			 
-			 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
-			 System.out.println(CodeNumber);
-			 
-			 int smsNum = service.selectSms(CodeNumber);
-			 
-			 System.out.println(smsNum);
-			 
-			 if(smsNum == 0) {
-				 System.out.println("db에 일치하는 인증번호가 없습니다.");
-				 return "NO";
-			 }	 
-		
-			 long currentTime = System.currentTimeMillis();
-			 System.out.println(currentTime);
-			 
-			 System.out.println(verificationCodeGenerationTime);
-			  
-			 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
-				 				 
-				 service.deleteSms(CodeNumber);		 
-				 
-					 return "YES";
-				 
-			 }	
-			 return "NO";
-		 }
-		 
-		 // 문자인증 하면 비밀번호 변경#
-		 @PostMapping("findPassword")
-		 public String findPassword(@RequestBody ConvenienceDto userDto) {
-			 System.out.println("ConvenienceController changePassword() " + new Date());
-			   	   
-			   if(userDto != null) {
-		   
-				   // 비밀번호 변경
-				   String hashedPassword = sha256(userDto.getNewPwd());
-				   userDto.setPwd(hashedPassword);
-				   
-				   service.findPassword(userDto);
-				   return "YES";
-			   }	  		   
-			   return "NO";
-			}
-		 
+		 }	
+		 return "NO";
+	 }
+	 
+	 // 문자인증 하면 비밀번호 변경#
+	 @PostMapping("findPassword")
+	 public String findPassword(@RequestBody ConvenienceDto userDto) {
+		 System.out.println("ConvenienceController changePassword() " + new Date());
+		   	   
+		   if(userDto != null) {
+	   
+			   // 비밀번호 변경
+			   String hashedPassword = sha256(userDto.getNewPwd());
+			   userDto.setPwd(hashedPassword);
+			   
+			   service.findPassword(userDto);
+			   return "YES";
+		   }	  		   
+		   return "NO";
+		}
+	 
 		 
 		 //------------------------------------------------------- 고객 API ---------------------------------------------------------
 
@@ -339,55 +322,37 @@ public class NoSecurityZoneController {
 				}
 				return "NO";
 			}
-			// 고객로그인
-			@PostMapping("customerLogin")
-			public ResponseEntity<?> customerLogin(CustomerDto dto) {
-				System.out.println("CustomerController customerLogin " + new Date());
-				CustomerDto customer = cusService.customerLogin(dto); 
-				System.out.println(customer);
-				if (dto != null) {
-					String accessToken = tokenCreate.generateCustomerToken(customer);
-					
-					String refreshToken = tokenCreate.generateCustomerRefreshToken(customer);
-					
-					CustomerTokenDto token = new CustomerTokenDto();
-					token.setRefresh(refreshToken);
-					token.setCustomerId(customer.getCustomerId());
-					System.out.println(token);
-					int count = cusService.customerRefresh(token);
-					System.out.println(count);
-					if(count == 0) {
-						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
-					}
-					
-					HttpHeaders headers = new HttpHeaders();
-			        headers.add("USTK", accessToken);
-			        
-			        return ResponseEntity.ok().headers(headers).body("YES");
-				}
-				System.out.println("login fail");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
-			}
-			
-			// 로그아웃 access는 프론트에서 지우고
-			@PostMapping("deleteRefresh")
-			public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
-				System.out.println("CustomerController deleteRefresh " + new Date());
+		// 고객로그인
+		@PostMapping("customerLogin")
+		public ResponseEntity<?> customerLogin(CustomerDto dto) {
+			System.out.println("CustomerController customerLogin " + new Date());
+			CustomerDto customer = cusService.customerLogin(dto); 
+			System.out.println(customer);
+			if (dto != null) {
+				String accessToken = tokenCreate.generateCustomerToken(customer);
 				
-					Claims claim = tokenCreate.getClaims(tokenHeader);			 			 	 
-
-		            // 사용자 ID 추출
-		            String customerId = claim.get("customerId", String.class);
-
-		            dto.setCustomerId(customerId);
-
-				int count = cusService.deleteRefresh(dto);
+				String refreshToken = tokenCreate.generateCustomerRefreshToken(customer);
 				
-				if(count != 0) {
-					return "YES";
+				CustomerTokenDto token = new CustomerTokenDto();
+				token.setRefresh(refreshToken);
+				token.setCustomerId(customer.getCustomerId());
+				System.out.println(token);
+				int count = cusService.customerRefresh(token);
+				System.out.println(count);
+				if(count == 0) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 				}
-				return "NO";
+				
+				HttpHeaders headers = new HttpHeaders();
+		        headers.add("USTK", accessToken);
+		        
+		        return ResponseEntity.ok().headers(headers).body("YES");
 			}
+			System.out.println("login fail");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
+		}
+		
+		
 			
 		//--------------------------------------------------- 공용함수 ----------------------------------------------------	
 		 

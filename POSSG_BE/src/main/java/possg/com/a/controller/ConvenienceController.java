@@ -3,10 +3,7 @@ package possg.com.a.controller;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -131,23 +128,23 @@ public class ConvenienceController {
 	    System.out.println("login fail");
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO");
 	}
-	
+	*/
 	// 로그아웃
-	@GetMapping("logout")
-	public String logout(@RequestHeader("accessToken") String accessToken) {
-		System.out.println("ConvenienceController logout() " + new Date());
-		
-		String userId= tokenParser(accessToken);
-		
-		int count = service.logout(userId);
-		
-		if(count != 0) {
-			return "YES";
-		}
-		return "NO";
-	}
+//	@GetMapping("logout")
+//	public String logout(@RequestHeader("accessToken") String accessToken) {
+//		System.out.println("ConvenienceController logout() " + new Date());
+//		
+//		String userId= tokenParser(accessToken);
+//		
+//		int count = service.logout(userId);
+//		
+//		if(count != 0) {
+//			return "YES";
+//		}
+//		return "NO";
+//	}
 
-	
+	/*
 	
 	// 회원가입#
 	 @PostMapping("addUser") 

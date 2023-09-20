@@ -44,6 +44,11 @@ public class DeliveryController {
 	private TokenCreate tokenCreate;
 	
 	@Autowired
+	public DeliveryController(TokenCreate tokenCreate) {
+		this.tokenCreate = tokenCreate;
+	}
+	
+	@Autowired
 	ProductService productService;
 	
 	// 배달 장바구니에 추가
@@ -75,6 +80,8 @@ public class DeliveryController {
 		dto.setUserId(customerSeq);
 		dto.setLocation(userId.getLocation());
 		dto.setBranchName(userId.getBranchName());
+		dto.setDiscountRate(prodto.get(0).getDiscountRate());
+		dto.setPromotionInfo(prodto.get(0).getPromotionInfo());
 		
 		// 장바구니에 이미 같은 이름의 상품이 있을경우
 		boolean isProductNameFound = false;

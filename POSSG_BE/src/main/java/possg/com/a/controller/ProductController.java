@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.crizin.KoreanCharacter;
+import net.crizin.KoreanRomanizer;
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CallProductCustomerDto;

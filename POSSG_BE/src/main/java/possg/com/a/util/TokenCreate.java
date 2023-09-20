@@ -100,7 +100,7 @@ public class TokenCreate {
 		    claims.put("phoneNum", dto.getPhoneNumber());
 		    claims.put("customerSeq", dto.getCustomerSeq());
 		    claims.put("location", dto.getLocation());	    
-		    /*claims.put("userdata", service.mypage(securityKey));*/
+		    claims.put("role", "customer");
 		    return claims;
 		  }	  
 	  
@@ -123,7 +123,7 @@ public class TokenCreate {
 		    claims.put("branchName", dto.getBranchName());
 		    claims.put("regiDate", dto.getRegistrationDate());
 		    claims.put("convSeq", dto.getConvSeq());
-		    
+		    claims.put("role", "convenience");
 		    return claims;
 		  }
 	  
@@ -150,6 +150,14 @@ public class TokenCreate {
 	  
 	  public String getconvSeqFromToken(String token) {
 		  return (String) getClaims(token).get("convSeq");
+	  }
+	  
+	  public String getRoleFromToken(String token) {
+		  return (String) getClaims(token).get("role");
+	  }
+	  
+	  public String getCustomerIdFromToken(String token) {
+		  return (String) getClaims(token).get("customerId");
 	  }
 	  
 	 
