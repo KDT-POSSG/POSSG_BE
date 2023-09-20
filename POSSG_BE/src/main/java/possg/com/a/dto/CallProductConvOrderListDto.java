@@ -2,7 +2,7 @@ package possg.com.a.dto;
 
 public class CallProductConvOrderListDto {
     private int seq;
-    private String user_id;
+    private int convSeq;
     private String callRef;
     private String callDate;
     private int callStatus;
@@ -13,9 +13,9 @@ public class CallProductConvOrderListDto {
     public CallProductConvOrderListDto() {
     }
 
-    public CallProductConvOrderListDto(int seq, String user_id, String callRef, String callDate, int callStatus, int callTotalNumber, int callTotalPrice, String callRemark) {
+    public CallProductConvOrderListDto(int seq, int convSeq, String callRef, String callDate, int callStatus, int callTotalNumber, int callTotalPrice, String callRemark) {
         this.seq = seq;
-        this.user_id = user_id;
+        this.convSeq = convSeq;
         this.callRef = callRef;
         this.callDate = callDate;
         this.callStatus = callStatus;
@@ -32,12 +32,12 @@ public class CallProductConvOrderListDto {
 		this.seq = seq;
 	}
 
-	public String getUser_id() {
-		return user_id;
+	public int getConvSeq() {
+		return convSeq;
 	}
 
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public String getCallRef() {
@@ -90,7 +90,7 @@ public class CallProductConvOrderListDto {
 
 	@Override
 	public String toString() {
-		return "CallProductConvOrderListDto [seq=" + seq + ", user_id=" + user_id + ", callRef=" + callRef + ", callDate=" + callDate
+		return "CallProductConvOrderListDto [seq=" + seq + ", convSeq=" + convSeq + ", callRef=" + callRef + ", callDate=" + callDate
 				+ ", callStatus=" + callStatus + ", callTotalNumber=" + callTotalNumber + ", callTotalPrice=" + callTotalPrice
 				+ ", callRemark=" + callRemark + "]";
 	}
