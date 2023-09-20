@@ -15,13 +15,14 @@ CREATE TABLE Convenience (
 	phone_number VARCHAR(255) not null,			-- 편의점 점주 휴대폰 번호
 	registration_date TIMESTAMP not null,		-- 편의점 설립일	
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
-	-- day_night int 							-- 주야간 (삭제 예정)
 );
 select * from Convenience;
 
+ALTER TABLE Convenience ADD branch_name VARCHAR(255) AFTER representative_name;
+
 ALTER TABLE Convenience drop emp_name;
 
-update Convenience set emp_name='temp2' where conv_seq=3;
+update Convenience set branch_name='수영역 이마트' where conv_seq=1;
 
 INSERT INTO Convenience (conv_seq,emp_name, user_id, pwd, representative_name, branch_name
 								, phone_number, registration_date, conv_status) 
@@ -61,6 +62,7 @@ CREATE TABLE Delivery (
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
+	conv_seq INT not null,												-- 점포 고유번호
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
 	price INT not null,													-- 상품 가격
@@ -71,9 +73,22 @@ CREATE TABLE Product (
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호
 	img_url VARCHAR(255),												-- 이미지 주소
-    foreign key(category_id) references Category(category_id)			-- Category 테이블에서 참조
+    foreign key(category_id) references Category(category_id),			-- Category 테이블에서 참조
+    foreign key(conv_seq) references Convenience(conv_seq)
 );
 
+ALTER TABLE Product drop branch_name;
+
+ALTER TABLE Product
+add foreign key(conv_seq) references Convenience(conv_seq);
+
+ALTER TABLE Product ADD conv_seq int not null AFTER product_seq;
+
+select * from Product where product_seq between 501 and 1000;
+
+update Product set conv_seq=3 where conv_seq=0 ;
+
+select * from server2 where regdate between '2017-12-30' and '2019-06-05';
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
@@ -197,19 +212,22 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-  call_date Timestamp not null,								-- 발주 날짜	
+    call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
+	img_url VARCHAR(255),										-- 상품 이미지
     foreign key(user_id) references Convenience(user_id),		-- 편의점 테이블에서 참조
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
-
+select * from call_product_Conv;
+ALTER TABLE call_product_Conv ADD img_url VARCHAR(255) AFTER call_status;
 	
 
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
+	user_id	VARCHAR(255),										-- 편의점 점주 아이디 (주문자)
 	call_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
 	call_date Timestamp not null,								-- 발주 날짜
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
@@ -217,6 +235,7 @@ CREATE TABLE Call_product_conv_order_list(
 	call_total_price INT not null,								-- 발주 총 가격		
 	call_remark VARCHAR(255)									-- 비고
 );
+
 
 -- 고객 발주 테이블 --
 CREATE TABLE Call_product_customer (

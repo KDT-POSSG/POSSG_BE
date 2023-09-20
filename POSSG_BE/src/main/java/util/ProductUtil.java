@@ -26,6 +26,9 @@ public class ProductUtil {
 	
 	public static List<ProductDto> productScrap(ProductService proService) throws InterruptedException {
 		System.out.println("ProductController productScrap " + new Date());
+		
+		int conv_seq = 1;
+		
         int cnt = 1;
         
         Random random = new Random();
@@ -80,17 +83,17 @@ public class ProductUtil {
 
                     System.out.println("----------------");      
                     
-                    ProductDto dto = new ProductDto(0, category_id, product_name, product_name, product_name, price, price_discount,
+                    ProductDto dto = new ProductDto(0, conv_seq, category_id, product_name, product_name, product_name, price, price_discount,
 							stock_quantity, expiration_date, discount_rate,
-							promotion_info, barcode, img_url, 0);
+							promotion_info, barcode, img_url);
             		
                     // 동일한 제목이 있으면 해당 제목 return
                     boolean compare = findProductName(dto, proService);
-            		/*
+            	
                     if(compare) {
             			System.out.println("\n product skip check: \n" );
             			break;
-            		}*/
+            		}
             		dtoList.add(dto);
                 }
 

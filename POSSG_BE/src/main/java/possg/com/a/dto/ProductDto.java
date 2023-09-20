@@ -2,6 +2,7 @@ package possg.com.a.dto;
 
 public class ProductDto {
     private int productSeq;
+    private int conv_seq;
     private int categoryId;
     private String productName;
     private String productRomanName;
@@ -16,6 +17,8 @@ public class ProductDto {
     private String imgUrl;
     
     private int totalStock;
+    private int amount=0;
+    private String callDate;
 
     // 생성자
     public ProductDto() {}
@@ -24,14 +27,13 @@ public class ProductDto {
     	super();
     	this.productName = productName;
     }
-    
-	
 
-	public ProductDto(int productSeq, int categoryId, String productName, String productRomanName,
+	public ProductDto(int productSeq, int conv_seq, int categoryId, String productName, String productRomanName,
 			String productTranslationName, int price, int priceDiscount, int stockQuantity, String expirationDate,
-			double discountRate, int promotionInfo, String barcode, String imgUrl, int totalStock) {
+			double discountRate, int promotionInfo, String barcode, String imgUrl) {
 		super();
 		this.productSeq = productSeq;
+		this.conv_seq = conv_seq;
 		this.categoryId = categoryId;
 		this.productName = productName;
 		this.productRomanName = productRomanName;
@@ -44,7 +46,6 @@ public class ProductDto {
 		this.promotionInfo = promotionInfo;
 		this.barcode = barcode;
 		this.imgUrl = imgUrl;
-		this.totalStock = totalStock;
 	}
 
 	public int getProductSeq() {
@@ -53,6 +54,14 @@ public class ProductDto {
 
 	public void setProductSeq(int productSeq) {
 		this.productSeq = productSeq;
+	}
+
+	public int getConv_seq() {
+		return conv_seq;
+	}
+
+	public void setConv_seq(int conv_seq) {
+		this.conv_seq = conv_seq;
 	}
 
 	public int getCategoryId() {
@@ -69,6 +78,22 @@ public class ProductDto {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public String getProductRomanName() {
+		return productRomanName;
+	}
+
+	public void setProductRomanName(String productRomanName) {
+		this.productRomanName = productRomanName;
+	}
+
+	public String getProductTranslationName() {
+		return productTranslationName;
+	}
+
+	public void setProductTranslationName(String productTranslationName) {
+		this.productTranslationName = productTranslationName;
 	}
 
 	public int getPrice() {
@@ -134,7 +159,7 @@ public class ProductDto {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
-	
+
 	public int getTotalStock() {
 		return totalStock;
 	}
@@ -142,31 +167,31 @@ public class ProductDto {
 	public void setTotalStock(int totalStock) {
 		this.totalStock = totalStock;
 	}
-	
-	public String getProductRomanName() {
-		return productRomanName;
+
+	public int getAmount() {
+		return amount;
 	}
 
-	public void setProductRomanName(String productRomanName) {
-		this.productRomanName = productRomanName;
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 
-	public String getProductTranslationName() {
-		return productTranslationName;
+	public String getCallDate() {
+		return callDate;
 	}
 
-	public void setProductTranslationName(String productTranslationName) {
-		this.productTranslationName = productTranslationName;
+	public void setCallDate(String callDate) {
+		this.callDate = callDate;
 	}
 
 	@Override
 	public String toString() {
-		return "ProductDto [productSeq=" + productSeq + ", categoryId=" + categoryId + ", productName=" + productName
-				+ ", productRomanName=" + productRomanName + ", productTranslationName=" + productTranslationName
-				+ ", price=" + price + ", priceDiscount=" + priceDiscount + ", stockQuantity=" + stockQuantity
-				+ ", expirationDate=" + expirationDate + ", discountRate=" + discountRate + ", promotionInfo="
-				+ promotionInfo + ", barcode=" + barcode + ", imgUrl=" + imgUrl + ", totalStock=" + totalStock
-				+ "]";
+		return "ProductDto [productSeq=" + productSeq + ", conv_seq=" + conv_seq + ", categoryId=" + categoryId
+				+ ", productName=" + productName + ", productRomanName=" + productRomanName
+				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceDiscount="
+				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate
+				+ ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo + ", barcode=" + barcode
+				+ ", imgUrl=" + imgUrl  + ", amount=" + amount + "]";
 	}
 
 }
