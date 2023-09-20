@@ -6,7 +6,7 @@
 <!-- 월세 관리비 입력 -->
 <insert id="addcost" parameterType="possg.com.a.dto.CostDto">
 	insert into Cost(rent, water_bill, electricity_bill, gas_bill, total_labor_cost, security_maintenance_fee, conv_seq, cost_year, cost_month)
-	values(#{rent}, #{waterBill}, #{electricityBill}, #{gasBill}, #{totalLaborCost}, #{securityMaintenanceFee},(select conv_seq from Convenience where conv_seq = #{convSeq}), #{costYear}, #{costMonth})
+	values(#{rent}, #{waterBill}, #{electricityBill}, #{gasBill}, #{totalLaborCost}, #{securityMaintenanceFee},(select conv_seq from Convenience where conv_seq), #{costYear}, #{costMonth})
 </insert>
 
 <update id="updatecost" parameterType="possg.com.a.dto.CostDto">

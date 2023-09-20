@@ -26,7 +26,7 @@ public interface ProductDao {
 	List<ProductDto> findProductName(ProductDto dto);
 	
 	int getTotalStock(String name);
-	int addCallProductConv(ProductDto dto);
+	int addCallProductConv(CallProductConvDto convDto);
 	int updateCallProductConv(CallProductConvDto convDto);
 	
 	List<ProductDto> getAllProductStock(ProductParam param);
@@ -45,10 +45,11 @@ public interface ProductDao {
 	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);
 	int deleteCallProduct(CallProductConvDto callDto);
 	
-	List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvDto convDto);
-	CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto);
+	List<CallProductConvOrderListDto> getAllConvOrderList();
+	CallProductConvOrderListDto getRefConvOrderList(String callRef);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
+
 	int cancelConvOrderList(CallProductConvOrderListDto orderDto);
 	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
 

@@ -1,11 +1,5 @@
 package possg.com.a.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,15 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import net.crizin.KoreanCharacter;
 import net.crizin.KoreanRomanizer;
-
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CallProductCustomerDto;
@@ -41,8 +31,6 @@ import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
-import possg.com.a.util.SecurityConfig;
-import util.NaverCloudUtil;
 import util.ProductUtil;
 
 @RestController
@@ -203,34 +191,19 @@ public class ProductController {
 	// ProductDto: String productName, int productSeq, int priceDiscount
 	// CallProductConvDto: String userId, String rpName, String bName 
 	@PostMapping("addCallProductConvAuto")
-	public String addCallProductConvAuto(ProductDto productDto,@RequestParam int stockLimit) {//@RequestHeader("accessToken") String tokenHeader
+	public String addCallProductConvAuto(ProductDto productDto, ConvenienceDto convDto, int stockLimit) {
 		System.out.println("ProductController addCallProductConvAuto() " + new Date());
-		/*
-		// Type tempSeq = claims.get("tempSeq", Type.class)
-		Claims claims = SecurityConfig.tokenParser(tokenHeader);
-		String branchName = claims.get("branchName", String.class);
-		ConvenienceDto convDto = service.getConvenienceInfo(branchName);
-		*/
-		// 주문 갯수
-		int amount = 3;
-		
 		// 해당 상품의 총 재고량을 가져옴
 		int totalStock = service.getTotalStock(productDto.getProductName());
 		// 임시로 재고 제한을 3으로 설정
 		stockLimit = 3; // 임시 제한
 		// 총 재고가 재고 제한보다 작은 경우
 		if (totalStock < stockLimit) {
-			
-			// 장바구니 등록 시간
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String formattedDate = sdf.format(new Date());
-			
 			// 발주 상품 정보를 설정
-			ProductDto insertProductDto = findProductName(productDto).get(0);
-			insertProductDto.setCallDate(formattedDate);
-			insertProductDto.setAmount(amount);
-			System.out.println(insertProductDto);
-
+			CallProductConvDto insertCallDto = new CallProductConvDto(0,
+			convDto.getUserId(), productDto.getProductSeq(), 0, convDto.getRepresentativeName(),
+			convDto.getBranchName(), productDto.getPriceDiscount(), new Date().toString(),
+			productDto.getProductName(), "0", 0);
 			// 발주 상품 정보를 추가
 			// input: int convSeq, int productSeq, int price, String callDate, String productName, String imgUrl
 			int count = service.addCallProductConv(insertProductDto);
@@ -248,7 +221,7 @@ public class ProductController {
 	// input
 	// ProductDto: int convSeq, int productSeq, int price, String callDate, String productName, String imgUrl
 	@PostMapping("addCallProductConv")
-	public String addCallProductConv(ProductDto productDto, @RequestParam int amount) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
+	public String addCallProductConv(ProductDto productDto, ConvenienceDto convDto, @RequestBody int amount) {// @RequestBody Map<String, Object> payload
 		System.out.println("ProductController addCallProductConv() " + new Date());
 		/*
 		ProductDto productDto = new ObjectMapper().convertValue(payload.get("productDto"), ProductDto.class);
@@ -261,7 +234,6 @@ public class ProductController {
 	    
 		ProductDto insertProductDto = findProductName(productDto).get(0);
 		*/
-		//int amount = 1;
 		// 장바구니 등록 시간
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String formattedDate = sdf.format(new Date());
@@ -272,13 +244,11 @@ public class ProductController {
 	    }
 		// 객체 입력하여 상품명 전달
 		ProductDto insertProductDto = findProductName(productDto).get(0);
-		insertProductDto.setCallDate(formattedDate);
-		insertProductDto.setAmount(amount);
 		System.out.println(insertProductDto);
 		// 발주 상품 정보 설정
 		// conv_seq, user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
 		// 발주 상품 정보를 데이터베이스에 추가
-		int count = service.addCallProductConv(insertProductDto);
+		int count = service.addCallProductConv(insertCallDto);
 		System.out.println(count);
 		if(count > 0) {
 			return "YES";
@@ -324,7 +294,7 @@ public class ProductController {
 			if (!convDto.getCallRef().equals("0")) {
 				// 발주 주문 목록 수정
 				CallProductConvOrderListDto orderDto = 
-						service.getRefConvOrderList(convDto);
+						service.getRefConvOrderList(convDto.getCallRef());
 				System.out.println("getRefConvOrderList: " + orderDto.toString());
 				// 총 가격을 업데이트 (기존 총 가격 - 수정된 총 가격)
 				int totalPrice = orderDto.getCallTotalPrice() 
@@ -379,15 +349,15 @@ public class ProductController {
 		return "NO";
 	}
 	
-	/* 발주 */
+	/* 발주 주문 */
 	
 	// 발주 리스트 획득
 	// input: int convSeq
 	@PostMapping("getAllConvOrderList")
-	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvDto convDto ) {
+	public List<CallProductConvOrderListDto> getAllConvOrderList() {
 		System.out.println("ProductController getAllConvOrderList() " + new Date());
 		
-		return service.getAllConvOrderList(convDto);
+		return service.getAllConvOrderList();
 	}
 	
 	// 발주 추가
@@ -404,6 +374,7 @@ public class ProductController {
 	    if (remark == null) {
 	    	remark = "";
 	    }
+    
 	    // user_id 추출
 	    int convSeq = callList.get(0).getConvSeq();
 	    // 발주 목록 묶음 (call_ref) 생성 로직
@@ -424,6 +395,7 @@ public class ProductController {
 	    // call_status, call_stock, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
 	    		new CallProductConvOrderListDto(0, convSeq, callRef, formattedDate, 
+
 	    										1, totalProduct, totalPrice, remark);
 	    // 발주 목록을 데이터베이스에 추가
 	    int count = service.addConvOrderList(orderListDto);
@@ -461,10 +433,11 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 수령 완료
+	// 점주 발주 주문 삭제
 	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
 	// input: int callReq, int convSeq
 	@PostMapping("deleteConvOrderList")
+
 	public String deleteConvOrderList(CallProductConvOrderListDto orderConv) {
 		System.out.println("ProductController deleteConvOrderList() " + new Date());
 		System.out.println(orderConv.getCallRef());
@@ -503,54 +476,8 @@ public class ProductController {
 		return dtoList;
 	}
 	
-
-	// 음성인식 wav -> String
-	@PostMapping("/fileUpload")
-	public String fileUpload(@RequestParam("uploadFile")MultipartFile uploadFile,
-							HttpServletRequest request) throws IOException {
-		System.out.println("NaverCloudController fileUpload" + new Date());
-		
-		// tomcat
-		String uploadPath = request.getServletContext().getRealPath("/upload");
-		
-		// 파일명 취득
-		String filename = uploadFile.getOriginalFilename();
-		String filepath = uploadPath + File.separator + filename;
-		
-		System.out.println(filepath);
-		
-		//fileupload
-		try {
-		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filepath)));
-		os.write(uploadFile.getBytes());
-		os.close();
-		} catch (Exception e) {
-			return "file load fail";
-		}
-		
-		// Naver Cloud
-		String response = NaverCloudUtil.processSTT(filepath);
-		
-		return response;
-	}
-
-	@PostMapping("/tts")
-	public String tts(@RequestParam("message") String message,
-			@RequestParam("speaker") String speaker,
-	                  HttpServletRequest request) {
-	    System.out.println("NaverCloudController tts " + new Date());
-	    System.out.println(message);
-	    // tomcat
-	    String uploadPath = request.getServletContext().getRealPath("/upload");
-	    Map<String,String> msg = NaverCloudUtil.processTTS(message, uploadPath, speaker);
-
-	    // mp3 파일의 URL 생성
-	    String audioURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/" + msg.get("tempname") + ".mp3";
-	    System.out.println(audioURL);
-	    return audioURL;
-	}
-		
 	
+
 	// 로마자 변환 후 DB 입력
 	@GetMapping("updateProductRomanName")
 	public String updateProductRomanName(ProductParam param) {
@@ -567,6 +494,7 @@ public class ProductController {
 
 		return null;
 	}
+
 	
 
 	

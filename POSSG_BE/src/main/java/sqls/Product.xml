@@ -9,7 +9,6 @@
 <select id="productList" parameterType="possg.com.a.dto.ProductParam"
 	resultType="possg.com.a.dto.ProductDto">
 	select MIN(product_seq) AS product_seq
-	, MAX(branch_name) AS branch_name
 	, MIN(category_id) AS category_id
 	, product_name, MIN(price) AS price
 	, MIN(price_discount) AS price_discount
@@ -80,7 +79,7 @@
 </select>
 
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
-<select id="getLastProduct" parameterType="possg.com.a.dto.ProductDto" resultType="Integer">
+<select id="getLastProduct" resultType="Integer">
 	select max(product_seq) from Product;
 	where conv_seq = #{convSeq}
 </select>
@@ -101,7 +100,7 @@
 
 <!-- 새로운 상품을 추가 -->
 <insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
-	insert into Product(conv_seq, category_id, product_name, price, price_discount, 
+	insert into Product(category_id, product_name, price, price_discount, 
 	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
 	values(#{convSeq}, #{categoryId}, #{productName}, #{price}, #{priceDiscount}, 
 			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
@@ -191,17 +190,15 @@
     WHERE call_ref = #{callRef} AND product_name = #{productName} and conv_seq = #{convSeq} and call_status != '-1'
 </delete>
 
-<!-- 점주 발주 -->
-<!-- 모든 발주 목록 획득 -->
-<select id="getAllConvOrderList" parameterType="possg.com.a.dto.CallProductConvDto" 
-resultType="possg.com.a.dto.CallProductConvOrderListDto">
+<!-- 점주 발주 주문 -->
+<!-- 모든 발주 주문 목록 획득 -->
+<select id="getAllConvOrderList" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv_order_list
 	where conv_seq = #{convSeq} and call_ref != '-1'
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->
-<select id="getRefConvOrderList" parameterType="possg.com.a.dto.CallProductConvDto" 
-resultType="possg.com.a.dto.CallProductConvOrderListDto">
+<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
 	where call_ref = #{callRef} and conv_seq = #{convSeq}
 	order by call_ref desc
@@ -296,6 +293,5 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 		</choose>
 	</where>
 </select>
-
 
 </mapper>

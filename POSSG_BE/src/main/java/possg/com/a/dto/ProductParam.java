@@ -17,8 +17,6 @@ public class ProductParam{
 	private int pageSize = 20;
 	
 	private int country = 0;
-	
-	private int conv_seq;
 
 	public ProductParam() {
 	}
@@ -67,23 +65,6 @@ public class ProductParam{
 		this.sortOrder = sortOrder;
 		this.pageSize = pageSize;
 		this.country = country;
-	}
-	
-	public ProductParam(String choice, String search, int pageNumber, int seq, int minPrice, int maxPrice,
-			int promotionInfo, int categoryId, String sortOrder, int pageSize, int country, int conv_seq) {
-		super();
-		this.choice = choice;
-		this.search = search;
-		this.pageNumber = pageNumber;
-		this.seq = seq;
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
-		this.promotionInfo = promotionInfo;
-		this.categoryId = categoryId;
-		this.sortOrder = sortOrder;
-		this.pageSize = pageSize;
-		this.country = country;
-		this.conv_seq = conv_seq;
 	}
 
 	public int getMinPrice() {
@@ -174,20 +155,12 @@ public class ProductParam{
 		this.country = country;
 	}
 
-	public int getConv_seq() {
-		return conv_seq;
-	}
-
-	public void setConv_seq(int conv_seq) {
-		this.conv_seq = conv_seq;
-	}
-
 	@Override
 	public String toString() {
 		return "ProductParam [choice=" + choice + ", search=" + search + ", pageNumber=" + pageNumber + ", seq=" + seq
 				+ ", minPrice=" + minPrice + ", maxPrice=" + maxPrice + ", promotionInfo=" + promotionInfo
 				+ ", categoryId=" + categoryId + ", sortOrder=" + sortOrder + ", pageSize=" + pageSize + ", country="
-				+ country + ", conv_seq=" + conv_seq + "]";
+				+ country + "]";
 	}
 	
 }

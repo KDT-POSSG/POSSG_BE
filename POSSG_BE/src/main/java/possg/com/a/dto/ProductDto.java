@@ -17,8 +17,6 @@ public class ProductDto {
     private String imgUrl;
     
     private int totalStock;
-    private int amount=0;
-    private String callDate;
 
     // 생성자
     public ProductDto() {}
@@ -27,10 +25,12 @@ public class ProductDto {
     	super();
     	this.productName = productName;
     }
+    
+	
 
 	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
 			String productTranslationName, int price, int priceDiscount, int stockQuantity, String expirationDate,
-			double discountRate, int promotionInfo, String barcode, String imgUrl) {
+			double discountRate, int promotionInfo, String barcode, String imgUrl, int totalStock) {
 		super();
 		this.productSeq = productSeq;
 		this.convSeq = convSeq;
@@ -46,6 +46,7 @@ public class ProductDto {
 		this.promotionInfo = promotionInfo;
 		this.barcode = barcode;
 		this.imgUrl = imgUrl;
+		this.totalStock = totalStock;
 	}
 
 	public int getProductSeq() {
@@ -78,22 +79,6 @@ public class ProductDto {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
-	}
-
-	public String getProductRomanName() {
-		return productRomanName;
-	}
-
-	public void setProductRomanName(String productRomanName) {
-		this.productRomanName = productRomanName;
-	}
-
-	public String getProductTranslationName() {
-		return productTranslationName;
-	}
-
-	public void setProductTranslationName(String productTranslationName) {
-		this.productTranslationName = productTranslationName;
 	}
 
 	public int getPrice() {
@@ -159,7 +144,7 @@ public class ProductDto {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
-
+	
 	public int getTotalStock() {
 		return totalStock;
 	}
@@ -167,21 +152,21 @@ public class ProductDto {
 	public void setTotalStock(int totalStock) {
 		this.totalStock = totalStock;
 	}
-
-	public int getAmount() {
-		return amount;
+	
+	public String getProductRomanName() {
+		return productRomanName;
 	}
 
-	public void setAmount(int amount) {
-		this.amount = amount;
+	public void setProductRomanName(String productRomanName) {
+		this.productRomanName = productRomanName;
 	}
 
-	public String getCallDate() {
-		return callDate;
+	public String getProductTranslationName() {
+		return productTranslationName;
 	}
 
-	public void setCallDate(String callDate) {
-		this.callDate = callDate;
+	public void setProductTranslationName(String productTranslationName) {
+		this.productTranslationName = productTranslationName;
 	}
 
 	@Override
