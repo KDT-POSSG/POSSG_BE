@@ -15,7 +15,6 @@ COPY .mvn/ .mvn/
 COPY .settings/ .settings/
 COPY bin/ bin/
 COPY target/ target/
-COPY .classpath .classpath
 COPY .dockerignore .dockerignore
 COPY Dockerfile Dockerfile
 COPY mvnw mvnw
