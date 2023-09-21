@@ -25,8 +25,8 @@ jobs:
       name: Build Container Image
       uses: docker/build-push-action@v4
       with:
-        context: .
-        file: ./dockerfile
+        context: ./POSSG_BE
+        file: ./POSSG_BE/Dockerfile
         platforms: linux/amd64
         push: true
         tags: possg/possg-be:latest
