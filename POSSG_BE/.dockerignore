@@ -3,3 +3,8 @@ build/
 .git/
 .github/
 .gitignore
+.settings/
+target/
+.classpath
+.factorypath
+.project

@@ -10,18 +10,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copy only the necessary directories and files
-COPY src/ src/
-COPY .mvn/ .mvn/
-COPY .settings/ .settings/
-COPY bin/ bin/
-COPY target/ target/
-COPY .classpath .classpath
-COPY .dockerignore .dockerignore
-COPY .factorypath .factorypath
-COPY .project .project
-COPY Dockerfile Dockerfile
-COPY mvnw mvnw
-COPY mvnw.cmd mvnw.cmd
+COPY . .
 
 # Add more COPY commands for other necessary files
 
