@@ -19,13 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import possg.com.a.dto.ProductDto;
 import possg.com.a.service.ProductService;
-import possg.com.a.service.TranslationService;
-
-@RestController
 public class TranslationController {
-
-	@Autowired
-	TranslationService service;
 	
 	// country: 0(한국어), 1(영어), 2(중국어), 3(일본어)
 	public static String translationProductName(String text, int country) {

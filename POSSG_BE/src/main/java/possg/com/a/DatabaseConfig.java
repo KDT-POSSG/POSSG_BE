@@ -40,7 +40,7 @@ public class DatabaseConfig {
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setConfiguration(mybatisConfig);
 		
-		Resource[] arrResource = new PathMatchingResourcePatternResolver().getResources("classpath:sqls/*.xml");
+		Resource[] arrResource = new PathMatchingResourcePatternResolver().getResources("classpath:/sqls/*.xml");
 		sqlSessionFactoryBean.setMapperLocations(arrResource);
 		sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
 		
@@ -51,14 +51,12 @@ public class DatabaseConfig {
 	public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
-
+	
 	@Bean
 	@ConfigurationProperties(prefix = "mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg() {
 	    org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
 	    config.setMapUnderscoreToCamelCase(true);
 	    return config;
-	}	
-	
+	}
 }
-

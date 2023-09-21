@@ -3,190 +3,71 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.DeliveryDao">
 
-<!-- 배달 회원 기능 -->
-<!-- 장바구니에 넣기 -->
-<insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-    insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price, branch_name)
-    values(
-        (select customer_seq from Customer where customer_seq = #{userId}),
-        (select product_seq from Product where product_name = #{productName}),
-        0, #{quantity}, 
-        (select product_name from Product where product_name = #{productName}), 
-        now(), 0, #{location},
-        (
-            select 
-                case 
-                    when #{quantity} >= 1 and (select promotion_info from Product where product_name = #{productName}) = 2 then 
-                        (select price_discount from Product where product_name = #{productName}) * #{quantity} <!-- (1개 이상일 때) -->
-                    when   #{quantity} >= 2 and (select promotion_info from Product where product_name = #{productName}) = 4 then
-                		(select price from Product where product_name = #{productName}) * (floor(#{quantity}/2) + #{quantity}%2) <!-- 1+1 -->
-                	when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName}) = 5 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/3)*2 + #{quantity}%3) <!-- 2+1 할인 -->
-                    when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName}) = 6 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/3) + #{quantity}%3*2) <!-- 1+2 할인 -->
-                    when #{quantity} >= 4 and (select promotion_info from Product where product_name = #{productName}) = 7 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/4)*2 + #{quantity}%4*2) <!-- 2+2 할인 -->	              		
-                    else
-                        (select price from Product where product_name = #{productName}) * #{quantity}
-                end
-        ), 
-        #{branchName}
-    )
-</insert>
-
-<!-- 중복으로 장바구니에 담을 시 갯수랑 가격만 업데이트  할인도 적용시켜야함 완성 나중에 결제에 포인트 생기면 여기서 처리할수도 있음 그냥 price결괏값 - 포인트 -->
-<update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-	update Delivery
-	set quantity = quantity + #{quantity},
-	price=(
-	CASE 
-            WHEN  quantity >= 1  AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 2 THEN
-                (SELECT price_discount FROM Product WHERE product_name = #{productName}) * quantity 	<!-- (1개 이상일 때) -->             
-            WHEN  (#{quantity} + quantity) >= 2  AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 4 THEN
-                (FLOOR(quantity / 2) + quantity % 2) * (SELECT price FROM Product WHERE product_name = #{productName})                <!-- 1+1 -->
-		     WHEN (#{quantity} + quantity) >= 3 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 5 THEN
-          		(FLOOR(quantity / 3) * 2 + quantity % 3) * (SELECT price FROM Product WHERE product_name = #{productName})			<!-- 2+1 할인 -->
-
-     		WHEN (#{quantity} + quantity) >= 3 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 6 THEN
-                (FLOOR(quantity / 3) + quantity % 3*2) * (SELECT price FROM Product WHERE product_name = #{productName})
-            WHEN (#{quantity} + quantity) >= 4 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 7 THEN
-                (FLOOR(quantity / 3)*2 + quantity % 3*2) * (SELECT price FROM Product WHERE product_name = #{productName})
-            ELSE
-                (price + #{price})
-        END
-        )
-	where product_name = #{productName} and order_status = 0 and ref = 0 and user_id = #{userId}
-</update>
-
-<!-- 장바구니 상품 가져오기 -->
-<select id="selectDelivery" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
-	select *
-	from delivery
-	where ref = 0 and user_id = #{userId} and order_status = 0
-</select>
-
-<!-- 장바구니 배달 주문 시 ref 갱신 -->
-<update id="updateDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-	update Delivery
-	set ref = #{ref},
-	order_status = 1
-	where ref = 0 and user_id = #{userId} and order_status = 0
-</update>
- 
- <!-- 장바구니 삭제 -->
-<delete id="deleteDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-	delete
-	from Delivery
-	where ref = 0 and user_id = #{userId} and product_name = #{productName} and order_status = 0
-</delete>
-
-<!-- 배달주문 하기 -->
-<insert id="insertDeliveryList" parameterType="possg.com.a.dto.DeliveryListDto">
-	insert delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark)
-	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark})
-</insert>
-
-<select id="selectCustomer" parameterType="Integer" resultType="possg.com.a.dto.CustomerDto">
-	select *
-	from Customer
-	where customer_seq = #{customerSeq}
-</select>
-
-<!-- 배달취소 하기  del_status가 0 일때만 가능 0909여기까지하다말았음-->
-
-
-
-
-<!-- 배달 점주 기능 -->
-
 <!-- 배달점포 입점 -->
 <update id="convAddDelivery" parameterType="possg.com.a.dto.ConvenienceDto">
-	update Convenience
-	set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
-	where conv_seq = #{convSeq}
+update Convenience
+set conv_location = #{convLocation}, latitude = #{latitude}, longtitude = #{longtitude}
+where conv_seq = #{convSeq}
 </update>
+
+<!-- 주문접수 -->
+<insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price)
+values(
+    (select customer_seq from Customer where customer_seq = #{userId}),
+    (select product_seq from Product where product_seq = #{productSeq}),
+    1, #{quantity}, 
+    (select product_name from Product where product_seq = #{productSeq}), 
+    now(), #{ref}, #{location},
+    (select price from Product where product_seq = #{productSeq})
+)
+</insert>
+
+
+
+
 
   <!-- 상세 배달 목록 -->
-<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
+<select id="allDeliveryList" parameterType="String" resultType="possg.com.a.dto.DeliveryDto">
 	select *
 	from Delivery
-	where ref = #{ref} and branch_name = #{branchName}
-
+	where ref = #{ref}
+	<!-- order by order_seq desc -->
+	<!-- limit ${(pageNumber* 10)}, 10 -->
 </select>
 
-
-<!-- 해당 지점의 점포에 배달주문건 추출 -->
-<select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
-	SELECT  p.seq,
-    o.user_id,
-    o.product_seq,
-    o.order_status,
-    o.quantity,
-    o.product_name,
-    o.ref,
-    o.location,
-    o.price,
-    o.branch_name,
-    p.del_date,
-    p.del_status,
-    p.del_total_number,
-    p.del_total_price,
-    p.del_remark
-    p.del_ref
-	FROM delivery as o
-	inner join convenience j on o.branch_name = j.branch_name
-	inner join delivery_list p on o.ref = p.del_ref
-	WHERE j.branch_name = #{branchName}
-	AND  o.order_status = #{orderStatus} AND o.order_status != 0
-
-	order by p.seq desc
-	limit ${(pageNumber* 10)}, 10
-</select>
-
-<!-- 배송진행 상태 업데이트 -->
-<update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
-	update delivery as o, delivery_list as p
-	 set o.order_status = o.order_status + 1,
-    p.del_status = p.del_status + 1
-	where o.ref = #{ref} and p.del_ref = #{ref}
-</update>
-
+<!-- 글의 총수 -->
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
 		resultType="java.lang.Integer">
-		select count(*) 
-		from  delivery as o
-		inner join delivery_list  p on o.ref = p.del_ref
-		
-		<if test="orderStatus == 1 ">
-			where o.branch_name = #{branchName} and o.order_status = 1
-		</if>
-		
-		<if test="orderStatus == 2 ">
-			where o.branch_name = #{branchName} and o.order_status = 2
-		</if>
-		
-		<if test="orderStatus == 3 ">
-			where o.branch_name = #{branchName} and o.order_status = 3
-		</if>
-		
-		<if test="orderStatus == 4 ">
-			where o.branch_name = #{branchName} and o.order_status = 4
-		</if>
-		
+		select count(*) from Delivery 
 </select>
-<!--
 
+
+
+
+
+
+
+
+
+
+
+
+<!-- 배달주문 전체 목록 -->
 <select id="getAllDeliveryOrderList" resultType="possg.com.a.dto.DeliveryDto">
 	select * from Delivery_list
 	where del_ref != '-1'
 </select>
 
+<!-- 주어진 delRef에 해당하는 발주 주문 목록 획득 -->
 <select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
 	select * from Delivery_list
 	where del_ref = #{delRef}
 	order by del_ref desc
 </select>
 
-  -->
+
+
+
 
 </mapper>
