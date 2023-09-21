@@ -22,6 +22,10 @@ public class ProductService {
 	@Autowired
 	ProductDao dao;
 	
+	public String healthcheck() {
+		return dao.healthcheck();
+	}
+	
 	public List<ProductDto> productList(ProductParam param){
 		return dao.productList(param);
 	}
