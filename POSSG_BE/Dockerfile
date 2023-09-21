@@ -18,7 +18,6 @@ COPY target/ target/
 COPY .classpath .classpath
 COPY .dockerignore .dockerignore
 COPY .factorypath .factorypath
-COPY .project .project
 COPY Dockerfile Dockerfile
 COPY mvnw mvnw
 COPY mvnw.cmd mvnw.cmd
