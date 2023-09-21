@@ -16,6 +16,8 @@ import possg.com.a.dto.ProductParam;
 @Repository
 public interface ProductDao {
 
+	String healthcheck();
+	
 	List<ProductDto> productList(ProductParam param);
 	List<ProductDto> getAllProduct(ProductParam param);
 	int updateProductRomanName(ProductDto dto);

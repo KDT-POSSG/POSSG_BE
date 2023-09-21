@@ -51,6 +51,13 @@ public class ProductController {
 	@Autowired
 	ProductService service;
 	
+	@GetMapping("healthcheck")
+	public String healthcheck() {
+		System.out.println("ProductController healthcheck " + new Date());
+		
+		return "Hello";
+	}
+	
 	// 상품 목록 획득
 	@GetMapping("productList")
 	public Map<String, Object> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
