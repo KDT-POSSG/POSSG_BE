@@ -28,4 +28,6 @@
 	    JOIN Convenience c ON s.conv_seq = c.conv_seq
 		where s.conv_seq = #{convSeq}
 	</select>
+	
+	
 </mapper>

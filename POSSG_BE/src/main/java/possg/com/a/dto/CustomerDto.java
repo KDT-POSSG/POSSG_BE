@@ -10,9 +10,6 @@ public class CustomerDto {
     private String registrationDate;
     private int customerStatus;
     private int convSeq;
-    private String pwd;
-    private String location;
-    private String branchName;
 
 
     // 생성자
@@ -20,7 +17,7 @@ public class CustomerDto {
 
 
 	public CustomerDto(int customerSeq, String customerId, int pinNumber, String customerName, String phoneNumber,
-			String registrationDate, int customerStatus, int convSeq, String pwd, String location, String branchName) {
+			String registrationDate, int customerStatus, int convSeq) {
 		super();
 		this.customerSeq = customerSeq;
 		this.customerId = customerId;
@@ -30,9 +27,6 @@ public class CustomerDto {
 		this.registrationDate = registrationDate;
 		this.customerStatus = customerStatus;
 		this.convSeq = convSeq;
-		this.pwd = pwd;
-		this.location = location;
-		this.branchName = branchName;
 	}
 
 
@@ -110,41 +104,11 @@ public class CustomerDto {
 		this.convSeq = convSeq;
 	}
 
-	public String getPwd() {
-		return pwd;
-	}
-
-
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	
-	public String getLocation() {
-		return location;
-	}
-
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public String getBranchName() {
-		return branchName;
-	}
-
-
-	public void setBranchName(String branchName) {
-		this.branchName = branchName;
-	}
-
-
 	@Override
 	public String toString() {
 		return "CustomerDto [customerSeq=" + customerSeq + ", customerId=" + customerId + ", pinNumber=" + pinNumber
 				+ ", customerName=" + customerName + ", phoneNumber=" + phoneNumber + ", registrationDate="
-				+ registrationDate + ", customerStatus=" + customerStatus + ", convSeq=" + convSeq + ", pwd=" + pwd
-				+ ", location=" + location + ", branchName=" + branchName + "]";
+				+ registrationDate + ", customerStatus=" + customerStatus + ", convSeq=" + convSeq + "]";
 	}
-
 
 }
