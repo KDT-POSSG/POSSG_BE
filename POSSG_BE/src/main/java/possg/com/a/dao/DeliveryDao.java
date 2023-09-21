@@ -6,12 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
-import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.DeliveryDto;
-
-import possg.com.a.dto.DeliveryJoinDto;
-
-import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 
 @Mapper
@@ -23,30 +18,21 @@ public interface DeliveryDao {
 	int callAddDelivery(DeliveryDto dto);
 	
 	
-	List<DeliveryDto> allDeliveryList(DeliveryDto dto);
+	List<DeliveryDto> allDeliveryList(String ref);
 	
-	List<DeliveryDto> selectDelivery(DeliveryDto dto);
 	
-	int insertDeliveryList(DeliveryListDto dto);
 	
-	int updateDelivery(DeliveryDto dto);
 	
-	int deleteDelivery(DeliveryDto dto);
 	
-	CustomerDto selectCustomer(int userId);
-
-	List<DeliveryJoinDto> convenienceDeliveryList(DeliveryParam param);
 	
-	int updateCountDelivery(DeliveryDto dto);	
+	
+	
+	
+	
 	
 	int getDeliveryCount(DeliveryParam param);
 	
-	int statusUpdate(DeliveryJoinDto dto);
-	
-	
-	
-	
-	// List<DeliveryDto> getAllDeliveryOrderList();
-	// List<DeliveryDto> getRefDeliveryOrderList(String delRef);
+	List<DeliveryDto> getAllDeliveryOrderList();
+	List<DeliveryDto> getRefDeliveryOrderList(String delRef);
 
 }
