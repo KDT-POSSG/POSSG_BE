@@ -12,9 +12,7 @@ RUN mvn dependency:go-offline -B
 # Copy only the necessary directories and files
 COPY src/ src/
 COPY .mvn/ .mvn/
-COPY .settings/ .settings/
 COPY bin/ bin/
-COPY target/ target/
 COPY .dockerignore .dockerignore
 COPY Dockerfile Dockerfile
 COPY mvnw mvnw
