@@ -50,7 +50,7 @@ public class ProductController {
 
 	@Autowired
 	ProductService service;
-	// cicd test
+	
 	// 상품 목록 획득
 	@GetMapping("productList")
 	public Map<String, Object> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
