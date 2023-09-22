@@ -52,7 +52,7 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/possg-be:latest
             docker rm -f possg-be:latest
             docker run -d \
-              --name possg-be:latest
+              --name possg-be:latest \
               -p 3000:3000 \
               -e DB_HOST=mydb \
               -e DB_USER=${{ secrets.DB_USER }} \
