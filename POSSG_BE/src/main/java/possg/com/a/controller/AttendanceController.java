@@ -33,7 +33,7 @@ public class AttendanceController {
 		
 		// 이미 출근해 있는 경우 
 		if (param.getLeaveWork() == null && param.getAttendance() != null) {
-			return "AlREADY CHECK";
+			return "ALREADY CHECK";
 		}
 		
 		int count = service.attendance(dto);
@@ -54,7 +54,7 @@ public class AttendanceController {
 		
 		// 이미 퇴근해 있는 경우 
 		if (param.getLeaveWork() != null) {
-			return "AlREADY CHECK";
+			return "ALREADY CHECK";
 		}
 		
 		int count = service.leavework(employeeSeq);
