@@ -34,6 +34,7 @@ import net.crizin.KoreanRomanizer;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
+import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
@@ -135,6 +136,8 @@ public class ProductController {
 			return null;
 		}
 		ProductDto resultDto = list.get(0);
+		System.out.println("result= " + resultDto);
+		
 		return resultDto;
 		
 	}
@@ -142,7 +145,7 @@ public class ProductController {
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
 	@GetMapping("getAllProductStock")
-	public List<Map<String, Object>> getAllProductStock(ProductParam param){
+	public Map<String, Object> getAllProductStock(ProductParam param){
 		System.out.println("ProductController getAllProductStock() " + new Date());
 		// DB에서 상품 정보를 가져옴
 		List<ProductDto> list = service.productList(param); 
@@ -198,18 +201,57 @@ public class ProductController {
             resultList.add(productMap);
             System.out.println("productDetails: " + productDetails);
 	    }
-		return resultList;
+	    
+    	// 상품의 총 수
+ 		int count = service.getProductTotalNumber(param);
+ 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+ 		if (param.getPageSize() > count) {
+ 			param.setPageSize(count); 
+ 		}
+ 		int pageProduct = count / param.getPageSize();
+ 		if((count % param.getPageSize()) > 0) {
+ 			pageProduct = pageProduct + 1;
+ 		}
+ 		/*
+ 		Map<String, Object> map = new HashMap<String, Object>();
+ 		map.put("convList", resultList);
+ 		map.put("pageProduct", pageProduct);
+ 		//map.put("pageNumber", param.getPageNumber());
+ 		map.put("cnt", count); // react 중 pagination 사용시 활용
+ 		*/
+ 		Map<String, Object> map = new HashMap<String, Object>();
+ 		map.put("ProductList", resultList);
+ 		map.put("pageProduct", pageProduct);
+ 		map.put("cnt", count);
+	    
+		return map;
 	}
 	
 	/* 점주 발주 */
 	// 발주 대기 목록 획득
 	// input: int convSeq
 	@GetMapping("getAllCallProductConvList")
-	public List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto) {
+	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
-		List<CallProductConvDto> dtoList = service.getAllCallProductConvList(convDto);
+		List<CallProductConvDto> dtoList = service.getAllCallProductConvList(param);
 		
-		return dtoList;
+		// 상품의 총 수
+		int count = service.getCallProductTotalNumber(param);
+		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+		if (param.getPageSize() > count) {
+			param.setPageSize(count); 
+		}
+		int pageProduct = count / param.getPageSize();
+		if((count % param.getPageSize()) > 0) {
+			pageProduct = pageProduct + 1;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("convList", dtoList);
+		map.put("pageProduct", pageProduct);
+		//map.put("pageNumber", param.getPageNumber());
+		map.put("cnt", count); // react 중 pagination 사용시 활용
+		return map;
 	}
 	
 	// input: String callRef, int convSeq
@@ -269,7 +311,7 @@ public class ProductController {
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(ProductDto productDto, @RequestParam int amount) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
-
+		System.out.println("productDto= " + productDto);
 		// 장바구니 등록 시간
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String formattedDate = sdf.format(new Date());
@@ -280,8 +322,10 @@ public class ProductController {
 	    }
 		// 객체 입력하여 상품명 전달
 		ProductDto insertProductDto = findProductName(productDto).get(0);
+		System.out.println("insertProductDto= " + insertProductDto);
 		insertProductDto.setCallDate(formattedDate);
 		insertProductDto.setAmount(amount);
+		
 		System.out.println(insertProductDto);
 		// 발주 상품 정보 설정
 		// conv_seq, user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
