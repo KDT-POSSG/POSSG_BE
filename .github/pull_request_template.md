@@ -1,4 +1,11 @@
+---
+name: pull_request_template
+about: Describe this pull_request_template's purpose here.
+title: ''
+labels: ''
+assignees: ''
 
+---
 ## 📌 관련 이슈
 <!-- 관련있는 이슈 번호(#000) 작성
   해당 pull request merge와 함께 이슈를 닫으려면
