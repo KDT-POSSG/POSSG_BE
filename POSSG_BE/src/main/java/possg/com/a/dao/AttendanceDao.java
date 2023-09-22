@@ -16,4 +16,5 @@ public interface AttendanceDao {
 	int leavework(int employeeSeq);
 	List<AttendanceParam> selectAllAttendance(int convSeq);
 	List<AttendanceParam> selectOneAttendance(int employeeSeq);
+	AttendanceParam attendanceCheck(int employeeSeq);
 }
