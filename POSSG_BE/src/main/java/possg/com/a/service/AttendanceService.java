@@ -32,4 +32,8 @@ public class AttendanceService {
 	public List<AttendanceParam> selectOneAttendance(int employeeSeq){
 		return dao.selectOneAttendance(employeeSeq);
 	};
+	
+	public AttendanceParam attendanceCheck(int employeeSeq) {
+		return dao.attendanceCheck(employeeSeq);
+	};
 }
