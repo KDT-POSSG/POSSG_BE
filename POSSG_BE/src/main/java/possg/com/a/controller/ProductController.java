@@ -135,6 +135,8 @@ public class ProductController {
 			return null;
 		}
 		ProductDto resultDto = list.get(0);
+		System.out.println("result= " + resultDto);
+		
 		return resultDto;
 		
 	}

@@ -62,16 +62,6 @@ CREATE TABLE Product (
     foreign key(conv_seq) references Convenience(conv_seq)
 );
 
-UPDATE Product SET barcode='8801043015967' WHERE product_seq=1;
-UPDATE Product SET barcode='8801043016070' WHERE product_seq=2;
-UPDATE Product SET barcode='8801068914375' WHERE product_seq=3;
-UPDATE Product SET barcode='8806325615620' WHERE product_seq=4;
-UPDATE Product SET barcode='8801101882395' WHERE product_seq=5;
-UPDATE Product SET barcode='8801101882661' WHERE product_seq=6;
-UPDATE Product SET barcode='8801101883149' WHERE product_seq=7;
-UPDATE Product SET barcode='8801101888847' WHERE product_seq=8;
-UPDATE Product SET barcode='8801101882883' WHERE product_seq=9;
-UPDATE Product SET barcode='8801101885549' WHERE product_seq=10;
 
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
@@ -194,6 +184,7 @@ CREATE TABLE call_product_Conv (
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
+
 
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
