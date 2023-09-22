@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
+import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.ProductDto;
@@ -39,10 +40,11 @@ public interface ProductDao {
 	ConvenienceDto getConvenienceInfo(String branchName);
 	List<ConvenienceDto> getAllConvenience();
 	
-	List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto);/////////////////////
+	List<CallProductConvDto> getAllCallProductConvList(CallProductConvParam param);
 	List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto);
 	CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto);
 	List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto);
+	int getCallProductTotalNumber(CallProductConvParam param);
 	int updateRefCallProductConv(CallProductConvOrderListDto orderDto);
 	int cancelCallRefProductConv(CallProductConvOrderListDto orderDto);
 	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);

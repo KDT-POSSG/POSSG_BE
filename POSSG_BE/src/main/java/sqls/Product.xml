@@ -76,7 +76,7 @@
 			product_seq asc
 		</otherwise>
 	</choose>
-	limit ${(pageNumber * 20)}, 20
+	limit ${(pageNumber * pageSize)}, #{pageSize}
 </select>
 
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
@@ -117,8 +117,15 @@
 
 <!-- 점주 발주 대기 -->
 <!-- 모든 발주 대기 목록 획득. (call_status '-1' 제외) -->
-<select id="getAllCallProductConvList" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
+<select id="getAllCallProductConvList" parameterType="possg.com.a.dto.CallProductConvParam" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv
+	where conv_seq = #{convSeq} and call_status != '-1'
+	order by call_seq desc;
+	limit ${(pageNumber * 20)}, 20
+</select>
+
+<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvParam" resultType="Integer">
+	select count(*) from Call_product_conv
 	where conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
 </select>
@@ -157,7 +164,7 @@
     #{productName}, 
     '0', 
     0, 
-    #{img_url}
+    #{imgUrl}
   from Convenience c
   where c.conv_seq = #{convSeq};
 </insert>
@@ -204,6 +211,7 @@
 resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
 	where conv_seq = #{convSeq} and call_ref != '-1'
+	limit ${(pageNumber * 20)}, 20
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->

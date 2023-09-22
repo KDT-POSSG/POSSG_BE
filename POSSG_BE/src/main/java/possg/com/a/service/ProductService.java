@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import possg.com.a.dao.ProductDao;
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
+import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.ProductDto;
@@ -74,8 +75,8 @@ public class ProductService {
 		return dao.getAllConvenience();
 	}
 	
-	public List<CallProductConvDto> getAllCallProductConvList(CallProductConvDto convDto){
-		return dao.getAllCallProductConvList(convDto);
+	public List<CallProductConvDto> getAllCallProductConvList(CallProductConvParam param){
+		return dao.getAllCallProductConvList(param);
 	}
 	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto){
 		return dao.getRefCallProductConvList(convDto);
@@ -85,6 +86,9 @@ public class ProductService {
 	}
 	public List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto){
 		return dao.findCallProductConvName(convDto);
+	}
+	public int getCallProductTotalNumber(CallProductConvParam param) {
+		return dao.getCallProductTotalNumber(param);
 	}
 	public int updateRefCallProductConv(CallProductConvOrderListDto orderDto) {
 		return dao.updateRefCallProductConv(orderDto);
