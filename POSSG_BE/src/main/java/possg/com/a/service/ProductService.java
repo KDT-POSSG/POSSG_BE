@@ -44,6 +44,9 @@ public class ProductService {
 	public List<ProductDto> findProductName(ProductDto dto) {
 		return dao.findProductName(dto);
 	}
+	public List<ProductDto> findProductBarcode(ProductDto dto) {
+		return dao.findProductBarcode(dto);
+	}
 	
 	public int getTotalStock(String name) {
 		return dao.getTotalStock(name);
