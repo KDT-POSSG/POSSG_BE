@@ -123,6 +123,22 @@ public class ProductController {
 		return list;
 	}
 	
+	// 바코드로 상품 검색
+	// input: String barcode, int convSeq
+	@GetMapping("findProductBarcode")
+	public ProductDto findProductBarcode(ProductDto dto){
+		System.out.println("ProductController findProductBarcode() " + new Date());
+		System.out.println("dto= " + dto);
+		List<ProductDto> list = service.findProductBarcode(dto);
+		if(list.isEmpty() || list == null) {
+			System.out.println("list= " + list);
+			return null;
+		}
+		ProductDto resultDto = list.get(0);
+		return resultDto;
+		
+	}
+	
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
 	@GetMapping("getAllProductStock")
