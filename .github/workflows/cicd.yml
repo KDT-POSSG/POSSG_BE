@@ -62,5 +62,5 @@ jobs:
               -e NCS_SERVICEID=${{ secrets.NCS_SERVICEID }} \
               -e NCS_PHONE_NUMBER=${{ secrets.NCS_PHONE_NUMBER }} \
               -e JWT_TOKEN=${{ secrets.JWT_TOKEN }} \
-              --link mydb:db \
+              --link mysql:mydb \
               ${{ secrets.DOCKERHUB_USERNAME }}/possg-be:latest
