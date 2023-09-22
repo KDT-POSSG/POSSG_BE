@@ -42,7 +42,7 @@ jobs:
             docker pull possg/possg-be:latest
             docker rm -f possg-backend
             docker run -d \
-	  --name possg-backend \
+	            --name possg-backend \
               -p 3000:3000 \
               -e DB_HOST=db \
               -e DB_USER=${{ secrets.DB_USER }} \
