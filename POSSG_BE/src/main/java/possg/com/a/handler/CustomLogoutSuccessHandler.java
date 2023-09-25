@@ -18,7 +18,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import possg.com.a.service.ConvenienceService;
-import possg.com.a.util.JwtFilter;
 
 @Component
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
@@ -47,14 +46,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 		
 		String userId = (String) claims.get("userId");
 		
-		// 토큰에 대한 삭제처리 로직은 없네요 Pass
-		
-		// refresh토큰은 db에 저장해놨다가 logout 요청이 오면 db에서 refresh만 삭제하고 front에서 accessToken 삭제합니다
-		// 이건 여기서 할게요~!
 		service.logout(userId);
 		
-		// 예외처리도 여기서 해야해요~!
-		// 로그아웃이 이렇게 진행된 것처럼 사실 스프링 시큐리티를 이용하면 로그인도 이런 형태로 처리되는게 옳아요~! // 끝
 	}
 
 }

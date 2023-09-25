@@ -40,7 +40,6 @@ import possg.com.a.dto.SmsRequestDto;
 import possg.com.a.dto.SmsResponseDto;
 import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
-import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
 
 @RestController
@@ -262,110 +261,7 @@ public class ConvenienceController {
 	            // 사용자 정보 반환
 	            return user;	          
 	    }
-	/* 
-	// 본사 인증키 확인#
-	 @PostMapping("keyCheck")
-	 public String keycheck(String convKey) {
-		 System.out.println("ConvenienceController keycheck() " + new Date());	 
-		 
-		 System.out.println(convKey);
-		 		 
-		 int count = service.keycheck(convKey);
-		 System.out.println(count);
-		 if(count != 0) {
-			 return "YES";
-		 }	 
-		 return "NO";
-	 }
 
-
-	 // 비밀번호 찾기 sms 보내기#
-	 @PostMapping("send")
-	    public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
-		 System.out.println("ConvenienceController sendSms() " + new Date());
-		 String temp = messageDto.getTo();
-		
-		 System.out.println(temp);
-		 		 
-		 ConvenienceDto conv = service.mypage(messageDto.getContent());
-		 String phoneNum = conv.getPhoneNumber();	
-	    int veri = number();
-
-		 if(messageDto.getContent().equals(conv.getUserId()) && phoneNum.equals(temp)) {
-			 verificationCodeGenerationTime = System.currentTimeMillis();
-	            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
-	            
-	            
-	            service.insertSms(veri);
-	            
-	            return ResponseEntity.ok(response);   
-		 }
-		 return ResponseEntity.badRequest().body("SMS 전송 실패");
-	    }
-	 
-	 // 회원가입용 sms 보내기#
-	 @PostMapping("regiSend")
-	    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
-		 System.out.println("ConvenienceController sendSms() " + new Date());
-		 
-		 int veri = number();		 
-		 
-			 verificationCodeGenerationTime = System.currentTimeMillis();
-			 	System.out.println("send time" + verificationCodeGenerationTime);
-	            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);  
-	            return ResponseEntity.ok(response);   
-	    }
-	 
-
-	 // sms 확인하기#
-	 @PostMapping("Authentication")
-	 public String Authentication(@RequestParam int CodeNumber) {		 
-		 System.out.println("ConvenienceController Authentication() " + new Date());
-		 
-		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
-		 System.out.println(CodeNumber);
-		 
-		 int smsNum = service.selectSms(CodeNumber);
-		 
-		 System.out.println(smsNum);
-		 
-		 if(smsNum == 0) {
-			 System.out.println("db에 일치하는 인증번호가 없습니다.");
-			 return "NO";
-		 }	 
-	
-		 long currentTime = System.currentTimeMillis();
-		 System.out.println(currentTime);
-		 
-		 System.out.println(verificationCodeGenerationTime);
-		  
-		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
-			 				 
-			 service.deleteSms(CodeNumber);		 
-			 
-				 return "YES";
-			 
-		 }	
-		 return "NO";
-	 }
-	 
-	 // 문자인증 하면 비밀번호 변경#
-	 @PostMapping("findPassword")
-	 public String findPassword(@RequestBody ConvenienceDto userDto) {
-		 System.out.println("ConvenienceController changePassword() " + new Date());
-		   	   
-		   if(userDto != null) {
-	   
-			   // 비밀번호 변경
-			   String hashedPassword = sha256(userDto.getNewPwd());
-			   userDto.setPwd(hashedPassword);
-			   
-			   service.findPassword(userDto);
-			   return "YES";
-		   }	  		   
-		   return "NO";
-		}
-	 */
 	// 내 정보 변경에서 비밀번호 변경#
 		 @PostMapping("changePassword")
 		 public String changePassword(@RequestBody ConvenienceDto userDto, @RequestHeader("accessToken") String accessToken) {

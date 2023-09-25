@@ -44,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		logger.info("Authorization" + authorization);
 		 
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
-			logger.info("authorization이 없거나 잘못보냈습니다.");
+			logger.info("authorization이 없거나 잘못보냈습니다. 치킨");
 			filterChain.doFilter(request, response);
 			return;
 		}
