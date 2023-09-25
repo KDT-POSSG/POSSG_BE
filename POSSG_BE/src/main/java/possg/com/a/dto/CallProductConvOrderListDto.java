@@ -2,6 +2,7 @@ package possg.com.a.dto;
 
 public class CallProductConvOrderListDto {
     private int seq;
+    private int convSeq;
     private String callRef;
     private String callDate;
     private int callStatus;
@@ -12,8 +13,10 @@ public class CallProductConvOrderListDto {
     public CallProductConvOrderListDto() {
     }
 
-    public CallProductConvOrderListDto(int seq, String callRef, String callDate, int callStatus, int callTotalNumber, int callTotalPrice, String callRemark) {
+
+    public CallProductConvOrderListDto(int seq, int convSeq, String callRef, String callDate, int callStatus, int callTotalNumber, int callTotalPrice, String callRemark) {
         this.seq = seq;
+        this.convSeq = convSeq;
         this.callRef = callRef;
         this.callDate = callDate;
         this.callStatus = callStatus;
@@ -28,6 +31,14 @@ public class CallProductConvOrderListDto {
 
 	public void setSeq(int seq) {
 		this.seq = seq;
+	}
+
+	public int getConvSeq() {
+		return convSeq;
+	}
+
+	public void setConvSeq(int convSeq) {
+		this.convSeq = convSeq;
 	}
 
 	public String getCallRef() {
@@ -80,7 +91,7 @@ public class CallProductConvOrderListDto {
 
 	@Override
 	public String toString() {
-		return "CallProductConvOrderListDto [seq=" + seq + ", callRef=" + callRef + ", callDate=" + callDate
+		return "CallProductConvOrderListDto [seq=" + seq + ", convSeq=" + convSeq + ", callRef=" + callRef + ", callDate=" + callDate
 				+ ", callStatus=" + callStatus + ", callTotalNumber=" + callTotalNumber + ", callTotalPrice=" + callTotalPrice
 				+ ", callRemark=" + callRemark + "]";
 	}

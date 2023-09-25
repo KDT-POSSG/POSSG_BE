@@ -26,6 +26,16 @@ public class AttendanceController {
 	public String attendance(@RequestBody AttendanceDto dto) {
 		System.out.println("AttendanceController attendance " + new Date());
 		
+		int emp_seq = dto.getEmployeeSeq(); // 직원 번호
+		
+		AttendanceParam param = service.attendanceCheck(emp_seq);
+		//System.out.println(param.toString());
+		
+		// 이미 출근해 있는 경우 
+		if (param.getLeaveWork() == null && param.getAttendance() != null) {
+			return "ALREADY CHECK";
+		}
+		
 		int count = service.attendance(dto);
 		
 		if(count > 0) {
@@ -39,6 +49,14 @@ public class AttendanceController {
 	@PostMapping("leavework")
 	public String leavework(@RequestParam int employeeSeq) {
 		System.out.println("AttendanceController attendance " + new Date());
+		
+		AttendanceParam param = service.attendanceCheck(employeeSeq);
+		//System.out.println(param.toString());
+		
+		// 이미 퇴근해 있는 경우 
+		if (param.getLeaveWork() != null) {
+			return "ALREADY CHECK";
+		}
 		
 		int count = service.leavework(employeeSeq);
 		

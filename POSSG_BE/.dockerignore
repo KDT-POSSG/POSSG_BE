@@ -1,0 +1,10 @@
+# 배포할 때 가져가지 않았으면 하는 것들
+build/
+.git/
+.github/
+.gitignore
+.settings/
+target/
+.classpath
+.factorypath
+.project

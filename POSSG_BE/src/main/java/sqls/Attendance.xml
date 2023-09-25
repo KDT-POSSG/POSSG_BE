@@ -8,6 +8,30 @@
         VALUES (#{employeeSeq}, now(), "출근", #{matter})
 	</insert>
 	
+	<!-- 출근 확인 -->
+	<select id="attendanceCheck" parameterType="Integer" resultType="possg.com.a.dto.AttendanceParam">
+		SELECT
+	        a.att_seq AS attSeq,
+	        a.employee_seq AS employeeSeq,
+	        e.birth_date AS birthDate,
+	        e.salary AS salary,
+	        e.emp_name AS empName,
+	        e.gender AS gender,
+	        e.phone_number AS phoneNumber,
+	        a.attendance AS attendance,
+	        a.leave_work AS leaveWork,
+	        a.work_hours AS workHours,
+	        a.remark AS remark,
+	        a.matter AS matter,
+	        c.branch_name AS branchName
+	    FROM Attendance a
+	    JOIN Employee e ON a.employee_seq = e.employee_seq
+	    JOIN Convenience c ON e.conv_seq = c.conv_seq
+	    WHERE e.employee_seq = #{employeeSeq} 
+	    ORDER BY attseq DESC
+        limit 1;
+	</select>
+	
 	<!-- 퇴근 -->
 	<update id="leavework" parameterType="Integer">
 	    UPDATE Attendance

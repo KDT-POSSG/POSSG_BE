@@ -1,9 +1,7 @@
 use mydb;
 
-
 -- SET foreign_key_checks = 0;
 -- SET foreign_key_checks = 1;
-
 
 -- 편의점 (점주) 테이블 --
 CREATE TABLE Convenience (
@@ -22,16 +20,6 @@ CREATE TABLE Convenience (
     FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
 
-INSERT INTO Convenience (conv_seq, user_id, pwd, representative_name, branch_name
-								, phone_number, registration_date, conv_status) 
-VALUES (0, 'ghfrlfehd', '10101010', '홍길동', '수영구 이마트', '01011112222', '20230805', 1);
-
--- 본사 확인 인증 키
-CREATE TABLE Account_num(
-	account_num_seq INT auto_increment primary key,	-- 고유번호
-	account_code VARCHAR(255) not null,				-- 본사 지급 번호
-	code_status INT not null,						-- 코드 사용 상태 번호 0:사용전 1:사용중
-);
 
 -- 고객 테이블 --
 CREATE TABLE Customer (
@@ -90,22 +78,6 @@ CREATE TABLE Delivery (
 
 );
 
-CREATE TABLE Delivery_list (
-	seq INT auto_increment primary key,							-- seq
-	del_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
-	del_date Timestamp not null,								-- 발주 날짜
-	del_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
-	del_total_number INT not null,								-- 발주 상품 수량
-	del_total_price INT not null,								-- 발주 총 가격		
-	del_remark VARCHAR(255)	,								    -- 비고
-    user_id INT													-- 주문한 유저 seq
-);
-
-ALTER TABLE Delivery
-ADD CONSTRAINT ref
-FOREIGN KEY (ref)
-REFERENCES Delivery_list(del_ref) ON DELETE CASCADE;
-
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
@@ -127,6 +99,30 @@ CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
 	category_name VARCHAR(255) not null				-- 상품 카테고리명				
 
+-- 배달 테이블 --
+CREATE TABLE Delivery (
+	order_seq int auto_increment primary key,					-- 배달 고유 번호
+	user_id	INT, 												-- 배달 시킨 사람
+	product_seq INT,											-- 배달 상품 고유번호
+	order_status int not null, 									-- 배송상태 (1: 접수대기, 2: 픽업대기, 3: 배송중, 4: 배송완료)
+	quantity int not null,										-- 배달 상품 하나의 갯수
+	product_name VARCHAR(255),									-- 배달 상품명
+	order_date Timestamp not null,								-- 배달 주문 시각
+	ref	INT not null,											-- 배달 묶음 
+	location VARCHAR(255) not null, 							-- 배송지
+    foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
+    foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
+);
+
+CREATE TABLE Delivery_list (
+	seq INT auto_increment primary key,							-- seq
+	del_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
+	del_date Timestamp not null,								-- 발주 날짜
+	del_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
+	del_total_number INT not null,								-- 발주 상품 수량
+	del_total_price INT not null,								-- 발주 총 가격		
+	del_remark VARCHAR(255)									    -- 비고
+);
 
 -- 결제 정보 테이블 --
 CREATE TABLE Payment (
@@ -201,11 +197,10 @@ CREATE TABLE PT(
     foreign key(customer_seq) references Customer(customer_seq)		-- customer 테이블에서 참조 
 );
 
-
 -- 점주 발주 테이블 --
 CREATE TABLE call_product_Conv (
 	call_seq INT auto_increment primary key,					-- 편의점 발주 고유번호
-	user_id	VARCHAR(255),										-- 편의점 점주 아이디 (주문자)
+	conv_seq INT not null,										-- 편의점 고유번호 (주문자)
 	product_seq INT,											-- 상품 고유번호	
 	amount INT not null,										-- 주문 양
 	rp_name VARCHAR(255) not null,								-- 대표자명
@@ -215,15 +210,16 @@ CREATE TABLE call_product_Conv (
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
-    foreign key(user_id) references Convenience(user_id),		-- 편의점 테이블에서 참조
+	img_url VARCHAR(255),										-- 상품 이미지
+    foreign key(conv_seq) references Convenience(conv_seq),		-- 편의점 테이블에서 참조
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
 
-	
 
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
+	conv_seq INT,										-- 편의점 점주 아이디 (주문자)
 	call_ref VARCHAR(255) unique not null,						-- 발주 목록 묶음
 	call_date Timestamp not null,								-- 발주 날짜
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)

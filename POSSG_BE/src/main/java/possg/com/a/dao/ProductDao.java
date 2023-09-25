@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
+import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.ProductDto;
@@ -16,6 +17,8 @@ import possg.com.a.dto.ProductParam;
 @Repository
 public interface ProductDao {
 
+	String healthcheck();
+	
 	List<ProductDto> productList(ProductParam param);
 	List<ProductDto> getAllProduct(ProductParam param);
 	int updateProductRomanName(ProductDto dto);
@@ -24,9 +27,10 @@ public interface ProductDao {
 	int addProduct(ProductDto dto);
 	
 	List<ProductDto> findProductName(ProductDto dto);
+	List<ProductDto> findProductBarcode(ProductDto dto);
 	
 	int getTotalStock(String name);
-	int addCallProductConv(CallProductConvDto convDto);
+	int addCallProductConv(ProductDto dto);
 	int updateCallProductConv(CallProductConvDto convDto);
 	
 	List<ProductDto> getAllProductStock(ProductParam param);
@@ -36,17 +40,21 @@ public interface ProductDao {
 	ConvenienceDto getConvenienceInfo(String branchName);
 	List<ConvenienceDto> getAllConvenience();
 	
-	List<CallProductConvDto> getAllCallProductConvList();
-	List<CallProductConvDto> getRefCallProductConvList(String callRef);
-	CallProductConvDto getSeqCallProductConv(int callSeq);
-	List<CallProductConvDto> findCallProductConvName(String name);
-	int updateRefCallProductConv(String callRef);
-	int deleteCallRefProductConv(String callRef);
+	List<CallProductConvDto> getAllCallProductConvList(CallProductConvParam param);
+	List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto);
+	CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto);
+	List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto);
+	int getCallProductTotalNumber(CallProductConvParam param);
+	int updateRefCallProductConv(CallProductConvOrderListDto orderDto);
+	int cancelCallRefProductConv(CallProductConvOrderListDto orderDto);
+	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);
+	int deleteCallProduct(CallProductConvDto callDto);
 	
-	List<CallProductConvOrderListDto> getAllConvOrderList();
-	CallProductConvOrderListDto getRefConvOrderList(String callRef);
+	List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvOrderListDto orderDto);
+	CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
-	int deleteConvOrderList(String callRef);
+	int cancelConvOrderList(CallProductConvOrderListDto orderDto);
+	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
 
 }

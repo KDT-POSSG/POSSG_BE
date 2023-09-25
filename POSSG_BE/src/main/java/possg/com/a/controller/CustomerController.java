@@ -26,7 +26,7 @@ import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
 
 @RestController
-public class CustomerController {
+public class CustomerController { 
 	
 	@Autowired
 	CustomerService service;
