@@ -49,13 +49,14 @@ public class SecurityConfig {
 	private final TokenCreate tokenCreate;
 	
 	private final ConvenienceService service;
-/*	
+	
 	@Autowired
 	public SecurityConfig(Environment env, TokenCreate tokenCreate, ConvenienceService service) {
 		this.env = env;
 		this.tokenCreate = tokenCreate;
 		this.service = service;
 	}
+	/*
 	//.anyRequest().authenticated()
 	//http.addFilterBefore(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
     @Bean
