@@ -20,4 +20,7 @@
     <fullyQualifiedTypeName name="possg.com.a.dto.FavoritePageDto"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
+    <fullyQualifiedTypeName name="possg.com.a.util.JwtFilter"/>
+    <fullyQualifiedTypeName name="possg.com.a.service.TranslationService"/>
+    <fullyQualifiedTypeName name="possg.com.a.dto.TokenDto"/>
 </qualifiedTypeNameHistroy>

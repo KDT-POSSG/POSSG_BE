@@ -12,8 +12,6 @@ public class CallProductConvDto {
     private String productName;
     private String callRef;
     private int callStatus;
-    
-    private String imgUrl;
 
     // 생성자
     public CallProductConvDto() {}
@@ -33,24 +31,6 @@ public class CallProductConvDto {
 		this.callRef = callRef;
 		this.callStatus = callStatus;
 	}
-	
-	public CallProductConvDto(int callSeq, String userId, int productSeq, int amount, String rpName, String bName,
-			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl) {
-		super();
-		this.callSeq = callSeq;
-		this.userId = userId;
-		this.productSeq = productSeq;
-		this.amount = amount;
-		this.rpName = rpName;
-		this.bName = bName;
-		this.price = price;
-		this.callDate = callDate;
-		this.productName = productName;
-		this.callRef = callRef;
-		this.callStatus = callStatus;
-		this.imgUrl = imgUrl;
-	}
-
 
 	public int getCallSeq() {
 		return callSeq;
@@ -140,23 +120,13 @@ public class CallProductConvDto {
 		this.callStatus = callStatus;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
-
 	@Override
 	public String toString() {
 		return "CallProductConvDto [callSeq=" + callSeq + ", userId=" + userId + ", productSeq=" + productSeq
 				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", callDate="
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
-				+ ", imgUrl=" + imgUrl + "]";
+				+ "]";
 	}
-
-	
 
 	
     
