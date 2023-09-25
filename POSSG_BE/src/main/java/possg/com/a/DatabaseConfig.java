@@ -40,7 +40,7 @@ public class DatabaseConfig {
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setConfiguration(mybatisConfig);
 		
-		Resource[] arrResource = new PathMatchingResourcePatternResolver().getResources("classpath:sqls/*.xml");
+		Resource[] arrResource = new PathMatchingResourcePatternResolver().getResources("classpath:/sqls/*.xml");
 		sqlSessionFactoryBean.setMapperLocations(arrResource);
 		sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
 		
