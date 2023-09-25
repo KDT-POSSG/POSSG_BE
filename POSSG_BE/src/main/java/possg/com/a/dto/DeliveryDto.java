@@ -3,7 +3,7 @@ package possg.com.a.dto;
 
 public class DeliveryDto {
     private int orderSeq;
-    private String userId;
+    private int userId;
     private String productSeq;
     private int orderStatus;
     private int quantity;
@@ -12,13 +12,16 @@ public class DeliveryDto {
     private String ref;
     private String location;
     private int price;
+    private String branchName;
+    private double discountRate;
+    private int promotionInfo;
    
 
 
     // 생성자
     public DeliveryDto() {}
 
-    public DeliveryDto(int orderSeq, String userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price) {
+    public DeliveryDto(int orderSeq, int userId, String productSeq, int orderStatus, int quantity, String productName, String orderDate, String ref, String location, int price, String branchName, double discountRate, int promotionInfo) {
         this.orderSeq = orderSeq;
         this.userId = userId;
         this.productSeq = productSeq;
@@ -29,6 +32,9 @@ public class DeliveryDto {
         this.ref = ref;
         this.location = location;
         this.price = price;
+        this.branchName = branchName;
+        this.discountRate = discountRate;
+        this.promotionInfo = promotionInfo;
 
     }
 
@@ -42,11 +48,11 @@ public class DeliveryDto {
 		this.orderSeq = orderSeq;
 	}
 
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
@@ -113,21 +119,40 @@ public class DeliveryDto {
 	public void setPrice(int price) {
 		this.price = price;
 	}
+	
+	public String getBranchName() {
+		return branchName;
+	}
 
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
 
-    @Override
-    public String toString() {
-        return "DeliveryDTO{" +
-                "orderSeq=" + orderSeq +
-                ", userId='" + userId + '\'' +
-                ", productSeq='" + productSeq + '\'' +
-                ", orderStatus=" + orderStatus +
-                ", quantity=" + quantity +
-                ", productName='" + productName + '\'' +
-                ", orderDate=" + orderDate +
-                ", ref=" + ref +
-                ", location='" + location + '\'' +
-                ", price='" + price + '\'' +
-                '}';
-    }
+	public double getDiscountRate() {
+		return discountRate;
+	}
+
+	public void setDiscountRate(double discountRate) {
+		this.discountRate = discountRate;
+	}
+
+	public int getPromotionInfo() {
+		return promotionInfo;
+	}
+
+	public void setPromotionInfo(int promotionInfo) {
+		this.promotionInfo = promotionInfo;
+	}
+
+	@Override
+	public String toString() {
+		return "DeliveryDto [orderSeq=" + orderSeq + ", userId=" + userId + ", productSeq=" + productSeq
+				+ ", orderStatus=" + orderStatus + ", quantity=" + quantity + ", productName=" + productName
+				+ ", orderDate=" + orderDate + ", ref=" + ref + ", location=" + location + ", price=" + price
+				+ ", branchName=" + branchName + ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo
+				+ "]";
+	}
+
+	
+	
 }

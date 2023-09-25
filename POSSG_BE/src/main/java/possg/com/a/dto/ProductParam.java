@@ -6,18 +6,13 @@ public class ProductParam{
 	private String search;	// 검색어
 	private int pageNumber;
 	private int seq;
-	
 	private int minPrice; // 최소 가격
 	private int maxPrice; // 최대 가격
 	private int promotionInfo; // 프로모션 정보
-	private int categoryId; // 1: 행사상품, 2: 신선식품
-	
-	private String sortOrder = "newest";
-	
-	private int pageSize = 20;
-	
+	private int categoryId; // 1: 행사상품, 2: 신선식품	
+	private String sortOrder = "newest";	
+	private int pageSize = 20;	
 	private int country = 0;
-	
 	private int convSeq;
 
 	public ProductParam() {
@@ -51,22 +46,6 @@ public class ProductParam{
 		this.promotionInfo = promotionInfo;
 		this.sortOrder = sortOrder;
 		this.categoryId = categoryId;
-	}
-
-	public ProductParam(String choice, String search, int pageNumber, int seq, int minPrice, int maxPrice,
-			int promotionInfo, int categoryId, String sortOrder, int pageSize, int country) {
-		super();
-		this.choice = choice;
-		this.search = search;
-		this.pageNumber = pageNumber;
-		this.seq = seq;
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
-		this.promotionInfo = promotionInfo;
-		this.categoryId = categoryId;
-		this.sortOrder = sortOrder;
-		this.pageSize = pageSize;
-		this.country = country;
 	}
 	
 	public ProductParam(String choice, String search, int pageNumber, int seq, int minPrice, int maxPrice,
@@ -188,6 +167,7 @@ public class ProductParam{
 				+ ", minPrice=" + minPrice + ", maxPrice=" + maxPrice + ", promotionInfo=" + promotionInfo
 				+ ", categoryId=" + categoryId + ", sortOrder=" + sortOrder + ", pageSize=" + pageSize + ", country="
 				+ country + ", convSeq=" + convSeq + "]";
+
 	}
 	
 }

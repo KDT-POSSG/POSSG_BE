@@ -1,9 +1,13 @@
 package possg.com.a.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.TokenDto;
+
 
 @Mapper
 @Repository
@@ -21,7 +25,9 @@ public interface ConvenienceDao {
 	ConvenienceDto findUserByAddressAndPhoneNumber(String representativeName, String phoneNumber);
 	
 	// 패스워드 업데이트
-	void changePassword(ConvenienceDto dto);
+	void findPassword(ConvenienceDto dto);
+	
+	ConvenienceDto changePassword(String dto);
 		
 	// 비밀번호 찾기
 	ConvenienceDto findUserByAddressAndUserId(String phoneNumber, String userId);
@@ -35,6 +41,18 @@ public interface ConvenienceDao {
 	//키 중복체크
 	int keycheck(String convKey);
 	
-	int updateCodeStatus(ConvenienceDto dto);	
+	int updateCodeStatus(ConvenienceDto dto);
+	
+	int insertToken(TokenDto dto);
+	
+	List<TokenDto> selectToken(String userId);
+	
+	int insertSms(int smsNum);
+	
+	int selectSms(int smsNum);
+	
+	int deleteSms(int smsNum);
+	
+	int logout(String userId);
 
 }

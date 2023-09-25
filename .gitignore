@@ -1,5 +1,6 @@
 .metadata/
 database/
+POSSG_BE/bin/
 
 HELP.md
 target/
