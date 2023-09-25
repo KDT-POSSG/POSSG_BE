@@ -1,20 +1,18 @@
 package possg.com.a.util;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
@@ -23,16 +21,23 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component
-public class JwtFilter extends OncePerRequestFilter{
+public class JwtFilter extends OncePerRequestFilter {
 
 	private final TokenCreate tokenCreate;
 	
 	@Autowired
 	public JwtFilter(TokenCreate tokenCreate) {
-		this.tokenCreate = tokenCreate;
+	    this.tokenCreate = tokenCreate;
 	}
 	
+	
+	 private static final String[] excludedEndpoints = new String[] {"/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck"};
+	  @Override
+	  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+	    return Arrays.stream(excludedEndpoints)
+	        .anyMatch(e -> new AntPathMatcher().match(e, request.getRequestURI()));
+	  }
+		
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -44,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		logger.info("Authorization" + authorization);
 		 
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
-			logger.info("authorization이 없거나 잘못보냈습니다. 치킨");
+			logger.info("authorization이 없거나 잘못보냈습니다.");
 			filterChain.doFilter(request, response);
 			return;
 		}

@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,6 +50,7 @@ public class SecurityConfig {
 	private final TokenCreate tokenCreate;
 	
 	private final ConvenienceService service;
+		
 	
 	@Autowired
 	public SecurityConfig(Environment env, TokenCreate tokenCreate, ConvenienceService service) {
@@ -56,30 +58,30 @@ public class SecurityConfig {
 		this.tokenCreate = tokenCreate;
 		this.service = service;
 	}
-	/*
-	//.anyRequest().authenticated()
-	//http.addFilterBefore(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
+	
+	//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	http.authorizeHttpRequests(req ->
 				req
 					.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
 					.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
-					
+					.anyRequest().authenticated()
+					//.requestMatchers("/**").permitAll()
 		);
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();
-    	
-    	
+     	
+    	http.addFilterAt(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
+
     	
     	http
     		.logout()
     		.logoutUrl("/logout")
-    		.logoutSuccessHandler(new CustomLogoutSuccessHandler(env, service));
-    
+    		.logoutSuccessHandler(new CustomLogoutSuccessHandler(env, service));   
 
         return http.build();
     }
- */   
+
 	  
 }
