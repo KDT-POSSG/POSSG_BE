@@ -56,38 +56,30 @@ public class SecurityConfig {
 		this.tokenCreate = tokenCreate;
 		this.service = service;
 	}
-	
+	/*
+	//.anyRequest().authenticated()
+	//http.addFilterBefore(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	http.authorizeHttpRequests(req ->
 				req
 					.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
 					.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
-					.anyRequest().authenticated()
+					
 		);
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();
     	
-    	http.addFilterAfter(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
+    	
     	
     	http
     		.logout()
     		.logoutUrl("/logout")
     		.logoutSuccessHandler(new CustomLogoutSuccessHandler(env, service));
     
-    	
- 
-    	
-//    	http
-//    		.formLogin()
-//    		.loginProcessingUrl("/NoSecurityZoneController/login")
-//    		.successHandler(new CustomLoginSuccessHandler())
-//    		.usernameParameter("userId")
-//    		.passwordParameter("pwd")
-//    		.defaultSuccessUrl("/");
 
         return http.build();
     }
-    
+ */   
 	  
 }
