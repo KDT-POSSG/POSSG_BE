@@ -24,7 +24,7 @@ import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.TokenCreate;
-
+/*
 @RestController
 @RequestMapping("tokenController")
 public class TokenController {
@@ -104,3 +104,4 @@ public class TokenController {
 	
 	
 }
+*/
