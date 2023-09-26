@@ -1,5 +1,5 @@
 package possg.com.a.controller;
-/*
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,4 +84,3 @@ public class TranslationController {
 	}
 
 }
-*/

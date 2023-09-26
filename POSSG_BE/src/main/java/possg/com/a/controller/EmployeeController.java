@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import possg.com.a.dto.EmployeeDto;
 import possg.com.a.service.EmployeeService;
 
-/*
 @RestController
 @CrossOrigin(origins = "http://localhost:3000") // 프론트엔드 CORS 허용
 public class EmployeeController {
@@ -80,5 +79,3 @@ public class EmployeeController {
 	}
 	
 }
-
-*/
