@@ -2,7 +2,7 @@ package possg.com.a.dto;
 
 public class CallProductConvParam {
     private int convSeq;
-    private int pageNumber;
+    private int pageNumber = 0;
     private int pageSize = 20;
 
 	// 생성자

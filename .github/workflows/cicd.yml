@@ -62,5 +62,6 @@ jobs:
               -e NCS_SERVICEID=${{ secrets.NCS_SERVICEID }} \
               -e NCS_PHONE_NUMBER=${{ secrets.NCS_PHONE_NUMBER }} \
               -e JWT_TOKEN=${{ secrets.JWT_TOKEN }} \
+              -e MYBATIS_MAPPER_LOCATIONS=classpath:*.xml \
               --link mysql:mydb \
               ${{ secrets.DOCKERHUB_USERNAME }}/possg-be:latest

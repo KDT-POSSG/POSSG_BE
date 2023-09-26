@@ -103,8 +103,8 @@ public class ProductService {
 		return dao.deleteCallProduct(callDto);
 	}
 	
-	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvOrderListDto orderDto){
-		return dao.getAllConvOrderList(orderDto);
+	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param){
+		return dao.getAllConvOrderList(param);
 	}
 	public CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto){
 		return dao.getRefConvOrderList(convDto);

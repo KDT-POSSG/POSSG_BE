@@ -50,7 +50,7 @@ public interface ProductDao {
 	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);
 	int deleteCallProduct(CallProductConvDto callDto);
 	
-	List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvOrderListDto orderDto);
+	List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param);
 	CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);

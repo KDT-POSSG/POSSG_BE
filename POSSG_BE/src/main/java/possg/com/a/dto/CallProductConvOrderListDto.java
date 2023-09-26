@@ -10,6 +10,9 @@ public class CallProductConvOrderListDto {
     private int callTotalPrice;
     private String callRemark;
 
+    private int pageNumber = 0;
+    private int pageSize = 20;
+
     public CallProductConvOrderListDto() {
     }
 
@@ -88,12 +91,29 @@ public class CallProductConvOrderListDto {
 	public void setCallRemark(String callRemark) {
 		this.callRemark = callRemark;
 	}
+	
+	public int getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	@Override
 	public String toString() {
-		return "CallProductConvOrderListDto [seq=" + seq + ", convSeq=" + convSeq + ", callRef=" + callRef + ", callDate=" + callDate
-				+ ", callStatus=" + callStatus + ", callTotalNumber=" + callTotalNumber + ", callTotalPrice=" + callTotalPrice
-				+ ", callRemark=" + callRemark + "]";
+		return "CallProductConvOrderListDto [seq=" + seq + ", convSeq=" + convSeq + ", callRef=" + callRef
+				+ ", callDate=" + callDate + ", callStatus=" + callStatus + ", callTotalNumber=" + callTotalNumber
+				+ ", callTotalPrice=" + callTotalPrice + ", callRemark=" + callRemark + ", pageNumber=" + pageNumber
+				+ ", pageSize=" + pageSize + "]";
 	}
 
     

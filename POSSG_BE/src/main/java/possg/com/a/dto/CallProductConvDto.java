@@ -13,6 +13,9 @@ public class CallProductConvDto {
     private String callRef;
     private int callStatus;
     private String imgUrl;
+    
+    private int pageNumber = 0;
+    private int pageSize = 20;
 
     // 생성자
     public CallProductConvDto() {}
@@ -124,14 +127,35 @@ public class CallProductConvDto {
 		this.callStatus = callStatus;
 	}
 
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public int getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
 	@Override
 	public String toString() {
 		return "CallProductConvDto [callSeq=" + callSeq + ", convSeq=" + convSeq + ", productSeq=" + productSeq
 				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", callDate="
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
-				+ "]";
+				+ ", imgUrl=" + imgUrl + ", pageNumber=" + pageNumber + ", pageSize=" + pageSize + "]";
 	}
-
-	
-    
 }
