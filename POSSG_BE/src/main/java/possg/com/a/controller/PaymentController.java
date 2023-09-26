@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import possg.com.a.dto.PaymentDto;
 import possg.com.a.service.PaymentService;
-
+/*
 @RestController
 //@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
 public class PaymentController {
@@ -59,6 +59,7 @@ public class PaymentController {
 		return "NO";
 				
 	}
+	
 	
 	// 결제정보
 //    public PaymentDto getPayInfo(String token, String mId) { 
@@ -131,3 +132,4 @@ public class PaymentController {
 //    }
 
 }
+*/
