@@ -87,7 +87,10 @@ public class ProductController {
 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
 		if (param.getPageSize() > count) {
 			param.setPageSize(count); 
-		}
+		}	
+		
+		param.setPageSize(1); 
+		
 		int pageProduct = count / param.getPageSize();
 		if((count % param.getPageSize()) > 0) {
 			pageProduct = pageProduct + 1;
@@ -98,7 +101,7 @@ public class ProductController {
 		map.put("pageProduct", pageProduct);
 		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
-		return map;
+		return map;		
 		
 		//return list;
 	}

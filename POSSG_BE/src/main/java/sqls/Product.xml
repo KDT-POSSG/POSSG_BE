@@ -6,7 +6,7 @@
 		
 <!-- 상품 -->
 <!-- 중복 제외 상품 목록 획득 -->
-<select id="productList" parameterType="possg.com.a.dto.ProductParam"
+<!-- <select id="productList" parameterType="possg.com.a.dto.ProductParam"
 	resultType="possg.com.a.dto.ProductDto">
 	select MIN(product_seq) AS product_seq
 	, MAX(conv_seq) AS conv_seq
@@ -78,6 +78,11 @@
 	</choose>
 
 	limit ${(pageNumber * pageSize)}, #{pageSize}
+</select> -->
+
+<select id="productList" parameterType="possg.com.a.dto.ProductParam"
+	resultType="possg.com.a.dto.ProductDto">
+	select * from Product
 </select>
 
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->

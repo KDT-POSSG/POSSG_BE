@@ -9,7 +9,7 @@ import possg.com.a.util.TokenUtil;
 
 @SpringBootApplication
 @ServletComponentScan 
-@MapperScan("possg.com.a.dao")
+@MapperScan("possg.com.a")
 public class PossgBeApplication {
 
 	public static void main(String[] args) {
