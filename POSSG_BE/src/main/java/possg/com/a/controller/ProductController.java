@@ -49,7 +49,7 @@ import util.ProductUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-/*
+
 @RestController
 public class ProductController {
 
@@ -71,7 +71,6 @@ public class ProductController {
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
 		int cnt = 0;
-		
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
 				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
@@ -82,18 +81,13 @@ public class ProductController {
 				cnt ++;
 			}
 		}
-		
-		
 		System.out.println("ProductList= " + list);
 		// 상품의 총 수
 		int count = service.getProductTotalNumber(param);
 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
 		if (param.getPageSize() > count) {
 			param.setPageSize(count); 
-		}	
-		
-		param.setPageSize(1); 
-		
+		}
 		int pageProduct = count / param.getPageSize();
 		if((count % param.getPageSize()) > 0) {
 			pageProduct = pageProduct + 1;
@@ -104,7 +98,7 @@ public class ProductController {
 		map.put("pageProduct", pageProduct);
 		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
-		return map;		
+		return map;
 		
 		//return list;
 	}
@@ -151,10 +145,9 @@ public class ProductController {
 		return resultDto;
 		
 	}
-	*/
+	
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
-/*
 	@GetMapping("getAllProductStock")
 	public Map<String, Object> getAllProductStock(ProductParam param){
 		System.out.println("ProductController getAllProductStock() " + new Date());
@@ -169,8 +162,6 @@ public class ProductController {
         
         // 상세 상품 정보를 저장할 리스트
         List<Map<String, Object>> productDetails = null;
-        */
-        
         /*
         // 이전에 처리한 상품의 이름을 저장할 변수
         String prevProductName = ""; 
@@ -178,7 +169,6 @@ public class ProductController {
         // 총 재고량을 저장할 변수
         int totalStock = 0;
         */
-/*
         // 모든 상품 정보를 순회
 	    for (ProductDto dto : list) {
 	    	
@@ -226,7 +216,6 @@ public class ProductController {
  		if((count % param.getPageSize()) > 0) {
  			pageProduct = pageProduct + 1;
  		}
- 		*/
  		/*
  		Map<String, Object> map = new HashMap<String, Object>();
  		map.put("convList", resultList);
@@ -234,7 +223,6 @@ public class ProductController {
  		//map.put("pageNumber", param.getPageNumber());
  		map.put("cnt", count); // react 중 pagination 사용시 활용
  		*/
-/*
  		Map<String, Object> map = new HashMap<String, Object>();
  		map.put("ProductList", resultList);
  		map.put("pageProduct", pageProduct);
@@ -242,9 +230,8 @@ public class ProductController {
 	    
 		return map;
 	}
-	*/
+	
 	/* 점주 발주 */
-/*
 	// 발주 대기 목록 획득
 	// input: int convSeq
 	@GetMapping("getAllCallProductConvList")
@@ -424,10 +411,9 @@ public class ProductController {
 		
 		return "NO";
 	}
-	*/
 	
 	/* 고객 발주 */
-	/*
+	
 	// 고객 발주 상품 리스트에 추가
 	@PostMapping("addCallProductCustomer")
 	public String addCallProductCustomer(ProductDto productDto, CustomerDto customerDto, ConvenienceDto convDto) {
@@ -449,9 +435,9 @@ public class ProductController {
 		}
 		return "NO";
 	}
-	*/
+	
 	/* 발주 */
-	/*
+	
 	// 발주 리스트 획득
 	// input: int convSeq, int pageNumber, int pageSize
 	@GetMapping("getAllConvOrderList")
@@ -561,10 +547,9 @@ public class ProductController {
 	    }
 		return "NO";
 	}
-	*/
+	
 	
 	/* 편의점 */
-/*
 	// 점포명으로 편의점 검색
 	@PostMapping("getConvenienceInfo")
 	public ConvenienceDto getConvenienceInfo(String branchName) {
@@ -677,9 +662,8 @@ public class ProductController {
 	// 상품 상세정보 필요시 조치 방안
 	// 1. 영양정보 검색 후 수작업 https://www.fatsecret.kr/%EC%B9%BC%EB%A1%9C%EB%A6%AC-%EC%98%81%EC%96%91%EC%86%8C
 	// 2. 크롤링 페이지 다른 주소로 변경 >> https://emile.emarteveryday.co.kr/
-	*/
+	
 	//@Scheduled(fixedRate = 0*(60*60*1000)/*시*/ + 50*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 크롤링 기능
-	/*
 	@GetMapping("productScrap")
 	public void productScrap() throws Exception {
         List<ProductDto> ProductList = ProductUtil.productScrap(service);  // 이마트24에서 상품을 스크랩
@@ -694,7 +678,7 @@ public class ProductController {
 	
 
 }
-*/
+
 
 /*
 //이전 상품 이름과 현재 상품 이름이 다르면
@@ -741,3 +725,17 @@ productMap.put("details", productDetails);
 resultList.add(productMap);
 }
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+

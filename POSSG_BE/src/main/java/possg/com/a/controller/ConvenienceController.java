@@ -41,10 +41,9 @@ import possg.com.a.dto.SmsResponseDto;
 import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.TokenCreate;
-/*
 
 @RestController
-// @CrossOrigin(origins = "http://localhost:3000") //CROS 설정
+@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class ConvenienceController {
 
 	@Autowired
@@ -70,7 +69,6 @@ public class ConvenienceController {
 	    private String senderPhone;
 	 
 	 public long verificationCodeGenerationTime;	// 인증번호 보낼 시점 시간 저장
-	 */
 /*	
 	
 	 // 아이디 유무#
@@ -172,7 +170,6 @@ public class ConvenienceController {
 	 return "NO"; 
 	 }
 */
-/*
 	 // 폐점#
 	 @PostMapping("updateCodeStatus")
 	 public String updateCodeStatus(@RequestHeader("accessToken") String accessToken) {                                                                        
@@ -191,7 +188,6 @@ public class ConvenienceController {
 		 }
 		 return "NO";
 	 }
-	 */
 	 
 	/* 
 	 // 아이디 찾기#
@@ -220,7 +216,6 @@ public class ConvenienceController {
 		    }
 		}
 */
-/*
 	 // 내 정보 변경#
 	 @PostMapping("updateMypage")
 	 public String updateMypage(@RequestBody ConvenienceDto conv , @RequestHeader("accessToken") String accessToken) {
@@ -293,7 +288,7 @@ public class ConvenienceController {
 			   }	  		   
 			   return "NO";
 			}
-*/
+
 		 
 		 //----------------------------- 여기서 부터는 함수 생성 로직입니다-------------------------
 	/*
@@ -382,7 +377,7 @@ public class ConvenienceController {
         return encodeBase64String;
     } 
  */
-		 /*
+		 
     // 비밀번호 해시화 (SHA-256 사용) 
 	public static String sha256(String pw) { try {
 		MessageDigest md = MessageDigest.getInstance("SHA-256"); byte[] hash =
@@ -416,4 +411,3 @@ public class ConvenienceController {
 	
 
 }
-*/

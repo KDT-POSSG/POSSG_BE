@@ -24,7 +24,7 @@ import possg.com.a.service.CustomerService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
-/*
+
 @RestController
 public class CustomerController { 
 	
@@ -75,7 +75,6 @@ public class CustomerController {
 		}		
 		return "NO";
 	}
-	*/
 /*	
 
 	// 웹에서 고객가입#
@@ -129,7 +128,7 @@ public class CustomerController {
 			}
 			
 			HttpHeaders headers = new HttpHeaders();
-	        headers.add("accessToken", accessToken);
+	        headers.add("USTK", accessToken);
 	        
 	        return ResponseEntity.ok().headers(headers).body("YES");
 		}
@@ -139,7 +138,7 @@ public class CustomerController {
 	
 	// 로그아웃 access는 프론트에서 지우고
 	@PostMapping("deleteRefresh")
-	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteRefresh " + new Date());
 		
 			Claims claim = tokenParser(tokenHeader);			 			 	 
@@ -157,10 +156,9 @@ public class CustomerController {
 		return "NO";
 	}
 */
-/*
 	// 개인 웹로그인 시 주소 찍기 ------------------------------토큰확인하고 전화번호 확인-------------------------------------
 	@PostMapping("updateLocation")
-	public String updateLocation(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String updateLocation(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController updateLocation " + new Date());
 
 		if(tokenHeader == null && dto == null) {
@@ -181,11 +179,10 @@ public class CustomerController {
 		}
 		return "NO";
 	}
-	*/
-/*
+	
 	//주문할 점포 선택
 	@PostMapping("customerDeliveryBranchName")
-	public String customerDeliveryBranchName(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String customerDeliveryBranchName(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController customerDeliveryBranchName " + new Date());
 		
 		if(dto == null) {
@@ -204,11 +201,10 @@ public class CustomerController {
             
             List<DeliveryDto> deli = deliservice.selectDelivery(deliSeq);
            
-
             // list가 비여있지않고 branchname이 일치하지않을경우
             if(!deli.isEmpty()) {          	
             
-	    		// 장바구니에 상품이 있을 경우 장바구니 초기화하고 다른 편의점 상품을 새로 담아야함	
+	    		/* 장바구니에 상품이 있을 경우 장바구니 초기화하고 다른 편의점 상품을 새로 담아야함	*/
 	    		if(dto.getBranchName() !=  deli.get(0).getBranchName() ) {
 	    			
 	    			service.deliveryDelete(customerSeq);
@@ -226,7 +222,7 @@ public class CustomerController {
 	
 	// 회원탈퇴
 	@PostMapping("deleteCustomer")
-	public String deleteCustomer(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteCustomer(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteCustomer " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);			 			 	 
@@ -246,7 +242,7 @@ public class CustomerController {
 	
 	// 로그아웃 access는 프론트에서 지우고
 	@PostMapping("deleteRefresh")
-	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteRefresh " + new Date());
 		
 			Claims claim = tokenCreate.getClaims(tokenHeader);			 			 	 
@@ -291,4 +287,3 @@ public class CustomerController {
 		}	
 
 }
-*/

@@ -34,7 +34,7 @@ import possg.com.a.dto.CustomerDto;
 
 import possg.com.a.handler.CustomLogoutSuccessHandler;
 import possg.com.a.service.ConvenienceService;
-/*
+
 @Component
 @Configuration
 @EnableWebSecurity
@@ -84,4 +84,3 @@ public class SecurityConfig {
 
 	  
 }
-*/

@@ -50,7 +50,7 @@ import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.CustomerService;
 import possg.com.a.util.TokenCreate;
-/*
+
 @RequestMapping("NoSecurityZoneController")
 @RestController
 public class NoSecurityZoneController {
@@ -344,7 +344,7 @@ public class NoSecurityZoneController {
 				}
 				
 				HttpHeaders headers = new HttpHeaders();
-		        headers.add("accessToken", accessToken);
+		        headers.add("USTK", accessToken);
 		        
 		        return ResponseEntity.ok().headers(headers).body("YES");
 			}
@@ -473,4 +473,3 @@ public class NoSecurityZoneController {
 			}	
 
 }
-*/
