@@ -62,6 +62,8 @@ public class SecurityConfig {
 	//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    	//http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
+    	
     	http.authorizeHttpRequests(req ->
 				req
 					//.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
@@ -71,9 +73,6 @@ public class SecurityConfig {
 		);
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();
-     	
-    	http.addFilterAt(new JwtFilter(tokenCreate), BasicAuthenticationFilter.class);
-
     	
     	http
     		.logout()
