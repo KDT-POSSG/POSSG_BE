@@ -71,18 +71,18 @@ public class ProductController {
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
 		int cnt = 0;
-		/*
+		
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
-				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
-				dto.setProductTranslationName(temp);
+				//String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				//dto.setProductTranslationName(temp);
 				if (cnt > 3) {
 					break;
 				}
 				cnt ++;
 			}
 		}
-		*/
+		
 		System.out.println("ProductList= " + list);
 		// 상품의 총 수
 		int count = service.getProductTotalNumber(param);
