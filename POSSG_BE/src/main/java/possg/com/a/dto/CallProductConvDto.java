@@ -12,7 +12,6 @@ public class CallProductConvDto {
     private String productName;
     private String callRef;
     private int callStatus;
-    
     private String imgUrl;
     
     private int pageNumber = 0;
@@ -21,22 +20,7 @@ public class CallProductConvDto {
     // 생성자
     public CallProductConvDto() {}
 
-	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
-			int price, String callDate, String productName, String callRef, int callStatus) {
-		super();
-		this.callSeq = callSeq;
-		this.convSeq = convSeq;
-		this.productSeq = productSeq;
-		this.amount = amount;
-		this.rpName = rpName;
-		this.bName = bName;
-		this.price = price;
-		this.callDate = callDate;
-		this.productName = productName;
-		this.callRef = callRef;
-		this.callStatus = callStatus;
-	}
-	
+
 	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
 			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl) {
 		super();
@@ -174,5 +158,4 @@ public class CallProductConvDto {
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
 				+ ", imgUrl=" + imgUrl + ", pageNumber=" + pageNumber + ", pageSize=" + pageSize + "]";
 	}
-
 }

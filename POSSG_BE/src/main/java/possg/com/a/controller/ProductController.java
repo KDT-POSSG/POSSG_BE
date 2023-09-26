@@ -725,17 +725,3 @@ productMap.put("details", productDetails);
 resultList.add(productMap);
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-

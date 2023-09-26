@@ -76,11 +76,12 @@
 			product_seq asc
 		</otherwise>
 	</choose>
+
 	limit ${(pageNumber * pageSize)}, #{pageSize}
 </select>
 
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
-<select id="getLastProduct" parameterType="possg.com.a.dto.ProductDto" resultType="Integer">
+<select id="getLastProduct" resultType="Integer">
 	select max(product_seq) from Product;
 	where conv_seq = #{convSeq}
 </select>
@@ -108,7 +109,7 @@
 
 <!-- 새로운 상품을 추가 -->
 <insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
-	insert into Product(conv_seq, category_id, product_name, price, price_discount, 
+	insert into Product(category_id, product_name, price, price_discount, 
 	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
 	values(#{convSeq}, #{categoryId}, #{productName}, #{price}, #{priceDiscount}, 
 			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
@@ -196,6 +197,7 @@
     update Call_product_conv
     set call_status = '3'
     where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+>>>>>>> a57b7b4f6d215d6ef48e1057389956f0fbdc98ac
 </update>
 
 <!-- 주어진 callRef와 productName에 해당하는 발주 상품 삭제 -->
@@ -214,8 +216,7 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->
-<select id="getRefConvOrderList" parameterType="possg.com.a.dto.CallProductConvDto" 
-resultType="possg.com.a.dto.CallProductConvOrderListDto">
+<select id="getRefConvOrderList" parameterType="String" resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
 	where call_ref = #{callRef} and conv_seq = #{convSeq}
 	order by call_ref desc

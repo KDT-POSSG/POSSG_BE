@@ -1,23 +1,28 @@
 package possg.com.a.controller;
 
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.TimeZone;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
-import kr.co.bootpay.Bootpay;
-import kr.co.bootpay.model.request.Cancel;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import possg.com.a.dto.PaymentDto;
-import possg.com.a.dto.PaymentParam;
 import possg.com.a.service.PaymentService;
 
 @RestController
@@ -28,13 +33,13 @@ public class PaymentController {
 	PaymentService service;
 	
 	// 결제 정보 추가
-	@PostMapping("addpayment")
-	public String addpayment(@RequestBody PaymentDto dto) { 
+	@PostMapping("addkakaopayment")
+	public String addKakaopayment(@RequestBody PaymentDto dto) { 
 		System.out.println("PaymentController addpayment " + new Date());
 		
 		System.out.println(dto.toString());
 		
-		int count = service.addpayment(dto);
+		int count = service.addkakaopayment(dto);
 		if(count > 0) {
 			return "YES";
 		}
@@ -42,67 +47,87 @@ public class PaymentController {
 				
 	}
 	
-	// 결제 취소 
-	@PostMapping("cancelpayment")
-	public String cancelpayment(@RequestParam String receiptId) {
-		System.out.println("PaymentController cancelpayment " + new Date());
+	// 카카오 결제 취소 
+	@PostMapping("cancelkaopayment")
+	public String cancelKakaopayment(@RequestBody int seq) {
+		System.out.println("PaymentController cancelkakaopayment " + new Date());
 		
-		String check = "";
-		
-		try {
-			
-			// REST API KEY, PRIVATE KEY
-		    Bootpay bootpay = new Bootpay("64f673d8e57a7e001bbb128d", "0qYZjYwZDh9zx12dOn9gbQlkcSP2VsdLkkKJHTs3+BE=");
-		    HashMap<String, Object> token = bootpay.getAccessToken();
-
-		    System.out.println("토큰: " + token.get("access_token")); // 토큰 확인
-		    
-		    // 토큰 에러 안나려면 꼭 허가 IP를 넣어줘야함 --> FIREWALL_BLOCKED때문에
-		    if(token.get("error_code") != null) { 
-		    	check = (String)token.get("error_code");
-		    	return check;
-		    }
-		    
-		    Cancel cancel = new Cancel();
-		    cancel.receiptId = receiptId;
-		    cancel.cancelUsername = "관리자";
-		    cancel.cancelMessage = "테스트 결제 취소";
-
-		    HashMap<String, Object> res = bootpay.receiptCancel(cancel);
-		    if(res.get("error_code") == null) { //success
-		        System.out.println("receiptCancel success: " + res);
-		        
-		        int count = service.cancelpayment(receiptId);
-				if(count > 0) {
-					check = "YES";
-				}
-				else{
-					check = "CANCEL YES BUT UPDATE NO";
-				}
-				
-		    } 
-		    
-		    else {
-		        System.out.println("receiptCancel false: " + res);
-		        check = "ERROR CANCEL";
-		    }
-		} 
-		
-		catch (Exception e) {
-		    e.printStackTrace();
+		int count = service.cancelkakaopayment(seq);
+		if(count > 0) {
+			return "YES";
 		}
-		
-		return check;
+		return "NO";
 				
 	}
 	
-	@GetMapping("paymentlist")
-	public List<PaymentParam> paymentlist(@RequestParam int convSeq){
-		System.out.println("PaymentController paymentlist " + new Date());
-		
-		List<PaymentParam> list = service.paymentlist(convSeq);
-		
-		return list;
-	};
-	
+	// 결제정보
+//    public PaymentDto getPayInfo(String token, String mId) { 
+//        String buyer_name = "";
+//        String buyer_phone = "";
+//        String member_email = "";
+//        String buyer_addrStr = "";
+//        String buyer_postcode = "";
+//        String buyer_addr = "";
+//        String paid_at = "";
+//        String buy_product_name = "";
+//        String buyer_buyid = "";
+//        String buyer_merid = "";
+//        String amount = "";
+//        String buyer_card_num = "";
+//        String buyer_pay_ok = "";
+//        long buyer_pay_price = 0L;
+//        long paid_atLong = 0L;
+//        long unixTime = 0L;
+//        Date date = null;
+//        
+//        HttpClient client = HttpClientBuilder.create().build(); 
+//        HttpGet get = new HttpGet("http:localhost:3000/" + mId + "/paid"); 
+//        get.setHeader("Authorization", token); 
+//        try { 
+//            HttpResponse res = client.execute(get);
+//            ObjectMapper mapper = new ObjectMapper(); 
+//            String body = EntityUtils.toString(res.getEntity()); 
+//            JsonNode rootNode = mapper.readTree(body); 
+//            JsonNode resNode = rootNode.get("response"); 
+//            System.out.println("wowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww resNode: "+resNode);
+//            //amount = resNode.get("amount").asText(); 
+//            buyer_name = resNode.get("buyer_name").asText(); 
+//            buyer_phone = resNode.get("buyer_tel").asText(); 
+//            member_email = resNode.get("buyer_email").asText(); 
+//            
+//            buyer_addrStr = resNode.get("buyer_addr").asText(); 
+//            buyer_postcode = resNode.get("buyer_postcode").asText(); 
+//            buyer_addr = buyer_addrStr+" "+buyer_postcode; //주소에 우편번호 합치기
+//            
+//            paid_at = resNode.get("paid_at").asText(); //결제시간
+//            buy_product_name = resNode.get("name").asText(); 
+//            buyer_buyid = resNode.get("imp_uid").asText(); 
+//            buyer_merid = resNode.get("merchant_uid").asText(); 
+//            amount = resNode.get("amount").asText(); 
+//            buyer_card_num = resNode.get("apply_num").asText(); 
+//            buyer_pay_ok = resNode.get("status").asText(); 
+//             
+//            
+//        } catch (Exception e) { 
+//            e.printStackTrace(); 
+//        } 
+//        
+//        buyer_pay_price = Long.parseLong(amount);
+//        
+//        // 카드 결제 시간 - 형식 바꾸기
+//        paid_atLong = Long.parseLong(paid_at);
+//        unixTime = paid_atLong * 1000;
+//        date = new Date(unixTime);
+//        
+//        // 형식 바꾸기
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        sdf.setTimeZone(TimeZone.getTimeZone("GMT+9")); // GMT(그리니치 표준시 +9 시가 한국의 표준시
+//        String buy_date = sdf.format(date);
+//        System.out.println("++++++++++++++++++++++++++++++++++++import date: "+buy_date);
+//        
+//        PaymentDto dto = new PaymentDto();
+//        
+//        return dto;
+//    }
+
 }

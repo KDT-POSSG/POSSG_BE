@@ -13,7 +13,13 @@ CREATE TABLE Convenience (
 	phone_number VARCHAR(255) not null,			-- 편의점 점주 휴대폰 번호
 	registration_date TIMESTAMP not null,		-- 편의점 설립일	
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
+	conv_key VARCHAR(100) unique,				-- 본사 인증 번호
+    conv_location VARCHAR(255),					-- 매장 주소
+    latitude double,							-- 위도
+    longtitude double,							-- 경도
+    FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
+
 
 -- 고객 테이블 --
 CREATE TABLE Customer (
@@ -23,7 +29,33 @@ CREATE TABLE Customer (
 	customer_name VARCHAR(255) default 'anonymous' not null,	-- 고객 이름
 	phone_number VARCHAR(255),									-- 고객 휴대폰 번호
 	registration_date TIMESTAMP,								-- 고객 가입일 
-    customer_status int default 1 not null						-- 고객 탈퇴 여부 (0: 탈퇴 1: 가입됨)
+    customer_status int default 1 not null,						-- 고객 탈퇴 여부 (0: 탈퇴 1: 가입됨)
+    conv_seq int,												-- 간편 가입 시 가입 한 편의점 
+    location VARCHAR(255),										-- 배달 받을 본인 주소
+    pwd VARCHAR(255),										 	-- 계정 비밀번호
+    branch_name VARCHAR(255),									-- 배달 시킬 지점
+    foreign key(conv_seq) references Convenience(conv_seq)
+);
+
+
+-- 점주 인증 토큰 
+create table token(
+	seq int auto_increment primary key,	-- 토큰 고유번호
+	refresh varchar(255) not null,		-- 로그인 시 저장 할 refresh 토큰
+	user_id varchar(255) not null		-- 유저 아이디
+)
+
+-- 고객 인증 토큰
+create table customerToken(
+	seq int auto_increment primary key,	-- 토큰 고유번호
+	refresh varchar(255) not null,		-- 로그인 시 저장 할 refresh 토큰
+	customer_id varchar(255) not null	-- 유저 아이디
+)
+
+-- 문자 인증 확인 db
+create table sms(
+	seq int auto_increment primary key,		-- 문자 고유번호
+    sms_num int not null					-- 문자 번호
 );
 
 INSERT INTO Customer (customer_id, pin_number, customer_name, phone_number, registration_date, customer_status)
@@ -40,6 +72,8 @@ CREATE TABLE Delivery (
 	order_date TIMESTAMP not null,								-- 배달 주문 시각
 	ref	INT not null,											-- 배달 묶음 
 	location VARCHAR(255) not null, 							-- 배송지
+	price INT not null,											-- 상품 최종 가격
+	branch_name VARCHAR(255) not null,							-- 배달 접수받은 지점
     foreign key(user_id) references Customer(customer_seq),		-- customer 테이블에서 참조
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
 
@@ -48,7 +82,6 @@ CREATE TABLE Delivery (
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
-	conv_seq INT not null,												-- 점포 고유번호
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
 	price INT not null,													-- 상품 가격
@@ -59,10 +92,8 @@ CREATE TABLE Product (
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호
 	img_url VARCHAR(255),												-- 이미지 주소
-    foreign key(category_id) references Category(category_id),			-- Category 테이블에서 참조
-    foreign key(conv_seq) references Convenience(conv_seq)
+    foreign key(category_id) references Category(category_id)			-- Category 테이블에서 참조
 );
-
 
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
@@ -210,7 +241,7 @@ CREATE TABLE call_product_Conv (
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
 	price INT not null,											-- 발주 가격	
-    call_date Timestamp not null,								-- 발주 날짜	
+  call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)

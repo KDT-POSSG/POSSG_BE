@@ -15,7 +15,7 @@ import possg.com.a.dto.EmployeeDto;
 import possg.com.a.service.EmployeeService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
+@CrossOrigin(origins = "http://localhost:3000") // 프론트엔드 CORS 허용
 public class EmployeeController {
 	
 	@Autowired

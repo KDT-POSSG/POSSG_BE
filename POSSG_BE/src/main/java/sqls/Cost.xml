@@ -18,9 +18,41 @@
 	total_labor_cost = #{totalLaborCost},
 	security_maintenance_fee = #{securityMaintenanceFee}
 	
-	where conv_seq = #{convSeq} AND cost_year = #{costYear} AND cost_month = #{costMonth}
+	where conv_seq = #{convSeq} AND cost_year = #{costYear} AND cost_month = #{costMonth} 
 </update>
 
+<select id="selectSales" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select 
+	d.ref,
+	d.price,
+	p.price,
+	c.branch_name,
+	d.product_name as deliveryProductName,
+	(select product_name from product where product_seq = #{productSeq}) as paymentProductName,
+	pr.discount_rate,
+	co.total_labor_cost	
+	from Convenience as c
+	inner join delivery d on c.branch_name = d.branch_name
+	inner join payment p on c.conv_seq = p.conv_seq
+	inner join cost co on c.conv_seq = co.conv_seq
+	inner join product pr on d.product_name = pr.product_name
+ 	
+	<if test="choice != null">
+		<if test="choice = 0">
+			where
+		</if>
+	</if>
 
+	where c.branch_name = #{branchName} and d.order.status != 0
+</select>
+
+
+
+
+<select id="paymentProductName" parameterType="Integer" resultType="possg.com.a.dto.ProductDto">
+	select *
+	from product
+	where product_seq = #{productSeq}
+</select>
 
 </mapper>
