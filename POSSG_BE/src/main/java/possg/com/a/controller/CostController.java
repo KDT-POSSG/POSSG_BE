@@ -75,9 +75,11 @@ public class CostController {
 		}
 		return "NO";		
 	}
+
 	*/
 	/*
 	 // 이거 db수정 해야함 민규님 db수정 후 배포 전까지 존버
+
 	@GetMapping("selectSales")
 	public List<CostParam> selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
 		System.out.println("CostController selectSales " + new Date());
@@ -87,25 +89,21 @@ public class CostController {
 		String branchName = claim.get("branchName", String.class);
 		  int convSeq = claim.get("convSeq", Integer.class);
 		  
-		  ProductDto product = service.paymentProductName(convSeq);
+		  System.out.println(param.getChoice());
 		  
 		param.setConvSeq(convSeq);
 		param.setBranchName(branchName);
-		param.setProductSeq(product.getProductSeq());
+		System.out.println(param);
 		
 		List<CostParam> list = service.selectSales(param);
+		
+		System.out.println(list);
 		
 		if(list != null) {
 			return list;
 		}
 		return null;
 	}
-	
-	*/
-	
-	
-	
-	
 	
 	
 	
