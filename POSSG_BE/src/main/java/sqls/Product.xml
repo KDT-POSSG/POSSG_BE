@@ -121,7 +121,6 @@
 	select * from Call_product_conv
 	where conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
-	limit ${(pageNumber * 20)}, 20
 </select>
 
 <select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvParam" resultType="Integer">
@@ -207,11 +206,11 @@
 
 <!-- 점주 발주 -->
 <!-- 모든 발주 목록 획득 -->
-<select id="getAllConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto" 
+<select id="getAllConvOrderList" parameterType="possg.com.a.dto.CallProductConvParam" 
 resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
 	where conv_seq = #{convSeq} and call_ref != '-1'
-	limit ${(pageNumber * 20)}, 20
+	limit ${(pageNumber * pageSize)}, #{pageSize}
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->
@@ -220,6 +219,7 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
 	where call_ref = #{callRef} and conv_seq = #{convSeq}
 	order by call_ref desc
+	limit ${(pageNumber * pageSize)}, #{pageSize}
 </select>
 
 <!-- 새로운 발주 주문 추가 -->

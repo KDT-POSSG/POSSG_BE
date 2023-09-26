@@ -23,9 +23,10 @@ public class ProductDto {
     // 생성자
     public ProductDto() {}
     
-    public ProductDto(String productName) {
+    public ProductDto(String productName, int convSeq) {
     	super();
     	this.productName = productName;
+    	this.convSeq = convSeq;
     }
 
 	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
