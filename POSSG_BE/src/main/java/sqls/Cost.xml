@@ -21,29 +21,38 @@
 	where conv_seq = #{convSeq} AND cost_year = #{costYear} AND cost_month = #{costMonth} 
 </update>
 
+<!-- 매출 -->
 <select id="selectSales" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select 
 	d.ref,
-	d.price,
-	p.price,
-	c.branch_name,
-	d.product_name as deliveryProductName,
-	(select product_name from product where product_seq = #{productSeq}) as paymentProductName,
-	pr.discount_rate,
-	co.total_labor_cost	
-	from Convenience as c
+	(select del_total_price from delivery_list where dl.del_ref = d.ref) as delTotalPrice, 
+	(select price from payment where conv_seq = #{convSeq}) as paymentPrice,
+	c.branch_name	
+
+	from Convenience as c	
 	inner join delivery d on c.branch_name = d.branch_name
 	inner join payment p on c.conv_seq = p.conv_seq
-	inner join cost co on c.conv_seq = co.conv_seq
-	inner join product pr on d.product_name = pr.product_name
+	inner join delivery_list dl on d.ref = dl.del_ref
  	
-	<if test="choice != null">
-		<if test="choice = 0">
-			where
-		</if>
-	</if>
+	<choose>
+		<when test="choice == 0"><!-- day -->
+			where c.conv_seq = #{convSeq}
+		</when>
+		
+		<when test="choice == 1"><!-- week -->
+			where c.conv_seq = #{convSeq} and d.order_status != 0
+		</when>
+		
+		<when test="choice == 2"><!-- month -->
+			where c.conv_seq = #{convSeq} and d.order_status != 0
+		</when>
+		
+		<otherwise>
+            <!-- 기본 쿼리 (예: choice에 맞지 않는 경우) -->
+            where c.conv_seq = #{convSeq}
+        </otherwise>
+	</choose>
 
-	where c.branch_name = #{branchName} and d.order.status != 0
 </select>
 
 
