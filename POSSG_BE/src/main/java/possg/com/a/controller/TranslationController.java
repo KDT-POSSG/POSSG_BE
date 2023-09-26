@@ -1,5 +1,5 @@
 package possg.com.a.controller;
-
+/*
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.service.ProductService;
 import possg.com.a.service.TranslationService;
-/*
+
 @RestController
 public class TranslationController {
 
