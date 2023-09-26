@@ -74,8 +74,8 @@ public class ProductController {
 		
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
-				//String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
-				//dto.setProductTranslationName(temp);
+				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				dto.setProductTranslationName(temp);
 				if (cnt > 3) {
 					break;
 				}
