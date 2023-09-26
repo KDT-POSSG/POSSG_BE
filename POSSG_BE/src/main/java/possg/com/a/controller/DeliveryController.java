@@ -34,7 +34,7 @@ import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
 import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
-
+/*
 @RestController
 public class DeliveryController {
 
@@ -439,3 +439,4 @@ public class DeliveryController {
 	
 	
 }
+*/

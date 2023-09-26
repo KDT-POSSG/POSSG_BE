@@ -50,7 +50,7 @@ import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.CustomerService;
 import possg.com.a.util.TokenCreate;
-
+/*
 @RequestMapping("NoSecurityZoneController")
 @RestController
 public class NoSecurityZoneController {
@@ -473,3 +473,4 @@ public class NoSecurityZoneController {
 			}	
 
 }
+*/

@@ -20,7 +20,7 @@ import possg.com.a.dto.CostParam;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.service.CostService;
 import possg.com.a.util.TokenCreate;
-
+/*
 @RestController
 public class CostController {
 
@@ -75,6 +75,7 @@ public class CostController {
 		}
 		return "NO";		
 	}
+	*/
 	/*
 	 // 이거 db수정 해야함 민규님 db수정 후 배포 전까지 존버
 	@GetMapping("selectSales")
@@ -110,7 +111,7 @@ public class CostController {
 	
 	
 	//-------------------------------------- 함수 로직 ----------------------------------------------------
-	
+	/*
 	
 	//토큰 추출하는 로직
 	public Claims tokenParser(String tokenHeader) {
@@ -129,3 +130,4 @@ public class CostController {
 	}	
 	
 }
+*/
