@@ -20,7 +20,7 @@ CREATE TABLE Convenience (
     FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
 
-select * from Conveninence;
+select * from Convenience;
 -- 고객 테이블 --
 CREATE TABLE Customer (
 	customer_seq INT auto_increment	primary key,				-- 고객 고유 번호
