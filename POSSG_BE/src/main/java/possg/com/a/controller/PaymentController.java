@@ -26,7 +26,7 @@ import possg.com.a.dto.PaymentDto;
 import possg.com.a.service.PaymentService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
+//@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
 public class PaymentController {
 	
 	@Autowired

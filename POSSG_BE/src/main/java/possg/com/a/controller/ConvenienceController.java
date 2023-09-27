@@ -43,7 +43,7 @@ import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.TokenCreate;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
+//@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
 public class ConvenienceController {
 
 	@Autowired

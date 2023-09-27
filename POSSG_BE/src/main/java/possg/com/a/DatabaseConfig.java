@@ -23,7 +23,6 @@ public class DatabaseConfig {
 	@Value("${mybatis.mapper-locations}")
     private String mapperLocations;
 
-	
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari")
 	public HikariConfig hikariConfig() {

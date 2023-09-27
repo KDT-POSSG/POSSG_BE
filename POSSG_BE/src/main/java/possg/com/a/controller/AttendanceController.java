@@ -16,7 +16,7 @@ import possg.com.a.dto.AttendanceParam;
 import possg.com.a.service.AttendanceService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
+//@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
 public class AttendanceController {
 	
 	@Autowired
