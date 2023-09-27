@@ -23,7 +23,6 @@ public class DatabaseConfig {
 	@Value("${mybatis.mapper-locations}")
     private String mapperLocations;
 
-	
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari")
 	public HikariConfig hikariConfig() {
@@ -46,7 +45,7 @@ public class DatabaseConfig {
 		sqlSessionFactoryBean.setConfiguration(mybatisConfig);
 		
 		Resource[] arrResource = new PathMatchingResourcePatternResolver().getResources(mapperLocations);
-    sqlSessionFactoryBean.setMapperLocations(arrResource);
+		sqlSessionFactoryBean.setMapperLocations(arrResource);
 		sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
 		
 		return (SqlSessionFactory)sqlSessionFactoryBean.getObject();

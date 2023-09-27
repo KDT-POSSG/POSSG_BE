@@ -18,7 +18,7 @@ import possg.com.a.dto.SettlementParam;
 import possg.com.a.service.SettlementService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
+//@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
 public class SettlementController {
 	
 	@Autowired
