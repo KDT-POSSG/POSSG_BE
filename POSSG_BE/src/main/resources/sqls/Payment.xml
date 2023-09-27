@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.PaymentDao">	<!-- 초기설정 -->
-	
+
 	<!-- 결제 정보 추가 -->
     <insert id="addpayment" parameterType="possg.com.a.dto.PaymentDto">
         INSERT INTO Payment (
@@ -43,4 +43,5 @@
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
     	WHERE p.conv_seq = #{convSeq} 
     </select>
+
 </mapper>
