@@ -67,9 +67,13 @@ public class ProductController {
 	@GetMapping("productList")
 	public Map<String, Object> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
 		System.out.println("ProductController ProductList " + new Date());
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		System.out.println("Map: " + map);
 		System.out.println("ProductParam= " + param);
 		List<ProductDto> list = service.productList(param);
 		System.out.println("ProductList= " + list);
+		
 		int cnt = 0;
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
@@ -84,6 +88,9 @@ public class ProductController {
 		System.out.println("ProductList= " + list);
 		// 상품의 총 수
 		int count = service.getProductTotalNumber(param);
+		if (count == 0) {
+			return map;
+		}
 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
 		if (param.getPageSize() > count) {
 			param.setPageSize(count); 
@@ -93,7 +100,7 @@ public class ProductController {
 			pageProduct = pageProduct + 1;
 		}
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		
 		map.put("ProductList", list);
 		map.put("pageProduct", pageProduct);
 		//map.put("pageNumber", param.getPageNumber());
@@ -270,10 +277,9 @@ public class ProductController {
 	// 재고 소진 시 자동 발주 시스템
 	// input
 	// int stockLimit: 발주 장바구니에 자동으로 등록되는 갯수의 경계값
-	// ProductDto: String productName, int productSeq, int priceDiscount
-	// CallProductConvDto: String userId, String rpName, String bName 
+	// ProductDto: int convSeq, String productName, int productSeq, int priceDiscount, int stockLimit
 	@PostMapping("addCallProductConvAuto")
-	public String addCallProductConvAuto(@RequestBody ProductDto productDto, @RequestParam int stockLimit) {//@RequestHeader("accessToken") String tokenHeader
+	public String addCallProductConvAuto(@RequestBody ProductDto productDto) {//@RequestHeader("accessToken") String tokenHeader
 		System.out.println("ProductController addCallProductConvAuto() " + new Date());
 		
 		// 주문 갯수
@@ -282,16 +288,21 @@ public class ProductController {
 		// 해당 상품의 총 재고량을 가져옴
 		int totalStock = service.getTotalStock(productDto.getProductName());
 		// 임시로 재고 제한을 3으로 설정
-		stockLimit = 3; // 임시 제한
+		productDto.setStockLimit(3); // 임시 제한
 		// 총 재고가 재고 제한보다 작은 경우
-		if (totalStock < stockLimit) {
+		if (totalStock < productDto.getStockLimit()) {
 			
 			// 장바구니 등록 시간
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String formattedDate = sdf.format(new Date());
 			
 			// 발주 상품 정보를 설정
-			ProductDto insertProductDto = findProductName(productDto).get(0);
+			List<ProductDto> temp = findProductName(productDto);
+			if(temp.isEmpty()) {
+				System.out.println("일치하는 상품이 없음: " + temp);
+				return "NO";
+			}
+			ProductDto insertProductDto = temp.get(0);
 			insertProductDto.setCallDate(formattedDate);
 			insertProductDto.setAmount(amount);
 			System.out.println(insertProductDto);
@@ -311,9 +322,9 @@ public class ProductController {
 		
 	// 점주 발주 상품 리스트에 추가
 	// input
-	// ProductDto: int convSeq, int productSeq, int price, String callDate, String productName, String imgUrl
+	// ProductDto: int convSeq, int productSeq, int price, String productName, String imgUrl, int stockLimit
 	@PostMapping("addCallProductConv")
-	public String addCallProductConv(@RequestBody ProductDto productDto, @RequestParam int amount) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
+	public String addCallProductConv(@RequestBody ProductDto productDto) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
 		System.out.println("productDto= " + productDto);
 		// 장바구니 등록 시간
@@ -321,14 +332,20 @@ public class ProductController {
 		String formattedDate = sdf.format(new Date());
 		
 		// 상품 수량이 입력되지 않은 상태면 수량 1 할당
-		if (amount == 0 ) {
-	    	amount = 1;
+		if (productDto.getAmount() == 0 ) {
+			productDto.setAmount(1);
 	    }
 		// 객체 입력하여 상품명 전달
-		ProductDto insertProductDto = findProductName(productDto).get(0);
+		List<ProductDto> temp = findProductName(productDto);
+		ProductDto insertProductDto = new ProductDto();
+		if(temp.isEmpty()) {
+			System.out.println("동일한 상품 없음: " + temp);
+			return "NO";
+		}
+		insertProductDto = temp.get(0);
 		System.out.println("insertProductDto= " + insertProductDto);
 		insertProductDto.setCallDate(formattedDate);
-		insertProductDto.setAmount(amount);
+		insertProductDto.setAmount(productDto.getAmount());
 		
 		System.out.println(insertProductDto);
 		// 발주 상품 정보 설정
@@ -459,7 +476,7 @@ public class ProductController {
 	// 발주 추가
 	// input: String remark
 	@PostMapping("addConvOrderList")
-	public String addConvOrderList(@RequestBody CallProductConvDto convDto, @RequestParam String remark) {
+	public String addConvOrderList(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
 	    
 		convDto.setCallRef("0");
@@ -467,8 +484,8 @@ public class ProductController {
 		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
 	    
 		// 비고(remark)이 null인 경우 빈 문자열로 설정
-	    if (remark == null) {
-	    	remark = "";
+	    if (convDto.getRemark() == null) {
+	    	convDto.setRemark("");
 	    }
 	    // user_id 추출
 	    int convSeq = callList.get(0).getConvSeq();
@@ -490,7 +507,7 @@ public class ProductController {
 	    // call_status, call_stock, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
 	    		new CallProductConvOrderListDto(0, convSeq, callRef, formattedDate, 
-	    										1, totalProduct, totalPrice, remark);
+	    										1, totalProduct, totalPrice, convDto.getRemark());
 	    // 발주 목록을 데이터베이스에 추가
 	    int count = service.addConvOrderList(orderListDto);
 	    System.out.println("ProductController addConvOrderList() count: " + count);
@@ -552,7 +569,7 @@ public class ProductController {
 	/* 편의점 */
 	// 점포명으로 편의점 검색
 	@PostMapping("getConvenienceInfo")
-	public ConvenienceDto getConvenienceInfo(String branchName) {
+	public ConvenienceDto getConvenienceInfo(@RequestBody String branchName) {
 		System.out.println("ProductController getConvenienceInfo() " + new Date());
 		
 		ConvenienceDto dto = service.getConvenienceInfo(branchName);

@@ -14,7 +14,7 @@ CREATE TABLE Convenience (
 	registration_date TIMESTAMP not null,		-- 편의점 설립일	
 	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
 );
-
+select * from Convenience;
 -- 고객 테이블 --
 CREATE TABLE Customer (
 	customer_seq INT auto_increment	primary key,				-- 고객 고유 번호
@@ -63,7 +63,7 @@ CREATE TABLE Product (
     foreign key(conv_seq) references Convenience(conv_seq)
 );
 
-
+select * from Product;
 -- 상품 카테고리 테이블 --
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호

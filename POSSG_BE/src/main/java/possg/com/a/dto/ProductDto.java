@@ -19,6 +19,7 @@ public class ProductDto {
     private int totalStock;
     private int amount=0;
     private String callDate;
+    private int stockLimit=0;
 
     // 생성자
     public ProductDto() {}
@@ -183,6 +184,14 @@ public class ProductDto {
 
 	public void setCallDate(String callDate) {
 		this.callDate = callDate;
+	}
+
+	public int getStockLimit() {
+		return stockLimit;
+	}
+
+	public void setStockLimit(int stockLimit) {
+		this.stockLimit = stockLimit;
 	}
 
 	@Override

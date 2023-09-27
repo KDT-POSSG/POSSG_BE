@@ -22,10 +22,10 @@
 	from Product
 	<where>
 		<if test="convSeq != null and convSeq != ''">
-        	conv_seq = #{convSeq}
-   		</if>
+		    conv_seq = #{convSeq}
+		</if>
 		<if test="choice != null and choice != '' and search != null and search != '' ">
-			<if test="choice == 'product_name'">
+			<if test="choice == 'productName'">
 				and product_name like concat('%', #{search}, '%')
 			</if>				
 		</if>
@@ -35,7 +35,6 @@
         <if test="categoryId != null and categoryId != ''">
             and category_id = #{categoryId}
         </if>
-
 		<choose>
 			<when test="minPrice >= 0 and maxPrice > 0">
 				and price between #{minPrice} and #{maxPrice}
@@ -158,7 +157,7 @@
     0, 
     c.representative_name, 
     c.branch_name, 
-    #{price}, 
+    #{price},
     #{callDate}, 
     #{productName}, 
     '0', 

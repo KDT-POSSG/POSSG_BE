@@ -17,6 +17,8 @@ public class CallProductConvDto {
     
     private int pageNumber = 0;
     private int pageSize = 20;
+    
+    private String remark;
 
     // 생성자
     public CallProductConvDto() {}
@@ -52,6 +54,24 @@ public class CallProductConvDto {
 		this.callRef = callRef;
 		this.callStatus = callStatus;
 		this.imgUrl = imgUrl;
+	}
+	
+	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
+			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl, String remark) {
+		super();
+		this.callSeq = callSeq;
+		this.convSeq = convSeq;
+		this.productSeq = productSeq;
+		this.amount = amount;
+		this.rpName = rpName;
+		this.bName = bName;
+		this.price = price;
+		this.callDate = callDate;
+		this.productName = productName;
+		this.callRef = callRef;
+		this.callStatus = callStatus;
+		this.imgUrl = imgUrl;
+		this.remark = remark;
 	}
 
 
@@ -167,12 +187,21 @@ public class CallProductConvDto {
 		this.pageSize = pageSize;
 	}
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	@Override
 	public String toString() {
 		return "CallProductConvDto [callSeq=" + callSeq + ", convSeq=" + convSeq + ", productSeq=" + productSeq
 				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", callDate="
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
-				+ ", imgUrl=" + imgUrl + ", pageNumber=" + pageNumber + ", pageSize=" + pageSize + "]";
+				+ ", imgUrl=" + imgUrl + ", pageNumber=" + pageNumber + ", pageSize=" + pageSize + ", remark=" + remark
+				+ "]";
 	}
 
 }
