@@ -20,7 +20,6 @@ CREATE TABLE Convenience (
     FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
 
-select * from Convenience;
 -- 고객 테이블 --
 CREATE TABLE Customer (
 	customer_seq INT auto_increment	primary key,				-- 고객 고유 번호
@@ -36,7 +35,6 @@ CREATE TABLE Customer (
     branch_name VARCHAR(255),									-- 배달 시킬 지점
     foreign key(conv_seq) references Convenience(conv_seq)
 );
-
 
 -- 점주 인증 토큰 
 create table token(
@@ -253,8 +251,6 @@ CREATE TABLE call_product_Conv (
     foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
-
-select * from call_product_conv;
 
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq

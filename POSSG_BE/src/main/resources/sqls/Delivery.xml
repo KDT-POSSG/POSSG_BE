@@ -95,8 +95,6 @@
 <!-- 배달취소 하기  del_status가 0 일때만 가능 0909여기까지하다말았음-->
 
 
-
-
 <!-- 배달 점주 기능 -->
 
 <!-- 배달점포 입점 -->
@@ -174,12 +172,7 @@
 		</if>
 		
 </select>
-<!--
 
-<select id="getAllDeliveryOrderList" resultType="possg.com.a.dto.DeliveryDto">
-	select * from Delivery_list
-	where del_ref != '-1'
-</select>
 
 <select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
 	select * from Delivery_list
@@ -187,6 +180,5 @@
 	order by del_ref desc
 </select>
 
-  -->
 
 </mapper>

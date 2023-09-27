@@ -49,7 +49,7 @@ public class AttendanceController {
 	@PostMapping("leavework")
 	public String leavework(@RequestParam int employeeSeq) {
 		System.out.println("AttendanceController attendance " + new Date());
-		
+		System.out.println("param: " + employeeSeq);
 		AttendanceParam param = service.attendanceCheck(employeeSeq);
 		//System.out.println(param.toString());
 		
