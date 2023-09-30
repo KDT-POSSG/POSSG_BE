@@ -124,7 +124,7 @@
 
 <select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
 	select count(*) from Call_product_conv
-	where conv_seq = #{convSeq} and call_status != '-1'
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
 </select>
 
