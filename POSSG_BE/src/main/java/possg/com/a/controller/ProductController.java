@@ -491,7 +491,10 @@ public class ProductController {
 		convDto.setCallRef("0");
 		// call_status가 '0'인 발주 상품 목록을 가져옴
 		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
-	    
+	    if (callList.isEmpty()) {
+	    	System.out.println("발주 대기중인 상품이 없음 " + callList);
+	    	return "NO";
+	    }
 		// 비고(remark)이 null인 경우 빈 문자열로 설정
 	    if (convDto.getRemark() == null) {
 	    	convDto.setRemark("");
