@@ -474,7 +474,7 @@ public class ProductController {
 	}
 	
 	// ref 참조 발주 리스트 획득
-	// input: String conRef, int convSeq, int pageNumber, int pageSize
+	// input: String convRef, int convSeq, int pageNumber, int pageSize
 	@GetMapping("getRefConvOrderList")
 	public CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto ) {
 		System.out.println("ProductController getRefConvOrderList() " + new Date());
