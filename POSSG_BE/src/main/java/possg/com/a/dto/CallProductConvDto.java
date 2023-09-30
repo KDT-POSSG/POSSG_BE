@@ -22,7 +22,11 @@ public class CallProductConvDto {
     // 생성자
     public CallProductConvDto() {}
 
-
+    public CallProductConvDto(String callRef, int convSeq) {
+    	this.callRef = callRef;
+    	this.convSeq = convSeq;
+    }
+    
 	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
 			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl) {
 		super();

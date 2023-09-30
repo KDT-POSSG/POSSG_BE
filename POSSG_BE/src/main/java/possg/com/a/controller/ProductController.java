@@ -244,15 +244,24 @@ public class ProductController {
 	@GetMapping("getAllCallProductConvList")
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
-		List<CallProductConvDto> dtoList = service.getAllCallProductConvList(param);
 		
+		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
+		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
+		System.out.println("발주 대기 목록:" + dtoList.toString());
 		// 상품의 총 수
-		int count = service.getCallProductTotalNumber(param);
+		int count = service.getCallProductTotalNumber(tempDto);
+
 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
 		if (param.getPageSize() > count) {
-			param.setPageSize(count); 
+			if (count == 0) {
+				param.setPageSize(1);
+			}else {
+				param.setPageSize(count);
+			}
 		}
+
 		int pageProduct = count / param.getPageSize();
+
 		if((count % param.getPageSize()) > 0) {
 			pageProduct = pageProduct + 1;
 		}

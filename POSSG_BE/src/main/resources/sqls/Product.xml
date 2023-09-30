@@ -116,22 +116,22 @@
 
 <!-- 점주 발주 대기 -->
 <!-- 모든 발주 대기 목록 획득. (call_status '-1' 제외) -->
-<select id="getAllCallProductConvList" parameterType="possg.com.a.dto.CallProductConvParam" resultType="possg.com.a.dto.CallProductConvDto">
+<select id="getAllCallProductConvList" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv
 	where conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
 </select>
 
-<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvParam" resultType="Integer">
+<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
 	select count(*) from Call_product_conv
-	where conv_seq = #{convSeq} and call_status != '-1'
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 상품 목록 획득 -->
 <select id="getRefCallProductConvList" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv
-	where call_ref = #{callRef} and conv_seq = #{convSeq}
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc
 	
 </select>
