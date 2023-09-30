@@ -122,7 +122,7 @@
 	order by call_seq desc;
 </select>
 
-<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvParam" resultType="Integer">
+<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
 	select count(*) from Call_product_conv
 	where conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
@@ -131,7 +131,7 @@
 <!-- 주어진 callRef에 해당하는 발주 상품 목록 획득 -->
 <select id="getRefCallProductConvList" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv
-	where call_ref = #{callRef} and conv_seq = #{convSeq}
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc
 	
 </select>

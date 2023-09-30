@@ -87,8 +87,8 @@ public class ProductService {
 	public List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto){
 		return dao.findCallProductConvName(convDto);
 	}
-	public int getCallProductTotalNumber(CallProductConvParam param) {
-		return dao.getCallProductTotalNumber(param);
+	public int getCallProductTotalNumber(CallProductConvDto convDto) {
+		return dao.getCallProductTotalNumber(convDto);
 	}
 	public int updateRefCallProductConv(CallProductConvOrderListDto orderDto) {
 		return dao.updateRefCallProductConv(orderDto);
