@@ -162,7 +162,7 @@
     #{productName}, 
     '0', 
     0, 
-    #{imgUrl}
+    #{imgUrl},
     #{amount}
   from Convenience c
   where c.conv_seq = #{convSeq};
