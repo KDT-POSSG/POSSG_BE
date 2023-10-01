@@ -150,7 +150,7 @@
 
 <!-- 새로운 발주 상품 추가 -->
 <insert id="addCallProductConv" parameterType="possg.com.a.dto.ProductDto">
-  insert into Call_product_conv (conv_seq, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url)
+  insert into Call_product_conv (conv_seq, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url, amount)
   select 
     #{convSeq}, 
     #{productSeq}, 
@@ -163,6 +163,7 @@
     '0', 
     0, 
     #{imgUrl}
+    #{amount}
   from Convenience c
   where c.conv_seq = #{convSeq};
 </insert>
