@@ -30,6 +30,7 @@ import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 import possg.com.a.dto.ProductDto;
+import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
 import possg.com.a.util.SecurityConfig;
@@ -50,6 +51,7 @@ public class DeliveryController {
 	
 	@Autowired
 	ProductService productService;
+	
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
@@ -417,6 +419,23 @@ public class DeliveryController {
 			}
 			return "NO";
 		}
+		
+		// 배달점포인지 체크
+		@PostMapping("deliveryCheck")
+		public String deliveryCheck(@RequestHeader("accessToken") String accessToken) {
+			System.out.println("DeliveryController deleteDelivery " + new Date());
+			
+			String userId = tokenCreate.getuserIdFromToken(accessToken);			
+			
+			service.getDeliveryStatus(userId);
+			
+			if(userId == null) {
+				return "NO";
+			}
+			return "YES";
+		}
+		
+		//---------------------------------------------------함수------------------------------------------------------
 	
 	// customerSeq 추출하는 로직
 	public int tokenParser(String tokenHeader) {

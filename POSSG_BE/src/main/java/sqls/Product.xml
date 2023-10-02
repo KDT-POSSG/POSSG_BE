@@ -197,7 +197,6 @@
     update Call_product_conv
     set call_status = '3'
     where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
->>>>>>> a57b7b4f6d215d6ef48e1057389956f0fbdc98ac
 </update>
 
 <!-- 주어진 callRef와 productName에 해당하는 발주 상품 삭제 -->

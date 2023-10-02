@@ -39,7 +39,7 @@ import possg.com.a.service.ConvenienceService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@CrossOrigin(origins = "http://localhost:3000") //CROS 설정
+@CrossOrigin(origins = "*") //CROS 설정
 public class SecurityConfig {
 		
 	@Value("${custom.security.key}")
@@ -62,14 +62,14 @@ public class SecurityConfig {
 	//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	//http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
+    	http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
     	
     	http.authorizeHttpRequests(req ->
-				req
-					//.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
-					//.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
-					//.anyRequest().authenticated()
-					.requestMatchers("/**").permitAll()
+			req
+				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
+				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
+				.anyRequest().authenticated()
+				//.requestMatchers("/**").permitAll()
 		);
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();

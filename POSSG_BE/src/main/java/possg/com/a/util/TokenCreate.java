@@ -129,6 +129,10 @@ public class TokenCreate {
 	  
 	  
 	  public Claims getClaims(String token) {
+		  if (token.startsWith("Bearer ")) {
+		        token = token.substring(7);
+		    }
+		  
 		  JwtParser jwtParser = Jwts.parserBuilder()
 	    		    .setSigningKey(securityKey) // 여기서 secretKey는 생성한 시크릿 키입니다.
 	    		    .build();

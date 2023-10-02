@@ -92,11 +92,6 @@
 	where customer_seq = #{customerSeq}
 </select>
 
-<!-- 배달취소 하기  del_status가 0 일때만 가능 0909여기까지하다말았음-->
-
-
-
-
 <!-- 배달 점주 기능 -->
 
 <!-- 배달점포 입점 -->
@@ -113,7 +108,6 @@
 	where ref = #{ref} and branch_name = #{branchName}
 
 </select>
-
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
 <select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
@@ -174,19 +168,11 @@
 		</if>
 		
 </select>
-<!--
 
-<select id="getAllDeliveryOrderList" resultType="possg.com.a.dto.DeliveryDto">
-	select * from Delivery_list
-	where del_ref != '-1'
+<select id="getDeliveryStatus" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+	select conv_location
+	from Convenience
+	where user_id = #{userId}
 </select>
-
-<select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
-	select * from Delivery_list
-	where del_ref = #{delRef}
-	order by del_ref desc
-</select>
-
-  -->
 
 </mapper>

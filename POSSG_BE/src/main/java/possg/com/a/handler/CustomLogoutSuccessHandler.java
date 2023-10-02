@@ -39,6 +39,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 		String authorizationHeader = request.getHeader("accessToken");
 		String key = env.getProperty("custom.security.key");
 		String token = authorizationHeader.replace("Bearer", "").replace(" ", "");
+		
+		// 여기서 JSESSIONID 삭제시켜주기
 		Claims claims =
 				Jwts.parserBuilder()
 				.setSigningKey(env.getProperty("custom.security.key")

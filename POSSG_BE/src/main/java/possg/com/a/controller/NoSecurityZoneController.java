@@ -141,6 +141,7 @@ public class NoSecurityZoneController {
 	@PostMapping("addUser") 
 	public String adduser(@RequestBody ConvenienceDto conv) {
 		System.out.println("ConvenienceController adduser() " + new Date());
+		System.out.println(conv);
 		Date currentTime = new Date();
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String formattedTime = dateFormat.format(currentTime);
@@ -153,42 +154,52 @@ public class NoSecurityZoneController {
 	 
 	 conv.setPwd(hashPwd); 
 	 
-	 int count1 = service.updateCodeStatus(conv);
+	 
+	 System.out.println(conv);
 	 int count = service.adduser(conv);
-	 if(count == 1 && count1 != 0){  		 
+	 
+	 if(count == 0) {
+		 return "NO";
+	 }	 
+	 if(count != 0){  
+		 int count1 = service.updateCodeStatus(conv);
+		 if(count1 != 0) {
+			 return "NO";
+		 }
+		 
 		 return "YES"; 
 	 } 
 	 return "NO"; 
 	 }
 	 
 	 // 아이디 찾기#
-	 @PostMapping("findId")
-		public ResponseEntity<?> findId(@RequestParam(value="representativeName", required=false) String representativeName,
-		                                @RequestParam(value="phoneNumber", required=false) String phoneNumber) {
-		 
-		 System.out.println("ConvenienceController findId() " + new Date());
-		    Map<String, String> response = new HashMap<>();
-		    
-		    // 폰번호랑 이메일 둘 다 안적으면 안됨
-		    if (representativeName == null || phoneNumber == null) {
-		        response.put("errorMessage", "이메일 주소와 전화번호 둘 다 제공해주세요.");
-		        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		    }
+	@PostMapping("findId")
+	public ResponseEntity<?> findId(@RequestParam(value="representativeName", required=false) String representativeName,
+	                                @RequestParam(value="phoneNumber", required=false) String phoneNumber) {
+	 
+	 System.out.println("ConvenienceController findId() " + new Date());
+	    Map<String, String> response = new HashMap<>();
+	    
+	    // 폰번호랑 이메일 둘 다 안적으면 안됨
+	    if (representativeName == null || phoneNumber == null) {
+	        response.put("errorMessage", "이메일 주소와 전화번호 둘 다 제공해주세요.");
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    }
 
-		    // 폰번호랑 이메일 둘다 있어야 찾아짐
-		    ConvenienceDto user = service.findUserByAddressAndPhoneNumber(representativeName, phoneNumber);
-		    
-		    if (user != null) {
-		        response.put("user_id", user.getUserId());
-		        return new ResponseEntity<>(response, HttpStatus.OK);
-		    } else {
-		        response.put("errorMessage", "해당 정보로 가입된 아이디가 없습니다.");
-		        return new ResponseEntity<>(response, HttpStatus.OK);
-		    }
-		}
+	    // 폰번호랑 이메일 둘다 있어야 찾아짐
+	    ConvenienceDto user = service.findUserByAddressAndPhoneNumber(representativeName, phoneNumber);
+	    
+	    if (user != null) {
+	        response.put("user_id", user.getUserId());
+	        return new ResponseEntity<>(response, HttpStatus.OK);
+	    } else {
+	        response.put("errorMessage", "해당 정보로 가입된 아이디가 없습니다.");
+	        return new ResponseEntity<>(response, HttpStatus.OK);
+	    }
+	}
 	 
 	// 본사 인증키 확인#
-		 @PostMapping("keyCheck")
+	 @PostMapping("keyCheck")
 	 public String keycheck(String convKey) {
 		 System.out.println("ConvenienceController keycheck() " + new Date());	 
 		 
@@ -204,7 +215,7 @@ public class NoSecurityZoneController {
 	 
 	 
 	 // 비밀번호 찾기 sms 보내기#
-	 @PostMapping("send")
+	@PostMapping("send")
     public ResponseEntity<?> sendSms(@RequestBody MessageDto messageDto) throws Exception {
 	 System.out.println("ConvenienceController sendSms() " + new Date());
 	 String temp = messageDto.getTo();
@@ -232,7 +243,9 @@ public class NoSecurityZoneController {
     public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 	 System.out.println("ConvenienceController sendSms() " + new Date());
 	 
-	 int veri = number();		 
+	 int veri = number();
+	 
+	 	service.insertSms(veri);
 	 
 		 verificationCodeGenerationTime = System.currentTimeMillis();
 		 	System.out.println("send time" + verificationCodeGenerationTime);
