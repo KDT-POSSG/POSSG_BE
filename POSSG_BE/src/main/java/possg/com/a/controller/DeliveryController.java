@@ -55,7 +55,7 @@ public class DeliveryController {
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
-	public String callAddDelivery(DeliveryDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String callAddDelivery(DeliveryDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -115,7 +115,7 @@ public class DeliveryController {
 	
 	// 주문전 배달 장바구니 목록 보여주기
 	@GetMapping("selectDelivery")
-	public List<DeliveryDto>selectDelivery(@RequestHeader("accessToken") String tokenHeader) {
+	public List<DeliveryDto>selectDelivery(@RequestHeader("USTK") String tokenHeader) {
 		System.out.println("DeliveryController selectDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -138,7 +138,7 @@ public class DeliveryController {
 	// 
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
-	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {

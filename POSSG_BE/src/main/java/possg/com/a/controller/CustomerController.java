@@ -128,7 +128,7 @@ public class CustomerController {
 			}
 			
 			HttpHeaders headers = new HttpHeaders();
-	        headers.add("accessToken", accessToken);
+	        headers.add("USTK", accessToken);
 	        
 	        return ResponseEntity.ok().headers(headers).body("YES");
 		}
@@ -138,7 +138,7 @@ public class CustomerController {
 	
 	// 로그아웃 access는 프론트에서 지우고
 	@PostMapping("deleteRefresh")
-	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteRefresh " + new Date());
 		
 			Claims claim = tokenParser(tokenHeader);			 			 	 
@@ -158,7 +158,7 @@ public class CustomerController {
 */
 	// 개인 웹로그인 시 주소 찍기 ------------------------------토큰확인하고 전화번호 확인-------------------------------------
 	@PostMapping("updateLocation")
-	public String updateLocation(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String updateLocation(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController updateLocation " + new Date());
 
 		if(tokenHeader == null && dto == null) {
@@ -182,7 +182,7 @@ public class CustomerController {
 	
 	//주문할 점포 선택
 	@PostMapping("customerDeliveryBranchName")
-	public String customerDeliveryBranchName(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String customerDeliveryBranchName(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController customerDeliveryBranchName " + new Date());
 		
 		if(dto == null) {
@@ -222,7 +222,7 @@ public class CustomerController {
 	
 	// 회원탈퇴
 	@PostMapping("deleteCustomer")
-	public String deleteCustomer(CustomerDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteCustomer(CustomerDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteCustomer " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);			 			 	 
@@ -242,7 +242,7 @@ public class CustomerController {
 	
 	// 로그아웃 access는 프론트에서 지우고
 	@PostMapping("deleteRefresh")
-	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String deleteRefresh(CustomerTokenDto dto, @RequestHeader("USTK") String tokenHeader) {
 		System.out.println("CustomerController deleteRefresh " + new Date());
 		
 			Claims claim = tokenCreate.getClaims(tokenHeader);			 			 	 

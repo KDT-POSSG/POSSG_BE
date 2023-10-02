@@ -357,7 +357,7 @@ public class NoSecurityZoneController {
 				}
 				
 				HttpHeaders headers = new HttpHeaders();
-		        headers.add("accessToken", accessToken);
+		        headers.add("USTK", accessToken);
 		        
 		        return ResponseEntity.ok().headers(headers).body("YES");
 			}
