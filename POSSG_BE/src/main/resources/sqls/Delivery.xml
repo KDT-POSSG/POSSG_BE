@@ -92,9 +92,12 @@
 	where customer_seq = #{customerSeq}
 </select>
 
+<<<<<<< HEAD:POSSG_BE/src/main/java/sqls/Delivery.xml
+=======
 <!-- 배달취소 하기  del_status가 0 일때만 가능 0909여기까지하다말았음-->
 
 
+>>>>>>> bc7a974a881602161c567eaa8a3e9dc87bf90e7c:POSSG_BE/src/main/resources/sqls/Delivery.xml
 <!-- 배달 점주 기능 -->
 
 <!-- 배달점포 입점 -->
@@ -111,7 +114,6 @@
 	where ref = #{ref} and branch_name = #{branchName}
 
 </select>
-
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
 <select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
@@ -173,6 +175,14 @@
 		
 </select>
 
+<<<<<<< HEAD:POSSG_BE/src/main/java/sqls/Delivery.xml
+<select id="getDeliveryStatus" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+	select conv_location
+	from Convenience
+	where user_id = #{userId}
+</select>
+
+=======
 
 <select id="getRefDeliveryOrderList" parameterType="String" resultType="possg.com.a.dto.DeliveryListDto">
 	select * from Delivery_list
@@ -181,4 +191,5 @@
 </select>
 
 
+>>>>>>> bc7a974a881602161c567eaa8a3e9dc87bf90e7c:POSSG_BE/src/main/resources/sqls/Delivery.xml
 </mapper>

@@ -16,9 +16,9 @@
 </insert>
 
 <update id="updateCodeStatus" parameterType="possg.com.a.dto.AccountNumDto">
-    UPDATE account_num
+    UPDATE Account_num
 	SET code_status = 1
-	WHERE user_id = #{userId};
+	WHERE account_code = #{accountCode};
 </update>
 
 <select id="login" parameterType="possg.com.a.dto.ConvenienceDto"
@@ -77,9 +77,8 @@ where user_id = #{userId}
 <select id="keycheck" parameterType="java.lang.String"
 	resultType="java.lang.Integer">
 	SELECT count(*)
-	FROM account_num
+	FROM Account_num
 	WHERE account_code = #{convKey} AND code_status = 0;
-
 </select>
 
 <!-- 토큰이랑 아이디 db에 저장 -->

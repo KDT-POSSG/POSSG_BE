@@ -4,12 +4,12 @@
 <mapper namespace="possg.com.a.dao.CostDao">
 
 <!-- 월세 관리비 입력 -->
-<insert id="addcost" parameterType="possg.com.a.dto.CostDto">
+<insert id="addCost" parameterType="possg.com.a.dto.CostDto">
 	insert into Cost(rent, water_bill, electricity_bill, gas_bill, total_labor_cost, security_maintenance_fee, conv_seq, cost_year, cost_month)
-	values(#{rent}, #{waterBill}, #{electricityBill}, #{gasBill}, #{totalLaborCost}, #{securityMaintenanceFee},(select conv_seq from Convenience where conv_seq = #{convSeq}), #{costYear}, #{costMonth})
+	values(#{rent}, #{waterBill}, #{electricityBill}, #{gasBill}, #{totalLaborCost}, #{securityMaintenanceFee},#{convSeq}, #{costYear}, #{costMonth})
 </insert>
 
-<update id="updatecost" parameterType="possg.com.a.dto.CostDto">
+<update id="updateCost" parameterType="possg.com.a.dto.CostDto">
 	update Cost
 	set rent = #{rent},
 	water_bill = #{waterBill},
@@ -20,48 +20,51 @@
 	where conv_seq = #{convSeq} AND cost_year = #{costYear} AND cost_month = #{costMonth} 
 </update>
 
-<!-- 매출 -->
-<select id="selectSales" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
-	select 
-	d.ref,
-	(select del_total_price from delivery_list where dl.del_ref = d.ref) as delTotalPrice, 
-	(select price from payment where conv_seq = #{convSeq}) as paymentPrice,
-	c.branch_name	
-
-	from Convenience as c	
-	inner join delivery d on c.branch_name = d.branch_name
-	inner join payment p on c.conv_seq = p.conv_seq
-	inner join delivery_list dl on d.ref = dl.del_ref
- 	
-	<choose>
-		<when test="choice == 0"><!-- day -->
-			where c.conv_seq = #{convSeq}
-		</when>
+<select id="selectCost" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
+	select *
+	from cost	
+	<where>
+		<if test="choice == 0">
+        	and conv_seq = #{convSeq} and cost_year = #{costYear}
+   		</if>
+		<if test="choice == 1">
+			and conv_seq = #{convSeq} and cost_year = #{costYear} and cost_month = #{costMonth}		
+		</if>
 		
-		<when test="choice == 1"><!-- week -->
-			where c.conv_seq = #{convSeq} and d.order_status != 0
-		</when>
+	</where>
 		
-		<when test="choice == 2"><!-- month -->
-			where c.conv_seq = #{convSeq} and d.order_status != 0
-		</when>
-		
-		<otherwise>
-            <!-- 기본 쿼리 (예: choice에 맞지 않는 경우) -->
-            where c.conv_seq = #{convSeq}
-        </otherwise>
-	</choose>
-
 </select>
 
+<select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="Integer">
+	select call_total_price
+	from Call_product_conv_order_list
+	where conv_seq = #{convSeq}
+</select>
 
+<!-- payment엔 purchased_at delivery는 ref로 결제시간 확인해서 날짜별로 분류해서 뿌려야함 -->
+<!-- 매출 -->
+<select id="getDeliveryPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select 
+	ref,
+	price
+	from delivery
+	where branch_name = #{branchName} and order_status != 0
+</select>
 
-
+<select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	SELECT price AS paymentPrice, purchased_at as ref
+	FROM Payment
+	WHERE conv_seq = #{convSeq} AND del != '결제취소'
+</select>
+<!--  
 <select id="paymentProductName" parameterType="Integer" resultType="possg.com.a.dto.ProductDto">
 	select *
 	from product
-	where product_seq = #{productSeq}
+	where product_seq = #{productSeq} 
 </select>
+-->
+
+
 
 
 </mapper>

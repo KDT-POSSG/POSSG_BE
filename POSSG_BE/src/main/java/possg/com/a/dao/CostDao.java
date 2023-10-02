@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
 import possg.com.a.dto.ProductDto;
@@ -13,12 +14,18 @@ import possg.com.a.dto.ProductDto;
 @Repository
 public interface CostDao {
 	
-	int addcost(CostDto dto);
+	int addCost(CostDto dto);
 	
-	int updatecost(CostDto dto);
+	int updateCost(CostDto dto);
 	
-	List<CostParam> selectSales(CostParam param);
+	List<CostParam> getDeliveryPrice(CostParam param);
 	
 	ProductDto paymentProductName(int convSeq);
+	
+	List<CostParam> getPaymentPrice(CostParam param);
+	
+	CostDto selectCost(CostParam param);
+	
+	List<Integer> selectOrderPrice(CostParam param);
 
 }

@@ -6,11 +6,11 @@ public class EmployeeDto {
 	private int employeeSeq;
 	private int convSeq;
     private String empName;
-    private Date birthDate;
+    private String birthDate;
     private String gender;
     private String phoneNumber;
-    private Date hireDate;
-    private Date terminationDate;
+    private String hireDate;
+    private String terminationDate;
     private int salary;
     
     //생성자
@@ -19,8 +19,8 @@ public class EmployeeDto {
     	
     }
 
-	public EmployeeDto(int employeeSeq, int convSeq, String empName, Date birthDate, String gender, String phoneNumber,
-			Date hireDate, Date terminationDate, int salary) {
+	public EmployeeDto(int employeeSeq, int convSeq, String empName, String birthDate, String gender, String phoneNumber,
+			String hireDate, String terminationDate, int salary) {
 		super();
 		this.employeeSeq = employeeSeq;
 		this.convSeq = convSeq;
@@ -57,11 +57,11 @@ public class EmployeeDto {
 		this.empName = empName;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -81,19 +81,19 @@ public class EmployeeDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Date getHireDate() {
+	public String getHireDate() {
 		return hireDate;
 	}
 
-	public void setHireDate(Date hireDate) {
+	public void setHireDate(String hireDate) {
 		this.hireDate = hireDate;
 	}
 
-	public Date getTerminationDate() {
+	public String getTerminationDate() {
 		return terminationDate;
 	}
 
-	public void setTerminationDate(Date terminationDate) {
+	public void setTerminationDate(String terminationDate) {
 		this.terminationDate = terminationDate;
 	}
 
