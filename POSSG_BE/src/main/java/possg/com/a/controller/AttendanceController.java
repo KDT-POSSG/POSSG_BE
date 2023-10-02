@@ -22,6 +22,7 @@ public class AttendanceController {
 	@Autowired
 	AttendanceService service;
 	
+	// 출근
 	@PostMapping("attendance")
 	public String attendance(@RequestBody AttendanceDto dto) {
 		System.out.println("AttendanceController attendance " + new Date());
@@ -45,7 +46,7 @@ public class AttendanceController {
 		return "NO";
 	};
 	
-	// 
+	// 퇴근
 	@PostMapping("leavework")
 	public String leavework(@RequestParam int employeeSeq) {
 		System.out.println("AttendanceController attendance " + new Date());
