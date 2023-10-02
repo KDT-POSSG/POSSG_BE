@@ -1,6 +1,6 @@
 package possg.com.a.dto;
 
-public class PTDto {
+public class PointDto {
     private int ptSeq;
     private String ptName;
     private int ptPrice;
@@ -8,9 +8,9 @@ public class PTDto {
     private int ptStatus;
 
     // 생성자
-    public PTDto() {}
+    public PointDto() {}
 
-    public PTDto(int ptSeq, String ptName, int ptPrice, int ptDuration, int ptStatus) {
+    public PointDto(int ptSeq, String ptName, int ptPrice, int ptDuration, int ptStatus) {
         this.ptSeq = ptSeq;
         this.ptName = ptName;
         this.ptPrice = ptPrice;
