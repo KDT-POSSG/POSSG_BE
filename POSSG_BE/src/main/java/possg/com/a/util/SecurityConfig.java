@@ -62,13 +62,13 @@ public class SecurityConfig {
 	//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
+    	//http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
     	
     	http.authorizeHttpRequests(req ->
 			req
-				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
-				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
-				.anyRequest().authenticated()
+				//.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
+				//.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
+				//.anyRequest().authenticated()
 				.requestMatchers("/**").permitAll()
 		);
     	http.csrf((csrf) -> csrf.disable());
