@@ -69,7 +69,7 @@ public class SecurityConfig {
 				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
 				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
 				.anyRequest().authenticated()
-				//.requestMatchers("/**").permitAll()
+				.requestMatchers("/**").permitAll()
 		);
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();
