@@ -71,17 +71,8 @@ public class DeliveryService {
 		return dao.statusUpdate(dto);
 	}
 	
-	/*
-	
-	public List<DeliveryDto> getAllDeliveryOrderList(){
-		return dao.getAllDeliveryOrderList();
-	}
-	
-	
-	public List<DeliveryDto> getRefDeliveryOrderList(String delRef){
-		return dao.getRefDeliveryOrderList(delRef);
+	public ConvenienceDto getDeliveryStatus(String userId) {
+		return dao.getDeliveryStatus(userId);
 	}
 
-	*/
-	
 }

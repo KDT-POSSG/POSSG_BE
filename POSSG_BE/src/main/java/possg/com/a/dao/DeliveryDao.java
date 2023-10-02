@@ -43,7 +43,7 @@ public interface DeliveryDao {
 	
 	int statusUpdate(DeliveryJoinDto dto);
 	
-	
+	ConvenienceDto getDeliveryStatus(String userId);
 	
 	
 	// List<DeliveryDto> getAllDeliveryOrderList();

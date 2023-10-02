@@ -244,15 +244,24 @@ public class ProductController {
 	@GetMapping("getAllCallProductConvList")
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
-		List<CallProductConvDto> dtoList = service.getAllCallProductConvList(param);
 		
+		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
+		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
+		System.out.println("발주 대기 목록:" + dtoList.toString());
 		// 상품의 총 수
-		int count = service.getCallProductTotalNumber(param);
+		int count = service.getCallProductTotalNumber(tempDto);
+
 		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
 		if (param.getPageSize() > count) {
-			param.setPageSize(count); 
+			if (count == 0) {
+				param.setPageSize(1);
+			}else {
+				param.setPageSize(count);
+			}
 		}
+
 		int pageProduct = count / param.getPageSize();
+
 		if((count % param.getPageSize()) > 0) {
 			pageProduct = pageProduct + 1;
 		}
@@ -465,7 +474,7 @@ public class ProductController {
 	}
 	
 	// ref 참조 발주 리스트 획득
-	// input: String conRef, int convSeq, int pageNumber, int pageSize
+	// input: String convRef, int convSeq, int pageNumber, int pageSize
 	@GetMapping("getRefConvOrderList")
 	public CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto ) {
 		System.out.println("ProductController getRefConvOrderList() " + new Date());
@@ -482,7 +491,10 @@ public class ProductController {
 		convDto.setCallRef("0");
 		// call_status가 '0'인 발주 상품 목록을 가져옴
 		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
-	    
+	    if (callList.isEmpty()) {
+	    	System.out.println("발주 대기중인 상품이 없음 " + callList);
+	    	return "NO";
+	    }
 		// 비고(remark)이 null인 경우 빈 문자열로 설정
 	    if (convDto.getRemark() == null) {
 	    	convDto.setRemark("");
