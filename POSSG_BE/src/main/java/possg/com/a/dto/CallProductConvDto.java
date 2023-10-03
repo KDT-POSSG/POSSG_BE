@@ -1,5 +1,7 @@
 package possg.com.a.dto;
 
+import java.util.List;
+
 public class CallProductConvDto {
     private int callSeq;
     private int convSeq;
@@ -18,6 +20,8 @@ public class CallProductConvDto {
     private int pageSize = 20;
     
     private String remark;
+    
+    private List<String> nameList;
 
     // 생성자
     public CallProductConvDto() {}
@@ -182,6 +186,14 @@ public class CallProductConvDto {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	
+	public List<String> getNameList() {
+		return nameList;
+	}
+
+	public void setNameList(List<String> nameList) {
+		this.nameList = nameList;
 	}
 
 	@Override

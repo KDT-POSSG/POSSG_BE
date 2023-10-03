@@ -438,11 +438,12 @@ public class ProductController {
 	
 	// 발주 대기 상품 삭제
 	@PostMapping("deleteCallProduct")
-	public String delteCallProduct(@RequestBody List<CallProductConvDto> dtoList) {
+	public String delteCallProduct(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
-		for(CallProductConvDto callDto : dtoList) {
-			int count = service.deleteCallProduct(callDto);
-			if(count != 0) {
+		for(String name : convDto.getNameList()) {
+			convDto.setProductName(name);
+			int count = service.deleteCallProduct(convDto);
+			if(count == 0) {
 				return "NO";
 			}
 		}
