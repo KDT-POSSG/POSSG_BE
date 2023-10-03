@@ -250,6 +250,10 @@ public class ProductController {
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
 		if (dtoList.isEmpty()) {
 			System.out.println("발주 대기 상품 없음" + dtoList);
+			map.put("convList", []);
+			map.put("price", 0); // 총 가격
+			map.put("amount", 0); // 총 수량
+			map.put("product", 0); // 총 종류 수량
 			return map;
 		}
 		System.out.println("발주 대기 목록:" + dtoList.toString());
