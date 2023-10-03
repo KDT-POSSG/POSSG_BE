@@ -122,8 +122,24 @@
 	order by call_seq desc;
 </select>
 
+<!-- 대기 상품의 총 갯수 -->
+<select id="getCallProductTotalAmount" parameterType="possg.com.a.dto.CallProductConvDto"
+	resultType="java.lang.Integer">
+	select sum(amount)
+	from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</select>
+<!-- 대기 상품의 총 가격 -->
+<select id="getCallProductTotalPrice" parameterType="possg.com.a.dto.CallProductConvDto"
+	resultType="java.lang.Integer">
+	select sum(price)
+	from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</select>
+
+<!-- 대기 상품 종류의 총 갯수 -->
 <select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
-	select count(*) from Call_product_conv
+	select count(distinct product_name) from Call_product_conv
 	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 	order by call_seq desc;
 </select>
@@ -208,8 +224,14 @@
 <select id="getAllConvOrderList" parameterType="possg.com.a.dto.CallProductConvParam" 
 resultType="possg.com.a.dto.CallProductConvOrderListDto">
 	select * from Call_product_conv_order_list
-	where conv_seq = #{convSeq} and call_ref != '-1'
+	where conv_seq = #{convSeq} and call_status != '0'
+	order by call_ref desc
 	limit ${(pageNumber * pageSize)}, #{pageSize}
+</select>
+
+<select id="getOrderListTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
+	select count(*) from Call_product_conv_order_list
+	where conv_seq = #{convSeq} and call_status != '0'
 </select>
 
 <!-- 주어진 callRef에 해당하는 발주 주문 목록 획득 -->
@@ -231,14 +253,14 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 <update id="updateConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
     UPDATE Call_product_conv_order_list
     SET call_status=#{callStatus}, call_total_number=#{callTotalNumber}, call_total_price=#{callTotalPrice}, call_remark=#{callRemark}
-    WHERE call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+    WHERE call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '0'
 </update>
 
 <!-- 점주 발주 취소 -->
 <update id="cancelConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
     UPDATE Call_product_conv_order_list
     SET call_status = '0'
-    WHERE  call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+    WHERE  call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '0'
 </update>
 
 
