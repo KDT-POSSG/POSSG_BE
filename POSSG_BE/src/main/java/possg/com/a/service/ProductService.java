@@ -26,7 +26,7 @@ public class ProductService {
 	public String healthcheck() {
 		return dao.healthcheck();
 	}
-	
+	// Product
 	public List<ProductDto> productList(ProductParam param){
 		return dao.productList(param);
 	}
@@ -48,11 +48,11 @@ public class ProductService {
 	public List<ProductDto> findProductBarcode(ProductDto dto) {
 		return dao.findProductBarcode(dto);
 	}
-	
 	public int getTotalStock(String name) {
 		return dao.getTotalStock(name);
 	}
 	
+	// CallProductConv
 	public int addCallProductConv(ProductDto dto) {
 		return dao.addCallProductConv(dto);
 	}
@@ -81,6 +81,13 @@ public class ProductService {
 	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto){
 		return dao.getRefCallProductConvList(convDto);
 	}
+	public int getCallProductTotalPrice(CallProductConvDto convDto) {
+		return dao.getCallProductTotalPrice(convDto);
+	}
+	public int getCallProductTotalAmount(CallProductConvDto convDto) {
+		return dao.getCallProductTotalAmount(convDto);
+	}
+
 	public CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto){
 		return dao.getSeqCallProductConv(convDto);
 	}
@@ -103,6 +110,7 @@ public class ProductService {
 		return dao.deleteCallProduct(callDto);
 	}
 	
+	// OrderList
 	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param){
 		return dao.getAllConvOrderList(param);
 	}
@@ -120,5 +128,10 @@ public class ProductService {
 	}
 	public int deleteConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.deleteConvOrderList(orderDto);
+	}
+	
+	
+	public int getOrderListTotalNumber(CallProductConvParam param) {
+		return dao.getOrderListTotalNumber(param);
 	}
 }

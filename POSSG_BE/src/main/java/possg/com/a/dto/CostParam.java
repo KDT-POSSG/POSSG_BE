@@ -10,13 +10,14 @@ public class CostParam {
 	private String date;
 	private int costYear;
 	private int costMonth;
+	private String productName;
 	
 	public CostParam() {
 	}
 
 	
 	public CostParam(String ref, int price, int paymentPrice, String branchName, int convSeq, int choice, String date,
-			int costYear, int costMonth) {
+			int costYear, int costMonth, String productName) {
 		super();
 		this.ref = ref;
 		this.price = price;
@@ -27,6 +28,7 @@ public class CostParam {
 		this.date = date;
 		this.costYear = costYear;
 		this.costMonth = costMonth;
+		this.productName = productName;
 	}
 
 
@@ -101,15 +103,23 @@ public class CostParam {
 	public void setCostMonth(int costMonth) {
 		this.costMonth = costMonth;
 	}
+	
+	public String getProductName() {
+		return productName;
+	}
+
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
 
 	@Override
 	public String toString() {
 		return "CostParam [ref=" + ref + ", price=" + price + ", paymentPrice=" + paymentPrice + ", branchName="
 				+ branchName + ", convSeq=" + convSeq + ", choice=" + choice + ", date=" + date + ", costYear="
-				+ costYear + ", costMonth=" + costMonth + "]";
+				+ costYear + ", costMonth=" + costMonth + ", productName=" + productName + "]";
 	}
-
-	
 
 
 }

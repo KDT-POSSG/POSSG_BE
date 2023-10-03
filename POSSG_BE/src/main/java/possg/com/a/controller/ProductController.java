@@ -244,43 +244,58 @@ public class ProductController {
 	@GetMapping("getAllCallProductConvList")
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
+		Map<String, Object> map = new HashMap<String, Object>();
 		
 		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
+		if (dtoList.isEmpty()) {
+			System.out.println("발주 대기 상품 없음" + dtoList);
+			map.put("convList", []);
+			map.put("price", 0); // 총 가격
+			map.put("amount", 0); // 총 수량
+			map.put("product", 0); // 총 종류 수량
+			return map;
+		}
 		System.out.println("발주 대기 목록:" + dtoList.toString());
-		// 상품의 총 수
-		int count = service.getCallProductTotalNumber(tempDto);
-
-		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
-		if (param.getPageSize() > count) {
-			if (count == 0) {
-				param.setPageSize(1);
-			}else {
-				param.setPageSize(count);
-			}
-		}
-
-		int pageProduct = count / param.getPageSize();
-
-		if((count % param.getPageSize()) > 0) {
-			pageProduct = pageProduct + 1;
-		}
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		// 상품의 총 가격
+		int price = service.getCallProductTotalPrice(tempDto);
+		// 상품의 총 수
+		int amount = service.getCallProductTotalAmount(tempDto);
+		// 상품 종류의 총 수
+		int product = service.getCallProductTotalNumber(tempDto);
+
 		map.put("convList", dtoList);
-		map.put("pageProduct", pageProduct);
-		//map.put("pageNumber", param.getPageNumber());
-		map.put("cnt", count); // react 중 pagination 사용시 활용
+		map.put("price", price); // 총 가격
+		map.put("amount", amount); // 총 수량
+		map.put("product", product); // 총 종류 수량
 		return map;
 	}
 	
 	// input: String callRef, int convSeq
 	@GetMapping("getRefCallProductConvList")
-	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto) {
+	public Map<String,Object> getRefCallProductConvList(CallProductConvDto convDto) {
 		System.out.println("ProductController getRefCallProductConvList() " + new Date());
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(convDto);
+		System.out.println("발주 상세 내역:" + convDto.toString());
+		if (convDto.getCallRef() == null) {
+			System.out.println("ref 없음");
+			return map;
+		}
 		
-		return dtoList;
+		// 상품의 총 가격
+		int price = service.getCallProductTotalPrice(convDto);
+		// 상품의 총 수
+		int amount = service.getCallProductTotalAmount(convDto);
+		// 상품 종류의 총 수
+		int product = service.getCallProductTotalNumber(convDto);
+
+		map.put("convList", dtoList);
+		map.put("price", price); // 총 가격
+		map.put("amount", amount); // 총 수량
+		map.put("product", product); // 총 종류 수량
+		return map;
 	}
 
 	// 재고 소진 시 자동 발주 시스템
@@ -329,7 +344,7 @@ public class ProductController {
 		return "NO";
 	}
 		
-	// 점주 발주 상품 리스트에 추가
+	// 점주 발주 대기 리스트에 추가
 	// input
 	// ProductDto: int convSeq, int productSeq, int price, String productName, String imgUrl, int stockLimit
 	@PostMapping("addCallProductConv")
@@ -427,15 +442,16 @@ public class ProductController {
 	
 	// 발주 대기 상품 삭제
 	@PostMapping("deleteCallProduct")
-	public String delteCallProduct(@RequestBody CallProductConvDto callDto) {
+	public String delteCallProduct(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
-		
-		int count = service.deleteCallProduct(callDto);
-		if(count > 0) {
-			return "YES";
+		for(String name : convDto.getNameList()) {
+			convDto.setProductName(name);
+			int count = service.deleteCallProduct(convDto);
+			if(count == 0) {
+				return "NO";
+			}
 		}
-		
-		return "NO";
+		return "YES";
 	}
 	
 	/* 고객 발주 */
@@ -467,10 +483,38 @@ public class ProductController {
 	// 발주 리스트 획득
 	// input: int convSeq, int pageNumber, int pageSize
 	@GetMapping("getAllConvOrderList")
-	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param ) {
+	public Map<String, Object> getAllConvOrderList(CallProductConvParam param) {
 		System.out.println("ProductController getAllConvOrderList() " + new Date());
 		
-		return service.getAllConvOrderList(param);
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		List<CallProductConvOrderListDto> dtoList = service.getAllConvOrderList(param);
+		
+		int count = service.getOrderListTotalNumber(param);
+
+		if (count == 0) {
+			return map;
+		}
+		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+		if (param.getPageSize() > count) {
+			if (count == 0) {
+				param.setPageSize(1);
+			}else {
+				param.setPageSize(count);
+			}
+		}
+
+		int pageProduct = count / param.getPageSize();
+
+		if((count % param.getPageSize()) > 0) {
+			pageProduct = pageProduct + 1;
+		}
+		
+		map.put("orderList", dtoList);
+		map.put("pageProduct", pageProduct);
+		map.put("cnt", count); // react 중 pagination 사용시 활용
+		return map;
+		
 	}
 	
 	// ref 참조 발주 리스트 획득
@@ -754,17 +798,3 @@ productMap.put("details", productDetails);
 resultList.add(productMap);
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-

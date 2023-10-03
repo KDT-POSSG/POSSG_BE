@@ -239,8 +239,8 @@ public class NoSecurityZoneController {
     }
  
 	 // 회원가입용 sms 보내기#
- @PostMapping("regiSend")
-    public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
+	 @PostMapping("regiSend")
+	 public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 	 System.out.println("ConvenienceController sendSms() " + new Date());
 	 
 	 int veri = number();
