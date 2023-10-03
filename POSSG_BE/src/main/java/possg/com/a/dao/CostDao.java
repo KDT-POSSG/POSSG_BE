@@ -26,6 +26,8 @@ public interface CostDao {
 	
 	CostDto selectCost(CostParam param);
 	
+	List<CostDto> selectCostList(CostParam param);
+	
 	List<Integer> selectOrderPrice(CostParam param);
 
 }

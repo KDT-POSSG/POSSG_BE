@@ -83,37 +83,37 @@ where user_id = #{userId}
 
 <!-- 토큰이랑 아이디 db에 저장 -->
 <insert id="insertToken" parameterType="possg.com.a.dto.TokenDto">
-	insert into token(refresh, user_id)
+	insert into Token(refresh, user_id)
 	values(#{refresh}, #{userId})
 </insert>
 
 <!-- access토큰의 아이디를 파싱하여 userId로 보내주면 db에 저장된 user_id랑 비교해서 같은 refresh토큰만 선택 -->
 <select id="selectToken" parameterType="possg.com.a.dto.TokenDto" resultType="String">
 	select refresh
-	from token
+	from Token
 	where user_id = #{userId}
 </select>
 
 <insert id="insertSms" parameterType="Integer">
-	insert sms(sms_num)
+	insert Sms(sms_num)
 	values(#{smsNum})
 </insert>
 
 <select id="selectSms" parameterType="Integer"  resultType="Integer">
 	select count(*)
-	from sms
+	from Sms
 	where sms_num = #{smsNum}
 </select>
 
 <delete id="deleteSms" parameterType="Integer">
-	delete from sms
+	delete from Sms
 	where sms_num = #{smsNum}
 </delete>
 
 
 <delete id="logout" parameterType="String">
 	delete 
-	from token
+	from Token
 	where user_id = #{userId}	
 </delete>
 

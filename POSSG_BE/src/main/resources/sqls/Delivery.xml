@@ -61,7 +61,7 @@
 <!-- 장바구니 상품 가져오기 -->
 <select id="selectDelivery" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
 	select *
-	from delivery
+	from Delivery
 	where ref = 0 and user_id = #{userId} and order_status = 0
 </select>
 
@@ -82,7 +82,7 @@
 
 <!-- 배달주문 하기 -->
 <insert id="insertDeliveryList" parameterType="possg.com.a.dto.DeliveryListDto">
-	insert delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark)
+	insert Delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark)
 	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark})
 </insert>
 
@@ -128,8 +128,8 @@
     p.del_remark
     p.del_ref
 	FROM delivery as o
-	inner join convenience j on o.branch_name = j.branch_name
-	inner join delivery_list p on o.ref = p.del_ref
+	inner join Convenience j on o.branch_name = j.branch_name
+	inner join Delivery_list p on o.ref = p.del_ref
 	WHERE j.branch_name = #{branchName}
 	AND  o.order_status = #{orderStatus} AND o.order_status != 0
 
@@ -139,7 +139,7 @@
 
 <!-- 배송진행 상태 업데이트 -->
 <update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
-	update delivery as o, delivery_list as p
+	update Delivery as o, delivery_list as p
 	 set o.order_status = o.order_status + 1,
     p.del_status = p.del_status + 1
 	where o.ref = #{ref} and p.del_ref = #{ref}
@@ -148,7 +148,7 @@
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
 		resultType="java.lang.Integer">
 		select count(*) 
-		from  delivery as o
+		from  Delivery as o
 		inner join delivery_list  p on o.ref = p.del_ref
 		
 		<if test="orderStatus == 1 ">
