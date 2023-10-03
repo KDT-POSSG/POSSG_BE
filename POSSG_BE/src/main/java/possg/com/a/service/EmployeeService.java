@@ -36,4 +36,8 @@ public class EmployeeService {
 	public int terminateEmployee(int employeeSeq) {
 		return dao.terminateEmployee(employeeSeq);
 	};
+	
+	public int getallemployee(int convSeq) {
+		return dao.getallemployee(convSeq);
+	};
 }

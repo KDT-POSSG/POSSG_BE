@@ -24,4 +24,5 @@
     	FROM Favorite_page
     	WHERE conv_seq = #{convSeq}
     </select>
+    
 </mapper>
