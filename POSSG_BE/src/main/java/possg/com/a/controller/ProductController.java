@@ -287,7 +287,7 @@ public class ProductController {
 		// 상품 종류의 총 수
 		int product = service.getCallProductTotalNumber(convDto);
 
-		map.put("dtoList", dtoList);
+		map.put("convList", dtoList);
 		map.put("price", price); // 총 가격
 		map.put("amount", amount); // 총 수량
 		map.put("product", product); // 총 종류 수량
@@ -505,9 +505,8 @@ public class ProductController {
 			pageProduct = pageProduct + 1;
 		}
 		
-		map.put("convList", dtoList);
+		map.put("orderList", dtoList);
 		map.put("pageProduct", pageProduct);
-		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
 		
@@ -794,17 +793,3 @@ productMap.put("details", productDetails);
 resultList.add(productMap);
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
