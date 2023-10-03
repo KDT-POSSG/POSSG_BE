@@ -22,17 +22,15 @@
 
 <select id="selectCost" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
 	select *
-	from cost	
-	<where>
-		<if test="choice == 0">
-        	and conv_seq = #{convSeq} and cost_year = #{costYear}
-   		</if>
-		<if test="choice == 1">
-			and conv_seq = #{convSeq} and cost_year = #{costYear} and cost_month = #{costMonth}		
-		</if>
-		
-	</where>
-		
+	from Cost	
+	where conv_seq = #{convSeq} and cost_year = #{costYear} and cost_month = #{costMonth}		
+				
+</select>
+
+<select id="selectCostList" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
+	select *
+	from Cost	
+   	where conv_seq = #{convSeq} and cost_year = #{costYear}
 </select>
 
 <select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="Integer">
@@ -46,25 +44,18 @@
 <select id="getDeliveryPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select 
 	ref,
-	price
-	from delivery
+	price,
+	product_name
+	from Delivery
 	where branch_name = #{branchName} and order_status != 0
 </select>
 
 <select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
-	SELECT price AS paymentPrice, purchased_at as ref
-	FROM Payment
-	WHERE conv_seq = #{convSeq} AND del != '결제취소'
+	SELECT p.price AS paymentPrice, p.purchased_at as ref, pro.product_name as product_name
+	FROM Payment AS p
+	inner join Product pro on p.product_seq = pro.product_seq
+	WHERE p.conv_seq = #{convSeq} AND del != '결제취소'
 </select>
-<!--  
-<select id="paymentProductName" parameterType="Integer" resultType="possg.com.a.dto.ProductDto">
-	select *
-	from product
-	where product_seq = #{productSeq} 
-</select>
--->
-
-
 
 
 </mapper>
