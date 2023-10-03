@@ -22,6 +22,27 @@
     	where receipt_id = #{receiptId}
     </update>
     
+    <!-- 단일 결제 목록 조회 -->
+    <select id="paymentOneList" parameterType="java.lang.String" resultType="possg.com.a.dto.PaymentParam">
+    	SELECT
+    		cu.customer_seq AS customerSeq,
+    		cu.customer_name AS customerName,
+    		c.branch_name AS branchName,
+    		c.representative_name AS representativeName,
+    		p.receipt_id AS receiptId,
+    		p.pg AS pg,
+    		p.method AS method,
+    		p.price AS price,
+    		p.purchased_at AS purchasedAt,
+    		p.card_company AS cardCompany,
+    		p.card_num AS cardNum,
+    		p.del AS del
+    	FROM Payment p
+    	JOIN Convenience c ON p.conv_seq = c.conv_seq
+    	JOIN Customer cu ON cu.customer_seq = p.user_seq
+    	WHERE p.receipt_id = #{receiptId} 
+    </select>
+    
     <!-- 전체 결제 목록 조회 -->
     <select id="paymentlist" parameterType="java.lang.Integer"
     resultType="possg.com.a.dto.PaymentParam">
@@ -41,6 +62,14 @@
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
-    	WHERE p.conv_seq = #{convSeq} 
+    	WHERE p.conv_seq = #{convSeq}
+    	ORDER BY p.purchased_at DESC;
     </select>
+    
+    <!-- 결제 목록 리스트 총 갯수 -->
+	<select id="getallpayment" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(*)
+		FROM Payment
+		where conv_seq = #{convSeq}
+	</select>
 </mapper>

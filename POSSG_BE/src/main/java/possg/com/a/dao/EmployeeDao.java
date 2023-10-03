@@ -15,4 +15,5 @@ public interface EmployeeDao {
 	List<EmployeeDto> findemployee(EmployeeDto dto);
 	List<EmployeeDto> findallemployee(int convSeq);
 	int terminateEmployee(int employeeSeq);
+	int getallemployee(int convSeq);
 }

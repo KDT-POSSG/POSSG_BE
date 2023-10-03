@@ -4,6 +4,7 @@ package possg.com.a.controller;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.bootpay.Bootpay;
 import kr.co.bootpay.model.request.Cancel;
+import possg.com.a.dto.ItemsDto;
 import possg.com.a.dto.PaymentDto;
 import possg.com.a.dto.PaymentParam;
+import possg.com.a.service.ItemsService;
 import possg.com.a.service.PaymentService;
 
 @RestController
@@ -26,6 +29,9 @@ public class PaymentController {
 	
 	@Autowired
 	PaymentService service;
+	
+	@Autowired
+	ItemsService service2;
 	
 	// 결제 정보 추가
 	@PostMapping("addpayment")
@@ -96,13 +102,39 @@ public class PaymentController {
 				
 	}
 	
+	// 전체 결제 목록
 	@GetMapping("paymentlist")
-	public List<PaymentParam> paymentlist(@RequestParam int convSeq){
+	public Map<String, Object> paymentlist(@RequestParam int convSeq){
 		System.out.println("PaymentController paymentlist " + new Date());
 		
 		List<PaymentParam> list = service.paymentlist(convSeq);
 		
-		return list;
+		int count = service.getallpayment(convSeq);
+		
+		// 결제정보, 상세목록정보
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cnt", count);
+		map.put("list", list);
+		
+		return map;
 	};
+	
+	// 단일 결제 정보
+	@GetMapping("paymentOneList")
+	public Map<String, Object> paymentOneList(@RequestParam String receiptId) {
+		System.out.println("PaymentController paymentOneList " + new Date());
+		
+		PaymentParam param = service.paymentOneList(receiptId);
+		
+		List<ItemsDto> list = service2.searchItems(receiptId);
+		
+		// 결제정보, 상세목록정보
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("param", param);
+		map.put("list", list);
+		
+		return map;
+	};
+	
 	
 }

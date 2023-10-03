@@ -1,7 +1,9 @@
 package possg.com.a.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -57,12 +59,18 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("findallemployee")
-	public List<EmployeeDto> findallemployee(@RequestParam int convSeq){
+	public Map<String, Object> findallemployee(@RequestParam int convSeq){
 		System.out.println("EmployeeController findallemployee " + new Date());
 		
 		List<EmployeeDto> list = service.findallemployee(convSeq);
 		
-		return list;
+		int count = service.getallemployee(convSeq);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("employee", list);
+		map.put("cnt", count);
+		
+		return map;
 	}
 	
 	@PostMapping("terminateEmployee")

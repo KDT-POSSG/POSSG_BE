@@ -19,6 +19,7 @@
 	    FROM Settlement s
 	    JOIN Convenience c ON s.conv_seq = c.conv_seq
 	    WHERE s.conv_seq = #{convSeq}
+	    ORDER BY s.rdate DESC;
 	</select>
 	
 	<!-- 시재 리스트 총 갯수 -->
