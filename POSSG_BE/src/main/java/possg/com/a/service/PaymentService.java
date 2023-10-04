@@ -28,4 +28,12 @@ public class PaymentService {
 	public List<PaymentParam> paymentlist(int convSeq){
 		return dao.paymentlist(convSeq);
 	};
+	
+	public PaymentParam paymentOneList(String receiptId){
+		return dao.paymentOneList(receiptId);
+	};
+	
+	public int getallpayment(int convSeq) {
+		return dao.getallpayment(convSeq);
+	};
 }

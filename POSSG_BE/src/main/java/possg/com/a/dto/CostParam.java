@@ -1,43 +1,51 @@
 package possg.com.a.dto;
 
 public class CostParam {
-	private int delRef;			// delivery ref	팔린 시간
-	private int delTotalPrice; // delivery 등 배달 가격
+	private String ref;			// delivery ref	팔린 시간
+	private int price; // delivery 등 배달 가격
 	private int paymentPrice;	//payment 매장가격
 	private String branchName; //conv	지점명
 	private int convSeq;  
 	private int choice;  // day week month
+	private String date;
+	private int costYear;
+	private int costMonth;
+	private String productName;
 	
 	public CostParam() {
 	}
+
 	
-	public CostParam(int delRef, int delTotalPrice,
-			int paymentPrice, String branchName, int convSeq,
-			int choice) {
+	public CostParam(String ref, int price, int paymentPrice, String branchName, int convSeq, int choice, String date,
+			int costYear, int costMonth, String productName) {
 		super();
-		this.delRef = delRef;
-		this.delTotalPrice = delTotalPrice;
+		this.ref = ref;
+		this.price = price;
 		this.paymentPrice = paymentPrice;
 		this.branchName = branchName;
 		this.convSeq = convSeq;
 		this.choice = choice;
+		this.date = date;
+		this.costYear = costYear;
+		this.costMonth = costMonth;
+		this.productName = productName;
 	}
 
-	
-	public int getDelRef() {
-		return delRef;
+
+	public String getRef() {
+		return ref;
 	}
 
-	public void setDelRef(int delRef) {
-		this.delRef = delRef;
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
-	public int getDelTotalPrice() {
-		return delTotalPrice;
+	public int getPrice() {
+		return price;
 	}
 
-	public void setDelTotalPrice(int delTotalPrice) {
-		this.delTotalPrice = delTotalPrice;
+	public void setPrice(int price) {
+		this.price = price;
 	}
 
 	public int getPaymentPrice() {
@@ -72,13 +80,47 @@ public class CostParam {
 		this.choice = choice;
 	}
 
-	@Override
-	public String toString() {
-		return "CostParam [delRef=" + delRef + ", delTotalPrice=" + delTotalPrice + ", paymentPrice=" + paymentPrice
-				+ ", branchName=" + branchName + ", convSeq=" + convSeq + ", choice=" + choice + "]";
+	public String getDate() {
+		return date;
 	}
 
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public int getCostYear() {
+		return costYear;
+	}
+
+	public void setCostYear(int costYear) {
+		this.costYear = costYear;
+	}
+
+	public int getCostMonth() {
+		return costMonth;
+	}
+
+	public void setCostMonth(int costMonth) {
+		this.costMonth = costMonth;
+	}
 	
+	public String getProductName() {
+		return productName;
+	}
+
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+
+	@Override
+	public String toString() {
+		return "CostParam [ref=" + ref + ", price=" + price + ", paymentPrice=" + paymentPrice + ", branchName="
+				+ branchName + ", convSeq=" + convSeq + ", choice=" + choice + ", date=" + date + ", costYear="
+				+ costYear + ", costMonth=" + costMonth + ", productName=" + productName + "]";
+	}
+
 
 }
 

@@ -5,14 +5,14 @@
 	
 	<!-- 즐겨찾기 수정 -->
 	<update id="addFavoritePage" parameterType="possg.com.a.dto.FavoritePageDto">
-        UPDATE favorite_page
+        UPDATE Favorite_page
         SET favorite_enable = 'enable'
         WHERE seq = #{seq} and conv_seq = #{convSeq}
     </update>
     
     <!-- 즐겨찾기 초기화 -->
     <update id="resetFavoritePage" parameterType="java.lang.Integer">
-    	UPDATE favorite_page
+    	UPDATE Favorite_page
     	SET favorite_enable = 'disable'
     	WHERE conv_seq = #{convSeq}
     </update>
@@ -21,7 +21,8 @@
     <select id="favoritePageList" parameterType="java.lang.Integer"
     resultType="possg.com.a.dto.FavoritePageDto">
     	SELECT * 
-    	FROM favorite_page
+    	FROM Favorite_page
     	WHERE conv_seq = #{convSeq}
     </select>
+    
 </mapper>

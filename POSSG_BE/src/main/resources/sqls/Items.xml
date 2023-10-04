@@ -11,4 +11,11 @@
             #{receiptId}, #{itemId}, #{itemName}, #{qty}, #{price}
         )
 	</insert>
+	
+	<select id="searchItems" parameterType="java.lang.String" resultType="possg.com.a.dto.ItemsDto">
+		SELECT *
+		FROM Items
+		WHERE receipt_id = #{receiptId}
+	</select>
+	
 </mapper>

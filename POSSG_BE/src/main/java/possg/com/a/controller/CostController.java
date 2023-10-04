@@ -1,8 +1,15 @@
 package possg.com.a.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -10,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Claims;
@@ -35,9 +43,9 @@ public class CostController {
 		this.tokenCreate = tokenCreate;
 	}
 	
-	@PostMapping("addcost")
+	@PostMapping("addCost")
 	public String addcost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
-		System.out.println("CostController addcost " + new Date());
+		System.out.println("CostController addCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
 		
@@ -46,7 +54,7 @@ public class CostController {
 		dto.setConvSeq(convSeq);
 		
 		System.out.println(dto);
-		int count = service.addcost(dto);
+		int count = service.addCost(dto);
 		System.out.println(count);
 		if(count != 0) {
 			return "YES";
@@ -54,61 +62,327 @@ public class CostController {
 		return "NO";
 	}
 	
-	@PostMapping("updatecost")
-	public String updatecost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
-		System.out.println("CostController updatecost " + new Date());
+	@PostMapping("updateCost")
+	public String updateCost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+		System.out.println("CostController updateCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
 		 
-	        int convSeq = claim.get("convSeq", Integer.class);	
-	        
-	        System.out.println(convSeq);
+        int convSeq = claim.get("convSeq", Integer.class);	
 		 	 
-		 dto.setConvSeq(convSeq);
+		dto.setConvSeq(convSeq);
 
 		System.out.println(dto);
 		
-		int count = service.updatecost(dto);
+		int count = service.updateCost(dto);
 		
 		if(count != 0) {
 			return "YES";
 		}
 		return "NO";		
 	}
-	/*
-	 // 이거 db수정 해야함 민규님 db수정 후 배포 전까지 존버
+
+	// 손익계산
+	@GetMapping("profitAndLoss")
+	public Map<String, Object> profitAndLoss(CostParam param,@RequestHeader("accessToken") String tokenHeader){
+		System.out.println("CostController profitAndLoss " + new Date());
+		
+		Claims claim = tokenParser(tokenHeader);
+		
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
+        LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = localDate.format(outputFormatter);
+        
+        int formattedYear = Integer.parseInt(formattedDate.substring(0, 4));
+        int formattedMonth = Integer.parseInt(formattedDate.substring(4, 6));
+        String branchName = claim.get("branchName", String.class);
+		int convSeq = claim.get("convSeq", Integer.class);
+		param.setConvSeq(convSeq);
+		param.setCostYear(formattedYear);
+		param.setCostMonth(formattedMonth);
+		param.setBranchName(branchName);
+		
+		System.out.println(param);
+		
+		List<CostDto> lossList = service.selectCostList(param);
+		List<Integer> orderPrice = service.selectOrderPrice(param);
+		List<CostParam> payment = service.getPaymentPrice(param);
+		List<CostParam> list = service.getDeliveryPrice(param);
+		
+		for(int i = 0; i< payment.size(); i++) {
+			String ref = payment.get(i).getRef();
+			LocalDateTime dateTime = LocalDateTime.parse(ref, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	        payment.get(i).setRef(convertedRef);
+		}
+		
+		int totalOrderPrice = 0;
+		for(int item : orderPrice) {
+			totalOrderPrice = totalOrderPrice + item;
+		}
+		
+		 // 월별 비교
+        if(param.getChoice() == 1) {      
+        	
+        	CostDto loss = service.selectCost(param);
+        	
+        	Map<String, Object> map = new HashMap<>();
+        	int totalLoss = 0;
+	        if(loss.getCostMonth() == formattedMonth) {
+	        	
+	        	// 지출금액
+	        	totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
+	        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;	        		 			
+	        }	                	        
+	        //매출
+	        int totalPrice = 0;
+			for (CostParam item : payment) {
+			    String ref = item.getRef();
+			    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
+			        totalPrice = totalPrice + item.getPaymentPrice();
+			    }
+			}	
+			for (CostParam item : list) {
+			    String ref = item.getRef();
+			    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
+			    	totalPrice = totalPrice + item.getPrice();
+			    }			   
+			}			
+			
+			// 최종 손익
+			int profit= totalPrice - totalLoss;	
+			
+			map.put("totalLoss", totalLoss);
+			map.put("totalPrice", totalPrice);
+			map.put("profit", profit);
+	        
+	        // 순수익
+	        return map;	       
+        }
+		// 총 지출 금액
+        // 년별 비교
+        int totalLoss = 0;
+        for(CostDto item : lossList) {
+        	
+        	totalLoss = totalLoss + item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+        	+ item.getSecurityMaintenanceFee() + item.getWaterBill() + item.getTotalLaborCost();
+        }
+        totalLoss = totalLoss + totalOrderPrice;
+        
+        int totalPrice = 0;
+		for (CostParam item : payment) {		
+		    String ref = item.getRef();
+		    System.out.println(ref);
+		    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
+		        totalPrice = totalPrice + item.getPaymentPrice();
+		    }
+		}	
+		for (CostParam item : list) {
+		    String ref = item.getRef();
+		    System.out.println(ref);
+		    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
+		    	totalPrice = totalPrice + item.getPrice();
+		    }			   
+		}
+		
+		int profit= totalPrice - totalLoss;
+		Map<String, Object> map = new HashMap<>();
+		map.put("totalLoss", totalLoss);
+		map.put("totalPrice", totalPrice);
+		map.put("profit", profit);
+		
+		return map;
+		
+	}
+
+	// 년별 월별 일별 매출
 	@GetMapping("selectSales")
-	public List<CostParam> selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
+	public int selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
 		System.out.println("CostController selectSales " + new Date());
 		
 		Claims claim = tokenParser(accessToken);
-		
-		String branchName = claim.get("branchName", String.class);
-		  int convSeq = claim.get("convSeq", Integer.class);
+
+		if(param != null) {					
+			String branchName = claim.get("branchName", String.class);
+			int convSeq = claim.get("convSeq", Integer.class);
+		 
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
+	        LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
+	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	        String formattedDate = localDate.format(outputFormatter);	        
 		  
-		  ProductDto product = service.paymentProductName(convSeq);
-		  
-		param.setConvSeq(convSeq);
-		param.setBranchName(branchName);
-		param.setProductSeq(product.getProductSeq());
-		
-		List<CostParam> list = service.selectSales(param);
-		
-		if(list != null) {
-			return list;
+			param.setConvSeq(convSeq);
+			param.setBranchName(branchName);
+			
+			List<CostParam> payment = service.getPaymentPrice(param);	
+			List<CostParam> list = service.getDeliveryPrice(param);
+			
+			for(int i = 0; i< payment.size(); i++) {
+				String ref = payment.get(i).getRef();
+				LocalDateTime dateTime = LocalDateTime.parse(ref, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		        payment.get(i).setRef(convertedRef);
+			}
+			
+			// 일별
+			if(param.getChoice() == 0) {
+				int totalPrice = 0;
+				
+				for (CostParam item : payment) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
+				        totalPrice = totalPrice + item.getPaymentPrice();
+				    }
+				}	
+				for (CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    }
+				}
+				return totalPrice;
+			}
+			// 월별
+			if(param.getChoice() == 1) {
+				int totalPrice = 0;
+				for (CostParam item : payment) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
+				        totalPrice = totalPrice + item.getPaymentPrice();
+				    }
+				}	
+				for (CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    }
+				   
+				}
+				return totalPrice;
+			}
+			
+			//년별			
+			if(param.getChoice() == 2) {
+				int totalPrice = 0;
+				for (CostParam item : payment) {
+				    String ref = item.getRef();
+				    System.out.println(ref);
+				    
+				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
+				        totalPrice = totalPrice + item.getPaymentPrice();
+				    }
+				}	
+				for (CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    }
+				   
+				}
+				return totalPrice;
+			}
 		}
-		return null;
+
+		return 0;
 	}
 	
-	*/
+	// 브랜드별 매출
+	@GetMapping("brandSales")
+	public List<Map<String, Object>> brandSales(CostParam param, @RequestHeader("accessToken") String accessToken){
+		System.out.println("CostController brandSales " + new Date());
+		
+		Claims claim = tokenParser(accessToken);		
+		String branchName = claim.get("branchName", String.class);
+		int convSeq = claim.get("convSeq", Integer.class);
+		
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
+        LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = localDate.format(outputFormatter);
+		
+        System.out.println(formattedDate);
+		param.setConvSeq(convSeq);
+		param.setBranchName(branchName);
+		
+		List<CostParam> payment = service.getPaymentPrice(param);	
+		List<CostParam> list = service.getDeliveryPrice(param);
+		System.out.println(list);
+		System.out.println(payment);
+		for(int i = 0; i< payment.size(); i++) {
+			String ref = payment.get(i).getRef();
+			LocalDateTime dateTime = LocalDateTime.parse(ref, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	        payment.get(i).setRef(convertedRef);
+		}
+		
+		
+		List<Map<String, Object>> brandSalesList = new ArrayList<>();
+	    Map<String, Integer> brandSalesMap = new HashMap<>();	    	    		
+		//월별			
+		if (param.getChoice() == 1) {
+			for (CostParam item : payment) {
+			    String ref = item.getRef();
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    String productName = item.getProductName();
+			    Matcher matcher = pattern.matcher(productName);
+			    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && matcher.find()) {
+			        String extractedString = matcher.group(1);
+			        int price = item.getPaymentPrice();
+			        brandSalesMap.put(extractedString, brandSalesMap.getOrDefault(extractedString, 0) + price);
+			    }
+			}
+	        for (CostParam item : list) {
+	            String ref = item.getRef();
+	            Pattern pattern = Pattern.compile("([^)]+)\\)");
+	            String productName = item.getProductName();
+	            Matcher matcher = pattern.matcher(productName);
+	            if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && matcher.find()) {
+	                String extractedString = matcher.group(1);
+	                int price = item.getPrice();
+	                brandSalesMap.put(extractedString, brandSalesMap.getOrDefault(extractedString, 0) + price);
+	            }
+	        }
+	    }
+		
+		//년별			
+		if (param.getChoice() == 0) {
+			for (CostParam item : payment) {
+			    String ref = item.getRef();
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    String productName = item.getProductName();
+			    Matcher matcher = pattern.matcher(productName);
+			    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && matcher.find()) {
+			        String extractedString = matcher.group(1);
+			        int price = item.getPaymentPrice();
+			        brandSalesMap.put(extractedString, brandSalesMap.getOrDefault(extractedString, 0) + price);
+			    }
+			}
+	        for (CostParam item : list) {
+	            String ref = item.getRef();
+	            Pattern pattern = Pattern.compile("([^)]+)\\)");
+	            String productName = item.getProductName();
+	            Matcher matcher = pattern.matcher(productName);
+	            if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && matcher.find()) {
+	                String extractedString = matcher.group(1);
+	                int price = item.getPrice();
+	                brandSalesMap.put(extractedString, brandSalesMap.getOrDefault(extractedString, 0) + price);
+	            }
+	        }
+	    }
+		
+		
+		for (Map.Entry<String, Integer> entry : brandSalesMap.entrySet()) {
+	        Map<String, Object> brandSales = new HashMap<>();
+	        brandSales.put("brand", entry.getKey());
+	        brandSales.put("price", entry.getValue());
+	        brandSalesList.add(brandSales);
+	    }
+  
+		return brandSalesList;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
+		
 	//-------------------------------------- 함수 로직 ----------------------------------------------------
 	
 	
