@@ -42,6 +42,7 @@ import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
+import possg.com.a.service.TranslationService;
 import possg.com.a.util.SecurityConfig;
 import util.NaverCloudUtil;
 import util.ProductUtil;
@@ -56,6 +57,9 @@ public class ProductController {
 	@Autowired
 	ProductService service;
 	
+	@Autowired
+	TranslationController controller;
+	
 	@GetMapping("healthcheck")
 	public String healthcheck() {
 		System.out.println("ProductController healthcheck " + new Date());
@@ -69,19 +73,19 @@ public class ProductController {
 		System.out.println("ProductController ProductList " + new Date());
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println("Map: " + map);
 		System.out.println("ProductParam= " + param);
+		
 		List<ProductDto> list = service.productList(param);
-		System.out.println("ProductList= " + list);
+		System.out.println("ProductList= " + list.get(0));
 		
 		int cnt = 0;
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
-				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				System.out.println("in for ProductDto" + dto);
+				String temp = controller.translationProductName(dto.getProductName(), param.getCountry());
+				System.out.println("trans" + temp);
 				dto.setProductTranslationName(temp);
-				if (cnt > 3) {
-					break;
-				}
+				if (cnt > 3) {break;}
 				cnt ++;
 			}
 		}
@@ -100,18 +104,16 @@ public class ProductController {
 			pageProduct = pageProduct + 1;
 		}
 		
-		
 		map.put("ProductList", list);
 		map.put("pageProduct", pageProduct);
-		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
-		
-		//return list;
 	}
 	
 	// 새로운 상품을 추가
 	// 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
+	// conv_seq, category_id, product_name,product_roman_name, price, price_origin, price_discount, 
+	// stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url
 	@PostMapping("addProduct")
 	public String addProduct(@RequestBody ProductDto dto) {
 		System.out.println("ProductController addProduct " + new Date());
@@ -450,7 +452,7 @@ public class ProductController {
 		    int totalProduct = callList.size();
 		    int totalPrice = 0;
 		    for (CallProductConvDto item : callList) {
-		        totalPrice += item.getPrice();
+		        totalPrice += item.getPrice()*item.getAmount();
 		    }
 		    
 		    // 동일한 ref의 call_product_conv_order_list
@@ -668,22 +670,25 @@ public class ProductController {
 	    return audioURL;
 	}
 		
-	
-	// 로마자 변환 후 DB 입력
-	@GetMapping("updateProductRomanName")
-	public String updateProductRomanName(ProductParam param) {
+	// 상품 원가 할당
+	@GetMapping("updateProductOriginPrice")
+	public String updateProductOriginPrice(ProductParam param) {
 		System.out.println("ProductController updateProductRomanName() " + new Date());
 		
 		List<ProductDto> productList = service.getAllProduct(param);
-		
 		for(ProductDto dto : productList) {
-			String romanName = KoreanRomanizer.romanize(dto.getProductName(), KoreanCharacter.ConsonantAssimilation.Regressive);
-			System.out.println("roman: " + romanName);
-			dto.setProductRomanName(romanName);
-			service.updateProductRomanName(dto);
+			
+			System.out.println("productDto: " + dto.toString());
+			int tempPrice = dto.getPrice();
+			double price = tempPrice * 0.7;
+			int roundedPrice = (int) Math.ceil(price);
+			
+			dto.setPriceOrigin(roundedPrice);
+			System.out.println("roundedPrice: " + dto.getPriceOrigin());
+			service.updateProductOriginPrice(dto);
 		}
 
-		return null;
+		return "YES";
 	}
 	
 

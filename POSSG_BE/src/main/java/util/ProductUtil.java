@@ -15,6 +15,8 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.crizin.KoreanCharacter;
+import net.crizin.KoreanRomanizer;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.service.ProductService;
 
@@ -54,6 +56,7 @@ public class ProductUtil {
                 for (Element item : items) {
                     int category_id = 1; //2; // 카테고리 (1: 행사상품, 2: 신선식품)
                     String product_name = item.select(".itemtitle a").text(); // 제품 이름
+                    String product_roman_name = KoreanRomanizer.romanize(product_name, KoreanCharacter.ConsonantAssimilation.Regressive);
                     
                     String priceStr = item.select(".priceOff").text().replace(" 원", "").replace(",", ""); // 할인 전 가격
                     String priceDiscountStr = item.select(".price").text().replace(" 원", "").replace(",", ""); // 할인 후 가격
@@ -61,6 +64,7 @@ public class ProductUtil {
                     	priceStr = priceDiscountStr;
                     }
                     int price = Integer.parseInt(priceStr);
+                    int price_origin = (int)Math.ceil(price * 0.7);
                     int price_discount = Integer.parseInt(priceDiscountStr);
                     int stock_quantity = random.nextInt(20); // max 20
                     String expiration_date = DateCalc();	// max 2025년 3월 2일
@@ -72,7 +76,9 @@ public class ProductUtil {
                     
                     System.out.println("세일 여부: " + category_id);
                     System.out.println("제품 이름: " + product_name);
+                    System.out.println("제품 로마자 이름:" + product_roman_name);
                     System.out.println("할인 전 가격: " + price);
+                    System.out.println("상품 원가: " + price_origin);
                     System.out.println("할인 후 가격: " + price_discount);
                     System.out.println("상품 재고: " + stock_quantity);
                     System.out.println("유통 기한: " + expiration_date);
@@ -83,7 +89,7 @@ public class ProductUtil {
 
                     System.out.println("----------------");      
                     
-                    ProductDto dto = new ProductDto(0, conv_seq, category_id, product_name, product_name, product_name, price, price_discount,
+                    ProductDto dto = new ProductDto(0, conv_seq, category_id, product_name, product_roman_name, price, price_origin, price_discount,
 							stock_quantity, expiration_date, discount_rate,
 							promotion_info, barcode, img_url);
             		

@@ -124,4 +124,8 @@ public class ProductService {
 	public int updateCallToOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.updateCallToOrderList(orderDto);
 	}
+	
+	public int updateProductOriginPrice(ProductDto dto) {
+		return dao.updateProductOriginPrice(dto);
+	}
 }

@@ -1,6 +1,7 @@
 package possg.com.a.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,20 +16,33 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.crizin.KoreanCharacter;
+import net.crizin.KoreanRomanizer;
 import possg.com.a.dto.ProductDto;
-import possg.com.a.service.ProductService;
 import possg.com.a.service.TranslationService;
 
 @RestController
+@Service
+@PropertySource("classpath:/application.properties")
 public class TranslationController {
+	
+	@Value("${naver_developer.naver_clientId}")
+    private String naver_clientId;
+	
+	@Value("${naver_developer.naver_clientSecretKey}")
+    private String naver_clientSecretKey;
 
 	@Autowired
 	TranslationService service;
 	
 	// country: 0(한국어), 1(영어), 2(중국어), 3(일본어)
-	public static String translationProductName(String text, int country) {
+	public String translationProductName(String text, int country) {
 		Map<String, String> translationCache = new HashMap<>();
 		if(country == 0) {//country == 0
 			return text;
@@ -39,8 +53,9 @@ public class TranslationController {
 			}
 			try {
 		        // Papago API에 필요한 정보를 설정
-				String clientId = "NiFtuZ11rBQSEvLhORYw";
-		        String clientSecret = "";
+				System.out.println(naver_clientId + naver_clientSecretKey);
+				String clientId = naver_clientId; // 
+		        String clientSecret = naver_clientSecretKey; // 
 		        String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
 	
 		        // HTTP 클라이언트를 생성
@@ -81,6 +96,25 @@ public class TranslationController {
 		        return null;
 		    }
 		}
+	}
+	
+	// 로마자 변환 후 DB 입력
+	@GetMapping("updateProductRomanName")
+	public String updateProductRomanName() {
+		System.out.println("ProductController updateProductRomanName() " + new Date());
+		
+		List<ProductDto> productList = service.getAllProduct();
+		//int i = 0;
+		for(ProductDto dto : productList) {
+			//i++;
+			String romanName = KoreanRomanizer.romanize(dto.getProductName(), KoreanCharacter.ConsonantAssimilation.Regressive);
+			System.out.println("roman: " + romanName);
+			dto.setProductRomanName(romanName);
+			service.updateProductRomanName(dto);
+			//if (i > 5) {return "YES";}
+		}
+
+		return "YES";
 	}
 
 }

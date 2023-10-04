@@ -4,5 +4,16 @@
 
 <mapper namespace="possg.com.a.dao.TranslationDao">
 
+<!-- 모든 상품 -->
+<select id="getAllProduct" parameterType="possg.com.a.dto.ProductParam" 
+resultType="possg.com.a.dto.ProductDto">
+	select * from Product
+</select>
+
+<update id="updateProductRomanName" parameterType="possg.com.a.dto.ProductDto">
+	update Product
+	set product_roman_name = #{productRomanName}
+	where product_seq = #{productSeq}
+</update>
 
 </mapper>

@@ -86,6 +86,7 @@ CREATE TABLE Product (
 	product_roman_name VARCHAR(255),
 	product_translation_name VARCHAR(255),
 	price INT not null,													-- 상품 가격
+	price_origin INT,
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
