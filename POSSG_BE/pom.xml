@@ -190,6 +190,12 @@
 		    <artifactId>json</artifactId>
 		    <version>20220924</version>
 		</dependency>
+		
+		<!-- flux -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 	</dependencies>
 	
 	
