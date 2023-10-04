@@ -171,7 +171,7 @@
 <update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
 	update Call_product_conv
 	set amount = #{amount}, price = #{price}
-	where product_name = #{productName} and conv_seq = #{convSeq} and call_status != '-1';
+	where product_name = #{productName} and call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1';
 </update>
 
 <!-- callRef와 call_status 업데이트 -->
@@ -185,7 +185,7 @@
 <!-- 주어진 callRef에 해당하는 발주 상품의 call_status를 '-1'로 설정 -->
 <update id="cancelCallRefProductConv" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
     update Call_product_conv
-    set call_status = '0'
+    set call_status = '0', call_ref = '0'
     where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 </update>
 
@@ -234,12 +234,18 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
     WHERE call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 </update>
 
-<!-- 점주 발주 취소 -->
-<update id="cancelConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
-    UPDATE Call_product_conv_order_list
-    SET call_status = '0'
-    WHERE  call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+<!-- 발주 대기 상품 삭제 시 주문 목록에 반영  -->
+<update id="updateCallToOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+	update Call_product_conv_order_list
+	set call_total_number=#{callTotalNumber}, call_total_price=#{callTotalPrice}
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 </update>
+
+<!-- 점주 발주 취소 -->
+<delete id="cancelConvOrderList" parameterType="possg.com.a.dto.CallProductConvOrderListDto">
+    delete Call_product_conv_order_list
+    where  call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</delete>
 
 
 <!-- 발주 주문 상품 수령 완료 -->

@@ -56,5 +56,6 @@ public interface ProductDao {
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
 	int cancelConvOrderList(CallProductConvOrderListDto orderDto);
 	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
+	int updateCallToOrderList(CallProductConvOrderListDto orderDto);
 
 }

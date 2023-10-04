@@ -121,4 +121,7 @@ public class ProductService {
 	public int deleteConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.deleteConvOrderList(orderDto);
 	}
+	public int updateCallToOrderList(CallProductConvOrderListDto orderDto) {
+		return dao.updateCallToOrderList(orderDto);
+	}
 }

@@ -392,9 +392,10 @@ public class ProductController {
 		System.out.println("fincProductName: " + productDto);
 		// 해당 상품 가격
 		int productPrice = productDto.get(0).getPriceDiscount();
+		convDto.setPrice(productPrice);
 		
 		// 해당 상품 총 가격 set
-		convDto.setPrice(productPrice * convDto.getAmount());
+		//convDto.setPrice(productPrice * convDto.getAmount());
 		
 		// 발주 사항 업데이트
 		// input: int amount, int price, String productName, int convSeq
@@ -411,7 +412,7 @@ public class ProductController {
 				System.out.println("getRefConvOrderList: " + orderDto.toString());
 				// 총 가격을 업데이트 (기존 총 가격 - 수정된 총 가격)
 				int totalPrice = orderDto.getCallTotalPrice() 
-						- (nameTemp.get(0).getPrice() - convDto.getPrice()); // 기존 총 가격 - 수정된 총 가격 
+						- (nameTemp.get(0).getPrice() - (productPrice * convDto.getAmount())); // 기존 총 가격 - 수정된 총 가격 
 				// 발주 주문 목록을 업데이트
 				orderDto.setCallTotalPrice(totalPrice);
 				int countOrder = service.updateConvOrderList(orderDto);
@@ -420,21 +421,46 @@ public class ProductController {
 					return "YES";
 				}
 			}
-			return "YES";
+			//return "YES";
 		}
 		return "NO";
 	}
 	
 	// 발주 대기 상품 삭제
+	// input: String callRef, String productName, int convSeq
+	// 상품 삭제 시 주문 목록 업데이트 기능 추가
 	@PostMapping("deleteCallProduct")
-	public String delteCallProduct(@RequestBody CallProductConvDto callDto) {
+	public String deleteCallProduct(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
 		
-		int count = service.deleteCallProduct(callDto);
+		int count = service.deleteCallProduct(convDto);
 		if(count > 0) {
-			return "YES";
+			
+			List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
+		    if (callList.isEmpty()) {
+		    	System.out.println("동일한 ref 상품이 없음");
+		    	return "NO";
+		    }
+			// 비고(remark)이 null인 경우 빈 문자열로 설정
+		    if (convDto.getRemark() == null) {
+		    	convDto.setRemark("");
+		    }
+
+		    // 발주 상품 수 및 총 가격 계산
+		    int totalProduct = callList.size();
+		    int totalPrice = 0;
+		    for (CallProductConvDto item : callList) {
+		        totalPrice += item.getPrice();
+		    }
+		    
+		    // 동일한 ref의 call_product_conv_order_list
+		    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
+	    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
+			int countOrder = service.updateCallToOrderList(tempDto);
+			if(countOrder > 0) {
+				return "YES";
+			}
 		}
-		
 		return "NO";
 	}
 	
@@ -483,7 +509,7 @@ public class ProductController {
 	}
 
 	// 발주 추가
-	// input: String remark
+	// input: String remark, int convSeq
 	@PostMapping("addConvOrderList")
 	public String addConvOrderList(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
@@ -509,11 +535,11 @@ public class ProductController {
 	    int totalProduct = callList.size();
 	    int totalPrice = 0;
 	    for (CallProductConvDto item : callList) {
-	        totalPrice += item.getPrice();
+	        totalPrice += item.getPrice()*item.getAmount();
 	    }
 	    
 	    // call_product_conv_order_list에 추가
-	    // call_status, call_stock, call_total_price, call_remark
+	    // seq, conv_seq, call_ref, call_date, call_status, call_total_number, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
 	    		new CallProductConvOrderListDto(0, convSeq, callRef, formattedDate, 
 	    										1, totalProduct, totalPrice, convDto.getRemark());
@@ -535,7 +561,7 @@ public class ProductController {
 	}
 	
 	// 점주 발주 취소
-	// input: int convSeq, String call_ref
+	// input: int convSeq, String callRef
 	@PostMapping("cancelConvOrderList")
 	public String cancelConvOrderList(@RequestBody CallProductConvOrderListDto orderDto) {
 		System.out.println("ProductController cancelConvOrderList() " + new Date());
@@ -544,7 +570,7 @@ public class ProductController {
 		System.out.println("ProductController cancelConvOrderList() count: " + count);
 		if (count > 0) {
 			int orderCount = service.cancelConvOrderList(orderDto);
-			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
+			System.out.println("ProductController cancelConvOrderList() orderCount: " + count);
 			if (orderCount > 0) {
 		        return "YES";
 		    }
