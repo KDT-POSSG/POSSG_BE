@@ -43,9 +43,9 @@ import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
 import possg.com.a.service.TranslationService;
+import possg.com.a.util.NaverCloudUtil;
+import possg.com.a.util.ProductUtil;
 import possg.com.a.util.SecurityConfig;
-import util.NaverCloudUtil;
-import util.ProductUtil;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,6 +91,7 @@ public class ProductController {
 				cnt ++;
 			}
 		}
+		
 		System.out.println("ProductList= " + list);
 		// 상품의 총 수
 		int count = service.getProductTotalNumber(param);
@@ -263,21 +264,15 @@ public class ProductController {
 		}
 
 		System.out.println("발주 대기 목록:" + dtoList.toString());
-
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(tempDto);
-		// 상품 원가 총 가격
-		int priceOrigin = service.getCallProductTotalPriceOrigin(tempDto);
-		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(tempDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(tempDto);
+		
+		// 상품의 총 수량, 종류 수량, 판매가, 원가
+		CallProductConvParam totalParam = service.getCallProductTotalInfo(tempDto);
 		
 		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("priceOrigin", priceOrigin); // 원가 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
+		map.put("price", totalParam.getTotalPrice()); // 총 가격
+		map.put("priceOrigin", totalParam.getTotalPriceOrigin()); // 원가 총 가격
+		map.put("amount", totalParam.getTotalAmount()); // 총 수량
+		map.put("product", totalParam.getTotalProduct()); // 총 종류 수량
 		return map;
 	}
 	
@@ -297,21 +292,15 @@ public class ProductController {
 			map.put("product", 0); // 총 종류 수량
 			return map;
 		}
-
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(convDto);
-		// 상품 원가 총 가격
-		int priceOrigin = service.getCallProductTotalPriceOrigin(convDto);
-		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(convDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(convDto);
-
+		
+		// 상품의 총 수량, 종류 수량, 판매가, 원가
+		CallProductConvParam totalParam = service.getCallProductTotalInfo(convDto);
+		
 		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("priceOrigin", priceOrigin); // 원가 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
+		map.put("price", totalParam.getTotalPrice()); // 총 가격
+		map.put("priceOrigin", totalParam.getTotalPriceOrigin()); // 원가 총 가격
+		map.put("amount", totalParam.getTotalAmount()); // 총 수량
+		map.put("product", totalParam.getTotalProduct()); // 총 종류 수량
 		return map;
 	}
 
@@ -713,52 +702,6 @@ public class ProductController {
 		return dtoList;
 	}
 	
-
-	// 음성인식 wav -> String
-	@PostMapping("/fileUpload")
-	public String fileUpload(@RequestParam("uploadFile")MultipartFile uploadFile,
-							HttpServletRequest request) throws IOException {
-		System.out.println("NaverCloudController fileUpload" + new Date());
-		
-		// tomcat
-		String uploadPath = request.getServletContext().getRealPath("/upload");
-		
-		// 파일명 취득
-		String filename = uploadFile.getOriginalFilename();
-		String filepath = uploadPath + File.separator + filename;
-		
-		System.out.println(filepath);
-		
-		//fileupload
-		try {
-		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filepath)));
-		os.write(uploadFile.getBytes());
-		os.close();
-		} catch (Exception e) {
-			return "file load fail";
-		}
-		
-		// Naver Cloud
-		String response = NaverCloudUtil.processSTT(filepath);
-		
-		return response;
-	}
-
-	@PostMapping("/tts")
-	public String tts(@RequestParam("message") String message,
-			@RequestParam("speaker") String speaker,
-	                  HttpServletRequest request) {
-	    System.out.println("NaverCloudController tts " + new Date());
-	    System.out.println(message);
-	    // tomcat
-	    String uploadPath = request.getServletContext().getRealPath("/upload");
-	    Map<String,String> msg = NaverCloudUtil.processTTS(message, uploadPath, speaker);
-
-	    // mp3 파일의 URL 생성
-	    String audioURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/" + msg.get("tempname") + ".mp3";
-	    System.out.println(audioURL);
-	    return audioURL;
-	}
 		
 	// 상품 원가 할당
 	@GetMapping("updateProductOriginPrice")
@@ -780,29 +723,6 @@ public class ProductController {
 
 		return "YES";
 	}
-	
-
-	
-	@GetMapping("/events")
-    public SseEmitter handle() {
-        SseEmitter emitter = new SseEmitter();
-        
-        // 별도의 스레드에서 이벤트를 보내는 로직을 구현
-        new Thread(() -> {
-            try {
-                // 1초마다 만료되는 제품 정보를 보냅니다.
-                for (int i = 0; i < 10; i++) {
-                    emitter.send("제품 정보 " + i);
-                    Thread.sleep(1000);
-                }
-                emitter.complete();
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
-        }).start();
-        
-        return emitter;
-    }
 	
 	// 데모 상품 크롤링
 	

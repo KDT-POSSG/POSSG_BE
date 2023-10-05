@@ -1,4 +1,4 @@
-package util;
+package possg.com.a.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,13 +21,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
+
 import possg.com.a.dto.ProductDto;
 
+@Service
+@PropertySource("classpath:/application.properties")
 public class NaverCloudUtil {
 
-	public static String processSTT(String filepath) {
-		String clientId = "qhv14zruwc";             // Application Client ID";
-        String clientSecret = "";     // Application Client Secret";
+	@Value("${naver_cloud.naver_clientId}")
+    private String naver_clientId;
+	
+	@Value("${naver_cloud.naver_clientSecretKey}")
+    private String naver_clientSecretKey;
+	
+	public String processSTT(String filepath) {
+		String clientId = naver_clientId;             // Application Client ID";
+        String clientSecret = naver_clientSecretKey;     // Application Client Secret";
 
         StringBuffer response = null;
         
@@ -83,63 +96,63 @@ public class NaverCloudUtil {
     }
 
 	
-	public static Map<String, String> processTTS(String speech, String uploadPath, String speaker) {
+	public Map<String, String> processTTS(String speech, String uploadPath, String speaker) {
 		
-		String clientId = "qhv14zruwc";             // Application Client ID";
-	     String clientSecret = "";     // Application Client Secret";
-	     
-	     String message = "success";
-	     String tempname = null;
-	     
-	     try {
-	         String text = URLEncoder.encode(speech, "UTF-8"); // 13자
-	         String apiURL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts";
-	         URL url = new URL(apiURL);
-	         HttpURLConnection con = (HttpURLConnection)url.openConnection();
-	         con.setRequestMethod("POST");
-	         con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
-	         con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
-	         // post request
-	         String postParams = "speaker="+ speaker +"&volume=0&speed=0&pitch=0&format=mp3&text=" + text;
-	         con.setDoOutput(true);
-	         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-	         wr.writeBytes(postParams);
-	         wr.flush();
-	         wr.close();
-	         int responseCode = con.getResponseCode();
-	         BufferedReader br;
-	         if(responseCode==200) { // 정상 호출
-	             InputStream is = con.getInputStream();
-	             int read = 0;
-	             byte[] bytes = new byte[1024];
-	             // 랜덤한 이름으로 mp3 파일 생성
-	             tempname = Long.valueOf(new Date().getTime()).toString();
-	             File f = new File(uploadPath + File.separator + tempname + ".mp3");
-	             f.createNewFile();
-	             OutputStream outputStream = new FileOutputStream(f);
-	             while ((read =is.read(bytes)) != -1) {
-	                 outputStream.write(bytes, 0, read);
-	             }
-	             is.close();
-	         } else {  // 오류 발생
-	             br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-	             String inputLine;
-	             StringBuffer response = new StringBuffer();
-	             while ((inputLine = br.readLine()) != null) {
-	                 response.append(inputLine);
-	             }
-	             br.close();
-	             System.out.println(response.toString());
-	             message = "fail";
-	         }
-	     } catch (Exception e) {
-	         System.out.println(e);
-	     }
-	     Map<String, String> result = new HashMap<>();
-	     result.put("message", message);
-	     result.put("tempname", tempname);
-	     return result;
-	}
+		String clientId = naver_clientId;             // Application Client ID";
+		String clientSecret = naver_clientSecretKey;     // Application Client Secret";
+	 
+		String message = "success";
+		String tempname = null;
+		
+		try {
+		    String text = URLEncoder.encode(speech, "UTF-8"); // 13자
+		    String apiURL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts";
+		    URL url = new URL(apiURL);
+		    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+		    con.setRequestMethod("POST");
+		    con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
+		    con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
+		    // post request
+		    String postParams = "speaker="+ speaker +"&volume=0&speed=0&pitch=0&format=mp3&text=" + text;
+		    con.setDoOutput(true);
+		    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+		    wr.writeBytes(postParams);
+		    wr.flush();
+		    wr.close();
+		    int responseCode = con.getResponseCode();
+		    BufferedReader br;
+		    if(responseCode==200) { // 정상 호출
+		        InputStream is = con.getInputStream();
+		        int read = 0;
+		        byte[] bytes = new byte[1024];
+		        // 랜덤한 이름으로 mp3 파일 생성
+		        tempname = Long.valueOf(new Date().getTime()).toString();
+		        File f = new File(uploadPath + File.separator + tempname + ".mp3");
+		        f.createNewFile();
+		        OutputStream outputStream = new FileOutputStream(f);
+		        while ((read =is.read(bytes)) != -1) {
+		            outputStream.write(bytes, 0, read);
+		        }
+		        is.close();
+		    } else {  // 오류 발생
+		        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+		        String inputLine;
+		        StringBuffer response = new StringBuffer();
+		        while ((inputLine = br.readLine()) != null) {
+		            response.append(inputLine);
+		        }
+		        br.close();
+		        System.out.println(response.toString());
+		        message = "fail";
+		    }
+		} catch (Exception e) {
+		    System.out.println(e);
+		}
+		 Map<String, String> result = new HashMap<>();
+		 result.put("message", message);
+		 result.put("tempname", tempname);
+		 return result;
+}
 
 	
 	public static void makeTextfile(List<ProductDto> list) {

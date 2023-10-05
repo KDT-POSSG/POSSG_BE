@@ -42,9 +42,7 @@ public interface ProductDao {
 	
 	List<CallProductConvDto> getAllCallProductConvList(CallProductConvParam param);
 	List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto);
-	int getCallProductTotalPrice(CallProductConvDto convDto);
-	int getCallProductTotalPriceOrigin(CallProductConvDto convDto);
-	int getCallProductTotalAmount(CallProductConvDto convDto);
+	CallProductConvParam getCallProductTotalInfo(CallProductConvDto convDto);
 	CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto);
 	List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto);
 	int getCallProductTotalNumber(CallProductConvDto convDto);

@@ -83,15 +83,10 @@ public class ProductService {
 	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto){
 		return dao.getRefCallProductConvList(convDto);
 	}
-	public int getCallProductTotalPrice(CallProductConvDto convDto) {
-		return dao.getCallProductTotalPrice(convDto);
+	public CallProductConvParam getCallProductTotalInfo(CallProductConvDto convDto) {
+		return dao.getCallProductTotalInfo(convDto);
 	}
-	public int getCallProductTotalPriceOrigin(CallProductConvDto convDto) {
-		return dao.getCallProductTotalPriceOrigin(convDto);
-	}
-	public int getCallProductTotalAmount(CallProductConvDto convDto) {
-		return dao.getCallProductTotalAmount(convDto);
-	}
+	
 	public CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto){
 		return dao.getSeqCallProductConv(convDto);
 	}
