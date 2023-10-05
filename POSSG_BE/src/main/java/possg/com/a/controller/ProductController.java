@@ -349,7 +349,7 @@ public class ProductController {
 		
 	// 점주 발주 대기 리스트에 추가
 	// input
-	// ProductDto: int convSeq, int productSeq, int price, String productName, String imgUrl, int stockLimit
+	// ProductDto: int convSeq, int productSeq, int price, int priceOrigin, String productName, String imgUrl, int stockLimit
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(@RequestBody ProductDto productDto) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
@@ -376,7 +376,7 @@ public class ProductController {
 		
 		System.out.println(insertProductDto);
 		// 발주 상품 정보 설정
-		// conv_seq, user_id, product_seq, amount, rp_name, b_name, price, call_date, product_name, call_ref, call_status, img_url
+		// product_seq, conv_seq, category_id, product_seq, amount, rp_name, b_name, price, price_origin, call_date, product_name, call_ref, call_status, img_url
 		// 발주 상품 정보를 데이터베이스에 추가
 		int count = service.addCallProductConv(insertProductDto);
 		System.out.println(count);

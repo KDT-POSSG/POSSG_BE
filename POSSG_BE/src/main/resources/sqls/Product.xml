@@ -14,6 +14,7 @@
 	, product_name
 	, MAX(product_roman_name) AS product_roman_name
 	, MIN(price) AS price
+	, MIN(price_origin) AS price_origin
 	, MIN(price_discount) AS price_discount
 	, SUM(stock_quantity) AS stock_quantity
 	, MIN(expiration_date) AS expiration_date
