@@ -2,24 +2,20 @@ package possg.com.a.dto;
 
 public class PointDto {
     private int ptSeq;
-    private String ptName;
-    private int ptPrice;
-    private int ptDuration;
-    private int ptStatus;
-
+    private String phoneNumber;
+    private int totalPoint;
+    
     // 생성자
     public PointDto() {}
 
-    public PointDto(int ptSeq, String ptName, int ptPrice, int ptDuration, int ptStatus) {
-        this.ptSeq = ptSeq;
-        this.ptName = ptName;
-        this.ptPrice = ptPrice;
-        this.ptDuration = ptDuration;
-        this.ptStatus = ptStatus;
-    }
+	public PointDto(int ptSeq, String phoneNumber, int totalPoint) {
+		super();
+		this.ptSeq = ptSeq;
+		this.phoneNumber = phoneNumber;
+		this.totalPoint = totalPoint;
+	}
 
-    // Getter, Setter
-    public int getPtSeq() {
+	public int getPtSeq() {
 		return ptSeq;
 	}
 
@@ -27,47 +23,26 @@ public class PointDto {
 		this.ptSeq = ptSeq;
 	}
 
-	public String getPtName() {
-		return ptName;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPtName(String ptName) {
-		this.ptName = ptName;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
-	public int getPtPrice() {
-		return ptPrice;
+	public int getTotalPoint() {
+		return totalPoint;
 	}
 
-	public void setPtPrice(int ptPrice) {
-		this.ptPrice = ptPrice;
+	public void setTotalPoint(int totalPoint) {
+		this.totalPoint = totalPoint;
 	}
 
-	public int getPtDuration() {
-		return ptDuration;
+	@Override
+	public String toString() {
+		return "PointDto [ptSeq=" + ptSeq + ", phoneNumber=" + phoneNumber + ", totalPoint=" + totalPoint + "]";
 	}
-
-	public void setPtDuration(int ptDuration) {
-		this.ptDuration = ptDuration;
-	}
-
-	public int getPtStatus() {
-		return ptStatus;
-	}
-
-	public void setPtStatus(int ptStatus) {
-		this.ptStatus = ptStatus;
-	}
-
-	// toString()
-    @Override
-    public String toString() {
-        return "PTDto{" +
-                "ptSeq=" + ptSeq +
-                ", ptName='" + ptName + '\'' +
-                ", ptPrice=" + ptPrice +
-                ", ptDuration=" + ptDuration +
-                ", ptStatus=" + ptStatus +
-                '}';
-    }
+    
+    
 }

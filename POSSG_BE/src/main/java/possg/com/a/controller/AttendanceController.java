@@ -30,7 +30,18 @@ public class AttendanceController {
 		int emp_seq = dto.getEmployeeSeq(); // 직원 번호
 		
 		AttendanceParam param = service.attendanceCheck(emp_seq);
-		//System.out.println(param.toString());
+		
+		// 첫 출근인 경우
+		if (param == null) {
+			int count = service.attendance(dto);
+			
+			if(count > 0) {
+				return "YES";
+			}
+			
+			return "NO";
+		}
+		
 		
 		// 이미 출근해 있는 경우 
 		if (param.getLeaveWork() == null && param.getAttendance() != null) {

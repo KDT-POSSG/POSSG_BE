@@ -2,5 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.PointDao">
+	<!-- 새로운 포인트 가입자 추가 -->
+	<insert id="newPoint" parameterType="String">
+		INSERT INTO PT (phone_num)
+        VALUES (#{phoneNumber})
+	</insert>
 	
+	<!-- 이미 가입되어있는지 체크 -->
+	<select id="checkPoint" parameterType="String" resultType="Integer">
+		SELECT count(*)
+		FROM PT
+		WHERE phone_num = #{phoneNumber}
+	</select>
+	
+	<!-- 포인트 적립 -->
+	<update id="addPoint" parameterType="possg.com.a.dto.PointParam">
+		UPDATE PT
+		SET total_pt = total_pt + #{point}
+		WHERE phone_num = #{phoneNumber}
+	</update>
+	
+	<!-- 고객 포인트 조회 -->
+	<select id="searchPoint" parameterType="String" resultType="Integer">
+		SELECT total_pt
+		FROM PT
+		WHERE phone_num = #{phoneNumber}
+	</select>
+	
+	<!-- 포인트 차감 -->
+	<update id="usePoint" parameterType="possg.com.a.dto.PointParam">
+		UPDATE PT
+		SET total_pt = total_pt - #{point}
+		WHERE phone_num = #{phoneNumber}
+	</update>
 </mapper>
