@@ -124,12 +124,6 @@
 	order by call_seq desc;
 </select>
 
-<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
-	select count(*) from Call_product_conv
-	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
-	order by call_seq desc;
-</select>
-
 <!-- 대기 상품의 총 갯수 -->
 <select id="getCallProductTotalAmount" parameterType="possg.com.a.dto.CallProductConvDto"
 	resultType="java.lang.Integer">
