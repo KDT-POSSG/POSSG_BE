@@ -16,7 +16,13 @@ public class CallProductConvOrderListDto {
     public CallProductConvOrderListDto() {
     }
 
-
+    public CallProductConvOrderListDto(int convSeq, String callRef, int callTotalNumber, int callTotalPrice) {
+    	this.convSeq = convSeq;
+    	this.callRef = callRef;
+    	this.callTotalNumber = callTotalNumber;
+    	this.callTotalPrice = callTotalPrice;
+    }
+    
     public CallProductConvOrderListDto(int seq, int convSeq, String callRef, String callDate, int callStatus, int callTotalNumber, int callTotalPrice, String callRemark) {
         this.seq = seq;
         this.convSeq = convSeq;

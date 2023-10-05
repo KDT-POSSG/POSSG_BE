@@ -42,6 +42,7 @@ import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
+import possg.com.a.service.TranslationService;
 import possg.com.a.util.SecurityConfig;
 import util.NaverCloudUtil;
 import util.ProductUtil;
@@ -56,6 +57,9 @@ public class ProductController {
 	@Autowired
 	ProductService service;
 	
+	@Autowired
+	TranslationController controller;
+	
 	@GetMapping("healthcheck")
 	public String healthcheck() {
 		System.out.println("ProductController healthcheck " + new Date());
@@ -69,19 +73,19 @@ public class ProductController {
 		System.out.println("ProductController ProductList " + new Date());
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println("Map: " + map);
 		System.out.println("ProductParam= " + param);
+		
 		List<ProductDto> list = service.productList(param);
-		System.out.println("ProductList= " + list);
+		System.out.println("ProductList= " + list.get(0));
 		
 		int cnt = 0;
 		if (param.getCountry() != 0) {
 			for(ProductDto dto : list) {
-				String temp = TranslationController.translationProductName(dto.getProductName(), param.getCountry());
+				System.out.println("in for ProductDto" + dto);
+				String temp = controller.translationProductName(dto.getProductName(), param.getCountry());
+				System.out.println("trans" + temp);
 				dto.setProductTranslationName(temp);
-				if (cnt > 3) {
-					break;
-				}
+				if (cnt > 3) {break;}
 				cnt ++;
 			}
 		}
@@ -100,18 +104,16 @@ public class ProductController {
 			pageProduct = pageProduct + 1;
 		}
 		
-		
 		map.put("ProductList", list);
 		map.put("pageProduct", pageProduct);
-		//map.put("pageNumber", param.getPageNumber());
 		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
-		
-		//return list;
 	}
 	
 	// 새로운 상품을 추가
 	// 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
+	// conv_seq, category_id, product_name,product_roman_name, price, price_origin, price_discount, 
+	// stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url
 	@PostMapping("addProduct")
 	public String addProduct(@RequestBody ProductDto dto) {
 		System.out.println("ProductController addProduct " + new Date());
@@ -244,58 +246,43 @@ public class ProductController {
 	@GetMapping("getAllCallProductConvList")
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
-		Map<String, Object> map = new HashMap<String, Object>();
 		
 		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
-		if (dtoList.isEmpty()) {
-			System.out.println("발주 대기 상품 없음" + dtoList);
-			map.put("convList", new CallProductConvDto[0]);
-			map.put("price", 0); // 총 가격
-			map.put("amount", 0); // 총 수량
-			map.put("product", 0); // 총 종류 수량
-			return map;
-		}
 		System.out.println("발주 대기 목록:" + dtoList.toString());
-		
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(tempDto);
 		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(tempDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(tempDto);
+		int count = service.getCallProductTotalNumber(tempDto);
 
+		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
+		if (param.getPageSize() > count) {
+			if (count == 0) {
+				param.setPageSize(1);
+			}else {
+				param.setPageSize(count);
+			}
+		}
+
+		int pageProduct = count / param.getPageSize();
+
+		if((count % param.getPageSize()) > 0) {
+			pageProduct = pageProduct + 1;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
+		map.put("pageProduct", pageProduct);
+		//map.put("pageNumber", param.getPageNumber());
+		map.put("cnt", count); // react 중 pagination 사용시 활용
 		return map;
 	}
 	
 	// input: String callRef, int convSeq
 	@GetMapping("getRefCallProductConvList")
-	public Map<String,Object> getRefCallProductConvList(CallProductConvDto convDto) {
+	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto) {
 		System.out.println("ProductController getRefCallProductConvList() " + new Date());
-		Map<String, Object> map = new HashMap<String, Object>();
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(convDto);
-		System.out.println("발주 상세 내역:" + convDto.toString());
-		if (convDto.getCallRef() == null) {
-			System.out.println("ref 없음");
-			return map;
-		}
 		
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(convDto);
-		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(convDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(convDto);
-
-		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
-		return map;
+		return dtoList;
 	}
 
 	// 재고 소진 시 자동 발주 시스템
@@ -344,7 +331,7 @@ public class ProductController {
 		return "NO";
 	}
 		
-	// 점주 발주 대기 리스트에 추가
+	// 점주 발주 상품 리스트에 추가
 	// input
 	// ProductDto: int convSeq, int productSeq, int price, String productName, String imgUrl, int stockLimit
 	@PostMapping("addCallProductConv")
@@ -407,9 +394,10 @@ public class ProductController {
 		System.out.println("fincProductName: " + productDto);
 		// 해당 상품 가격
 		int productPrice = productDto.get(0).getPriceDiscount();
+		convDto.setPrice(productPrice);
 		
 		// 해당 상품 총 가격 set
-		convDto.setPrice(productPrice * convDto.getAmount());
+		//convDto.setPrice(productPrice * convDto.getAmount());
 		
 		// 발주 사항 업데이트
 		// input: int amount, int price, String productName, int convSeq
@@ -426,7 +414,7 @@ public class ProductController {
 				System.out.println("getRefConvOrderList: " + orderDto.toString());
 				// 총 가격을 업데이트 (기존 총 가격 - 수정된 총 가격)
 				int totalPrice = orderDto.getCallTotalPrice() 
-						- (nameTemp.get(0).getPrice() - convDto.getPrice()); // 기존 총 가격 - 수정된 총 가격 
+						- (nameTemp.get(0).getPrice() - (productPrice * convDto.getAmount())); // 기존 총 가격 - 수정된 총 가격 
 				// 발주 주문 목록을 업데이트
 				orderDto.setCallTotalPrice(totalPrice);
 				int countOrder = service.updateConvOrderList(orderDto);
@@ -435,23 +423,47 @@ public class ProductController {
 					return "YES";
 				}
 			}
-			return "YES";
+			//return "YES";
 		}
 		return "NO";
 	}
 	
 	// 발주 대기 상품 삭제
+	// input: String callRef, String productName, int convSeq
+	// 상품 삭제 시 주문 목록 업데이트 기능 추가
 	@PostMapping("deleteCallProduct")
-	public String delteCallProduct(@RequestBody CallProductConvDto convDto) {
+	public String deleteCallProduct(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
-		for(String name : convDto.getNameList()) {
-			convDto.setProductName(name);
-			int count = service.deleteCallProduct(convDto);
-			if(count == 0) {
-				return "NO";
+		
+		int count = service.deleteCallProduct(convDto);
+		if(count > 0) {
+			
+			List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
+		    if (callList.isEmpty()) {
+		    	System.out.println("동일한 ref 상품이 없음");
+		    	return "NO";
+		    }
+			// 비고(remark)이 null인 경우 빈 문자열로 설정
+		    if (convDto.getRemark() == null) {
+		    	convDto.setRemark("");
+		    }
+
+		    // 발주 상품 수 및 총 가격 계산
+		    int totalProduct = callList.size();
+		    int totalPrice = 0;
+		    for (CallProductConvDto item : callList) {
+		        totalPrice += item.getPrice()*item.getAmount();
+		    }
+		    
+		    // 동일한 ref의 call_product_conv_order_list
+		    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
+	    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
+			int countOrder = service.updateCallToOrderList(tempDto);
+			if(countOrder > 0) {
+				return "YES";
 			}
 		}
-		return "YES";
+		return "NO";
 	}
 	
 	/* 고객 발주 */
@@ -483,42 +495,14 @@ public class ProductController {
 	// 발주 리스트 획득
 	// input: int convSeq, int pageNumber, int pageSize
 	@GetMapping("getAllConvOrderList")
-	public Map<String, Object> getAllConvOrderList(CallProductConvParam param) {
+	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param ) {
 		System.out.println("ProductController getAllConvOrderList() " + new Date());
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		List<CallProductConvOrderListDto> dtoList = service.getAllConvOrderList(param);
-		
-		int count = service.getOrderListTotalNumber(param);
-
-		if (count == 0) {
-			return map;
-		}
-		// 상품의 총 수가 한 페이지에 출력할 상품 수 보다 많으면 모든 상품을 출력
-		if (param.getPageSize() > count) {
-			if (count == 0) {
-				param.setPageSize(1);
-			}else {
-				param.setPageSize(count);
-			}
-		}
-
-		int pageProduct = count / param.getPageSize();
-
-		if((count % param.getPageSize()) > 0) {
-			pageProduct = pageProduct + 1;
-		}
-		
-		map.put("orderList", dtoList);
-		map.put("pageProduct", pageProduct);
-		map.put("cnt", count); // react 중 pagination 사용시 활용
-		return map;
-		
+		return service.getAllConvOrderList(param);
 	}
 	
 	// ref 참조 발주 리스트 획득
-	// input: String convRef, int convSeq, int pageNumber, int pageSize
+	// input: String conRef, int convSeq, int pageNumber, int pageSize
 	@GetMapping("getRefConvOrderList")
 	public CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto ) {
 		System.out.println("ProductController getRefConvOrderList() " + new Date());
@@ -527,7 +511,7 @@ public class ProductController {
 	}
 
 	// 발주 추가
-	// input: String remark
+	// input: String remark, int convSeq
 	@PostMapping("addConvOrderList")
 	public String addConvOrderList(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController addConvOrderList() " + new Date());
@@ -535,10 +519,7 @@ public class ProductController {
 		convDto.setCallRef("0");
 		// call_status가 '0'인 발주 상품 목록을 가져옴
 		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
-	    if (callList.isEmpty()) {
-	    	System.out.println("발주 대기중인 상품이 없음 " + callList);
-	    	return "NO";
-	    }
+	    
 		// 비고(remark)이 null인 경우 빈 문자열로 설정
 	    if (convDto.getRemark() == null) {
 	    	convDto.setRemark("");
@@ -556,11 +537,11 @@ public class ProductController {
 	    int totalProduct = callList.size();
 	    int totalPrice = 0;
 	    for (CallProductConvDto item : callList) {
-	        totalPrice += item.getPrice();
+	        totalPrice += item.getPrice()*item.getAmount();
 	    }
 	    
 	    // call_product_conv_order_list에 추가
-	    // call_status, call_stock, call_total_price, call_remark
+	    // seq, conv_seq, call_ref, call_date, call_status, call_total_number, call_total_price, call_remark
 	    CallProductConvOrderListDto orderListDto = 
 	    		new CallProductConvOrderListDto(0, convSeq, callRef, formattedDate, 
 	    										1, totalProduct, totalPrice, convDto.getRemark());
@@ -582,7 +563,7 @@ public class ProductController {
 	}
 	
 	// 점주 발주 취소
-	// input: int convSeq, String call_ref
+	// input: int convSeq, String callRef
 	@PostMapping("cancelConvOrderList")
 	public String cancelConvOrderList(@RequestBody CallProductConvOrderListDto orderDto) {
 		System.out.println("ProductController cancelConvOrderList() " + new Date());
@@ -591,7 +572,7 @@ public class ProductController {
 		System.out.println("ProductController cancelConvOrderList() count: " + count);
 		if (count > 0) {
 			int orderCount = service.cancelConvOrderList(orderDto);
-			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
+			System.out.println("ProductController cancelConvOrderList() orderCount: " + count);
 			if (orderCount > 0) {
 		        return "YES";
 		    }
@@ -689,22 +670,25 @@ public class ProductController {
 	    return audioURL;
 	}
 		
-	
-	// 로마자 변환 후 DB 입력
-	@GetMapping("updateProductRomanName")
-	public String updateProductRomanName(ProductParam param) {
+	// 상품 원가 할당
+	@GetMapping("updateProductOriginPrice")
+	public String updateProductOriginPrice(ProductParam param) {
 		System.out.println("ProductController updateProductRomanName() " + new Date());
 		
 		List<ProductDto> productList = service.getAllProduct(param);
-		
 		for(ProductDto dto : productList) {
-			String romanName = KoreanRomanizer.romanize(dto.getProductName(), KoreanCharacter.ConsonantAssimilation.Regressive);
-			System.out.println("roman: " + romanName);
-			dto.setProductRomanName(romanName);
-			service.updateProductRomanName(dto);
+			
+			System.out.println("productDto: " + dto.toString());
+			int tempPrice = dto.getPrice();
+			double price = tempPrice * 0.7;
+			int roundedPrice = (int) Math.ceil(price);
+			
+			dto.setPriceOrigin(roundedPrice);
+			System.out.println("roundedPrice: " + dto.getPriceOrigin());
+			service.updateProductOriginPrice(dto);
 		}
 
-		return null;
+		return "YES";
 	}
 	
 
@@ -798,3 +782,17 @@ productMap.put("details", productDetails);
 resultList.add(productMap);
 }
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+

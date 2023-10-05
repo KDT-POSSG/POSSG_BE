@@ -8,6 +8,7 @@ public class ProductDto {
     private String productRomanName;
     private String productTranslationName;
     private int price;
+    private int priceOrigin;
     private int priceDiscount;
     private int stockQuantity;
     private String expirationDate;
@@ -31,7 +32,7 @@ public class ProductDto {
     }
 
 	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
-			String productTranslationName, int price, int priceDiscount, int stockQuantity, String expirationDate,
+			int price, int priceOrigin, int priceDiscount, int stockQuantity, String expirationDate,
 			double discountRate, int promotionInfo, String barcode, String imgUrl) {
 		super();
 		this.productSeq = productSeq;
@@ -39,8 +40,8 @@ public class ProductDto {
 		this.categoryId = categoryId;
 		this.productName = productName;
 		this.productRomanName = productRomanName;
-		this.productTranslationName = productTranslationName;
 		this.price = price;
+		this.priceOrigin = priceOrigin;
 		this.priceDiscount = priceDiscount;
 		this.stockQuantity = stockQuantity;
 		this.expirationDate = expirationDate;
@@ -104,6 +105,14 @@ public class ProductDto {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	
+	public int getPriceOrigin() {
+		return priceOrigin;
+	}
+
+	public void setPriceOrigin(int priceOrigin) {
+		this.priceOrigin = priceOrigin;
 	}
 
 	public int getPriceDiscount() {
@@ -198,7 +207,7 @@ public class ProductDto {
 	public String toString() {
 		return "ProductDto [productSeq=" + productSeq + ", convSeq=" + convSeq + ", categoryId=" + categoryId
 				+ ", productName=" + productName + ", productRomanName=" + productRomanName
-				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceDiscount="
+				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceOrigin=" + priceOrigin + ", priceDiscount="
 				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate
 				+ ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo + ", barcode=" + barcode
 				+ ", imgUrl=" + imgUrl  + ", amount=" + amount + "]";
