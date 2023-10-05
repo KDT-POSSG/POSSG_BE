@@ -256,6 +256,7 @@ public class ProductController {
 			System.out.println("발주 대기 상품 없음" + dtoList);
 			map.put("convList", new CallProductConvDto[0]);
 			map.put("price", 0); // 총 가격
+			map.put("priceOrigin", 0);
 			map.put("amount", 0); // 총 수량
 			map.put("product", 0); // 총 종류 수량
 			return map;
@@ -265,6 +266,8 @@ public class ProductController {
 
 		// 상품의 총 가격
 		int price = service.getCallProductTotalPrice(tempDto);
+		// 상품 원가 총 가격
+		int priceOrigin = service.getCallProductTotalPriceOrigin(tempDto);
 		// 상품의 총 수
 		int amount = service.getCallProductTotalAmount(tempDto);
 		// 상품 종류의 총 수
@@ -272,6 +275,7 @@ public class ProductController {
 		
 		map.put("convList", dtoList);
 		map.put("price", price); // 총 가격
+		map.put("priceOrigin", priceOrigin); // 원가 총 가격
 		map.put("amount", amount); // 총 수량
 		map.put("product", product); // 총 종류 수량
 		return map;
@@ -286,11 +290,18 @@ public class ProductController {
 		System.out.println("발주 상세 내역:" + convDto.toString());
 		if (convDto.getCallRef() == null) {
 			System.out.println("ref 없음");
+			map.put("convList", new CallProductConvDto[0]);
+			map.put("price", 0); // 총 가격
+			map.put("priceOrigin", 0);
+			map.put("amount", 0); // 총 수량
+			map.put("product", 0); // 총 종류 수량
 			return map;
 		}
 
 		// 상품의 총 가격
 		int price = service.getCallProductTotalPrice(convDto);
+		// 상품 원가 총 가격
+		int priceOrigin = service.getCallProductTotalPriceOrigin(convDto);
 		// 상품의 총 수
 		int amount = service.getCallProductTotalAmount(convDto);
 		// 상품 종류의 총 수
@@ -298,6 +309,7 @@ public class ProductController {
 
 		map.put("convList", dtoList);
 		map.put("price", price); // 총 가격
+		map.put("priceOrigin", priceOrigin); // 원가 총 가격
 		map.put("amount", amount); // 총 수량
 		map.put("product", product); // 총 종류 수량
 		return map;
@@ -436,7 +448,7 @@ public class ProductController {
 		List<ProductDto> productDto = service.findProductName(productTemp);
 		System.out.println("fincProductName: " + productDto);
 		// 해당 상품 가격
-		int productPrice = productDto.get(0).getPriceDiscount();
+		int productPrice = productDto.get(0).getPriceOrigin();
 		convDto.setPrice(productPrice);
 		
 		// 해당 상품 총 가격 set
@@ -457,7 +469,7 @@ public class ProductController {
 				System.out.println("getRefConvOrderList: " + orderDto.toString());
 				// 총 가격을 업데이트 (기존 총 가격 - 수정된 총 가격)
 				int totalPrice = orderDto.getCallTotalPrice() 
-						- (crntConvDto.getPrice() - (productPrice * (crntConvDto.getAmount() + convDto.getAmount()))); // 기존 총 가격 - 수정된 총 가격 
+						- (crntConvDto.getPriceOrigin() - (productPrice * (crntConvDto.getAmount() + convDto.getAmount()))); // 기존 총 가격 - 수정된 총 가격 
 				// 발주 주문 목록을 업데이트
 				orderDto.setCallTotalPrice(totalPrice);
 				int countOrder = service.updateConvOrderList(orderDto);
@@ -615,7 +627,7 @@ public class ProductController {
 	    int totalProduct = callList.size();
 	    int totalPrice = 0;
 	    for (CallProductConvDto item : callList) {
-	        totalPrice += item.getPrice()*item.getAmount();
+	        totalPrice += item.getPriceOrigin()*item.getAmount();
 	    }
 	    
 	    // call_product_conv_order_list에 추가

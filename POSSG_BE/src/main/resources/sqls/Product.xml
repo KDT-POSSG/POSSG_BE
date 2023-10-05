@@ -140,6 +140,13 @@
 	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 </select>
 
+<select id="getCallProductTotalPrice" parameterType="possg.com.a.dto.CallProductConvDto"
+	resultType="java.lang.Integer">
+	select sum(price_origin)
+	from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</select>
+
 <!-- 대기 상품 종류의 총 갯수 -->
 <select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
 	select count(distinct product_name) from Call_product_conv
@@ -179,7 +186,7 @@
   where c.conv_seq = #{convSeq};
 </insert>
 
-<!-- 발주 상품의 amount와 price 업데이트 --> <!-- priceOrigin 추가 예정 -->
+<!-- 발주 상품의 amount와 price 업데이트 -->
 <update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
 	update Call_product_conv
 	set amount = #{amount}, price = #{price}, price_origin = #{priceOrigin}

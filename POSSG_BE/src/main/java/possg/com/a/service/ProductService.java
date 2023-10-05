@@ -86,6 +86,9 @@ public class ProductService {
 	public int getCallProductTotalPrice(CallProductConvDto convDto) {
 		return dao.getCallProductTotalPrice(convDto);
 	}
+	public int getCallProductTotalPriceOrigin(CallProductConvDto convDto) {
+		return dao.getCallProductTotalPriceOrigin(convDto);
+	}
 	public int getCallProductTotalAmount(CallProductConvDto convDto) {
 		return dao.getCallProductTotalAmount(convDto);
 	}
