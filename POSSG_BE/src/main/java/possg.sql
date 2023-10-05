@@ -80,13 +80,13 @@ CREATE TABLE Delivery (
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
-	conv_seq INT not null,
+	conv_seq INT not null,												--
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
-	product_roman_name VARCHAR(255),
-	product_translation_name VARCHAR(255),
+	product_roman_name VARCHAR(255),									-- 
+	product_translation_name VARCHAR(255),								--
 	price INT not null,													-- 상품 가격
-	price_origin INT,
+	price_origin INT,													--
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
