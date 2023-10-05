@@ -125,7 +125,7 @@
     p.del_status,
     p.del_total_number,
     p.del_total_price,
-    p.del_remark
+    p.del_remark,
     p.del_ref
 	FROM delivery as o
 	inner join Convenience j on o.branch_name = j.branch_name

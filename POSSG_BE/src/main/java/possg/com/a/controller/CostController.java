@@ -44,13 +44,12 @@ public class CostController {
 	}
 	
 	@PostMapping("addCost")
-	public String addcost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String addCost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController addCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
 		
 		int convSeq = claim.get("convSeq", Integer.class);
-		
 		dto.setConvSeq(convSeq);
 		
 		System.out.println(dto);
@@ -63,7 +62,7 @@ public class CostController {
 	}
 	
 	@PostMapping("updateCost")
-	public String updateCost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String updateCost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController updateCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
@@ -323,7 +322,7 @@ public class CostController {
 		if (param.getChoice() == 1) {
 			for (CostParam item : payment) {
 			    String ref = item.getRef();
-			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");
 			    String productName = item.getProductName();
 			    Matcher matcher = pattern.matcher(productName);
 			    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && matcher.find()) {
@@ -349,7 +348,7 @@ public class CostController {
 		if (param.getChoice() == 0) {
 			for (CostParam item : payment) {
 			    String ref = item.getRef();
-			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");
 			    String productName = item.getProductName();
 			    Matcher matcher = pattern.matcher(productName);
 			    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && matcher.find()) {
@@ -382,9 +381,119 @@ public class CostController {
 		return brandSalesList;
 	}
 	
+	@GetMapping("HourlySales")
+	public Map<String, List<Map<String, Object>>> HourlySales(CostParam param, @RequestHeader("accessToken") String accessToken) {
+	    System.out.println("CostController HourlySales " + new Date());
+
+	    Claims claim = tokenParser(accessToken);
+	    String branchName = claim.get("branchName", String.class);
+	    int convSeq = claim.get("convSeq", Integer.class);
+
+	    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
+	    LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);
+	    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	    String formattedDate = localDate.format(outputFormatter);
+
+	    System.out.println(formattedDate);
+	    param.setConvSeq(convSeq);
+	    param.setBranchName(branchName);
+
+	    List<CostParam> delivery = service.getDeliveryPrice(param);
+	    List<CostParam> payment = service.getPaymentPrice(param);
+
+	    for (int i = 0; i < payment.size(); i++) {
+	        String ref = payment.get(i).getRef();
+	        LocalDateTime dateTime = LocalDateTime.parse(ref, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	        payment.get(i).setRef(convertedRef);
+	    }
+
+	    Map<String, List<Map<String, Object>>> result = new HashMap<>();
+	    
+	    for (CostParam item : payment) {
+	        String ref = item.getRef();
+	        String productName = item.getProductName();
+	        String hour = ref.substring(8, 10); // ref에서 시간대 추출 (예: "10" 시간대)
+	        System.out.println(hour);
+	        if(formattedDate.contains(ref.substring(0,8))) {
+	        		        
+		        if (!result.containsKey(hour)) {
+		            result.put(hour, new ArrayList<>());
+		        }
+	
+		        // 시간대별로만 되어있음,,, 년도 월 일 시간 별로 분류 해야함,,,,,, 개에바
+		        List<Map<String, Object>> hourlyDataList = result.get(hour);
+		        Map<String, Object> salesItem = findSalesItemByProductName(hourlyDataList, productName);
+	
+		        if (salesItem != null) {
+		            int count = item.getCount();
+		            int price = item.getPaymentPrice();
+	
+		            int storedPrice = (int) salesItem.get("price");
+		            int storedCount = (int) salesItem.get("count");
+		            salesItem.put("price", storedPrice + price);
+		            salesItem.put("count", storedCount + count);
+		        } else {
+		            salesItem = new HashMap<>();
+		            salesItem.put("productName", productName);
+		            salesItem.put("price", item.getPaymentPrice());
+		            salesItem.put("count", item.getCount());
+		            hourlyDataList.add(salesItem);
+		        }
+	        }
+	    }
+
+	    for (CostParam item : delivery) {
+	        String ref = item.getRef();
+	        String productName = item.getProductName();
+	        String hour = ref.substring(8, 10); // ref에서 시간대 추출 (예: "10" 시간대)
+	        System.out.println(hour);
+	        if(formattedDate.contains(ref.substring(0,8))) {
+	        	
+	        
+		        if (!result.containsKey(hour)) {
+		            result.put(hour, new ArrayList<>());
+		        }
+	
+		        // 시간대 별로 데이터를 그룹화
+		        List<Map<String, Object>> hourlyDataList = result.get(hour);
+		        Map<String, Object> salesItem = findSalesItemByProductName(hourlyDataList, productName);
+	
+		        if (salesItem != null) {
+		            int count = item.getCount();
+		            int price = item.getPrice();
+	
+		            int storedPrice = (int) salesItem.get("price");
+		            int storedCount = (int) salesItem.get("count");
+		            salesItem.put("price", storedPrice + price);
+		            salesItem.put("count", storedCount + count);
+		        } else {
+		            salesItem = new HashMap<>();
+		            salesItem.put("productName", productName);
+		            salesItem.put("price", item.getPrice());
+		            salesItem.put("count", item.getCount());
+		            hourlyDataList.add(salesItem);
+		        }
+	        }
+	    }
+
+	    return result;
+	}
+
+	
+
+	
 		
 	//-------------------------------------- 함수 로직 ----------------------------------------------------
-	
+	// productName에 해당하는 판매 항목을 찾는 유틸리티 함수
+	private Map<String, Object> findSalesItemByProductName(List<Map<String, Object>> dataList, String productName) {
+	    for (Map<String, Object> item : dataList) {
+	        if (productName.equals(item.get("productName"))) {
+	            return item;
+	        }
+	    }
+	    return null;
+	}
 	
 	//토큰 추출하는 로직
 	public Claims tokenParser(String tokenHeader) {
