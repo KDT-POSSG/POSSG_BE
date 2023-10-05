@@ -10,6 +10,7 @@ public class CallProductConvDto {
     private String rpName;
     private String bName;
     private int price;
+    private int priceOrigin;
     private String callDate;
     private String productName;
     private String callRef;
@@ -31,6 +32,12 @@ public class CallProductConvDto {
     	this.convSeq = convSeq;
     }
     
+    public CallProductConvDto(String productName, int convSeq, int callStatus) {
+    	this.productName = productName;
+    	this.convSeq = convSeq;
+    	this.callStatus = callStatus;
+    } 
+    
 	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
 			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl) {
 		super();
@@ -49,7 +56,7 @@ public class CallProductConvDto {
 	}
 	
 	public CallProductConvDto(int callSeq, int convSeq, int productSeq, int amount, String rpName, String bName,
-			int price, String callDate, String productName, String callRef, int callStatus, String imgUrl, String remark) {
+			int price, int priceOrigin, String callDate, String productName, String callRef, int callStatus, String imgUrl, String remark) {
 		super();
 		this.callSeq = callSeq;
 		this.convSeq = convSeq;
@@ -58,6 +65,7 @@ public class CallProductConvDto {
 		this.rpName = rpName;
 		this.bName = bName;
 		this.price = price;
+		this.priceOrigin = priceOrigin;
 		this.callDate = callDate;
 		this.productName = productName;
 		this.callRef = callRef;
@@ -121,6 +129,14 @@ public class CallProductConvDto {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public int getPriceOrigin() {
+		return priceOrigin;
+	}
+
+	public void setPriceOrigin(int priceOrigin) {
+		this.priceOrigin = priceOrigin;
 	}
 
 	public String getCallDate() {
@@ -198,7 +214,7 @@ public class CallProductConvDto {
 	@Override
 	public String toString() {
 		return "CallProductConvDto [callSeq=" + callSeq + ", convSeq=" + convSeq + ", productSeq=" + productSeq
-				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", callDate="
+				+ ", amount=" + amount + ", rpName=" + rpName + ", bName=" + bName + ", price=" + price + ", priceOrigin" + priceOrigin + ", callDate="
 				+ callDate + ", productName=" + productName + ", callRef=" + callRef + ", callStatus=" + callStatus
 				+ ", imgUrl=" + imgUrl + ", pageNumber=" + pageNumber + ", pageSize=" + pageSize + ", remark=" + remark
 				+ "]";
