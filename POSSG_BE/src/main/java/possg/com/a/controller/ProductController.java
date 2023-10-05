@@ -497,6 +497,7 @@ public class ProductController {
 	
 	// 발주 리스트 획득
 	// input: int convSeq, int pageNumber, int pageSize
+	@GetMapping("getAllConvOrderList")
 	public Map<String, Object> getAllConvOrderList(CallProductConvParam param) {
 		System.out.println("ProductController getAllConvOrderList() " + new Date());
 		
