@@ -44,13 +44,12 @@ public class CostController {
 	}
 	
 	@PostMapping("addCost")
-	public String addcost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String addcost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController addCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
 		
 		int convSeq = claim.get("convSeq", Integer.class);
-		
 		dto.setConvSeq(convSeq);
 		
 		System.out.println(dto);
@@ -63,7 +62,7 @@ public class CostController {
 	}
 	
 	@PostMapping("updateCost")
-	public String updateCost(CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String updateCost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController updateCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
@@ -323,7 +322,7 @@ public class CostController {
 		if (param.getChoice() == 1) {
 			for (CostParam item : payment) {
 			    String ref = item.getRef();
-			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");
 			    String productName = item.getProductName();
 			    Matcher matcher = pattern.matcher(productName);
 			    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && matcher.find()) {
@@ -349,7 +348,7 @@ public class CostController {
 		if (param.getChoice() == 0) {
 			for (CostParam item : payment) {
 			    String ref = item.getRef();
-			    Pattern pattern = Pattern.compile("([^)]+)\\)");  // 수정된 정규 표현식
+			    Pattern pattern = Pattern.compile("([^)]+)\\)");
 			    String productName = item.getProductName();
 			    Matcher matcher = pattern.matcher(productName);
 			    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && matcher.find()) {
@@ -380,6 +379,104 @@ public class CostController {
 	    }
   
 		return brandSalesList;
+	}
+	
+	//시간대별 판매 통계
+	@GetMapping("HourlySales")
+	public Map<String, List<Map<String, Object>>> HourlySales(CostParam param, @RequestHeader("accessToken") String accessToken) {
+		System.out.println("CostController HourlySales " + new Date());
+		
+		Claims claim = tokenParser(accessToken);		
+		String branchName = claim.get("branchName", String.class);
+		int convSeq = claim.get("convSeq", Integer.class);
+		
+		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일HH시mm분");
+		LocalDateTime localDateTime = LocalDateTime.parse(param.getDate(), inputFormatter);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        String formattedDate = localDateTime.format(outputFormatter);
+		
+        System.out.println(formattedDate);
+		param.setConvSeq(convSeq);
+		param.setBranchName(branchName);
+		
+		List<CostParam> delivery = service.getDeliveryPrice(param);
+		List<CostParam> payment = service.getPaymentPrice(param);
+		
+		for(int i = 0; i< payment.size(); i++) {
+			String ref = payment.get(i).getRef();
+			LocalDateTime dateTime = LocalDateTime.parse(ref, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	        payment.get(i).setRef(convertedRef);
+		}		
+
+	    Map<String, Map<String, Object>> hourlySalesData = new HashMap<>();
+
+		for (CostParam item : payment) {
+	        String ref = item.getRef();
+	        String productName = item.getProductName();
+
+	        if (formattedDate.substring(0, 6).equals(ref.substring(0, 6))) {
+	            int count = item.getCount();
+	            int price = item.getPaymentPrice();
+
+	            Map<String, Object> salesItem; 
+	            if (hourlySalesData.containsKey(productName)) { // productName중복체크
+	                salesItem = hourlySalesData.get(productName);
+	                int storedPrice = (int) salesItem.get("price");
+	                int storedCount = (int) salesItem.get("count");
+	                salesItem.put("price", storedPrice + price);
+	                salesItem.put("count", storedCount + count);
+	            } else {
+	                salesItem = new HashMap<>();
+	                salesItem.put("productName", productName);
+	                salesItem.put("price", price);
+	                salesItem.put("count", count);
+	                hourlySalesData.put(productName, salesItem);
+	            }
+	        }
+	    }
+		
+		for (CostParam item : delivery) {
+	        String ref = item.getRef();
+	        String productName = item.getProductName();
+
+	        if (formattedDate.substring(0, 6).equals(ref.substring(0, 6))) {
+	            int count = item.getCount();
+	            int price = item.getPrice();
+
+	            
+	            Map<String, Object> salesItem;
+	            if (hourlySalesData.containsKey(productName)) { // productName중복체크
+	                salesItem = hourlySalesData.get(productName);
+	                int storedPrice = (int) salesItem.get("price");
+	                int storedCount = (int) salesItem.get("count");
+	                salesItem.put("price", storedPrice + price);
+	                salesItem.put("count", storedCount + count);
+	            } else {
+	                salesItem = new HashMap<>();
+	                salesItem.put("productName", productName);
+	                salesItem.put("price", price);
+	                salesItem.put("count", count);
+	                hourlySalesData.put(productName, salesItem);
+	            }
+	        }
+	    }
+
+		Map<String, List<Map<String, Object>>> result = new HashMap<>();
+	    for (Map.Entry<String, Map<String, Object>> entry : hourlySalesData.entrySet()) {
+	        Map<String, Object> salesItem = entry.getValue();
+	        String hour = formattedDate.substring(8, 10);
+
+	        if (!result.containsKey(hour)) {
+	            result.put(hour, new ArrayList<>());
+	        }
+
+	        result.get(hour).add(salesItem);
+	    }
+	
+
+	    return result;
+	    	    
 	}
 	
 		
