@@ -128,4 +128,8 @@ public class ProductService {
 	public int updateProductOriginPrice(ProductDto dto) {
 		return dao.updateProductOriginPrice(dto);
 	}
+	
+	public int getOrderListTotalNumber(CallProductConvParam param) {
+		return dao.getOrderListTotalNumber(param);
+	}
 }
