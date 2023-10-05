@@ -164,7 +164,7 @@
 <!-- call_status가 0이고 productName이 일치하는 발주 상품 정보 획득 -->
 <select id="findCallProductConvName" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
     select * from Call_product_conv 
-    where call_status = 0 and product_name = #{productName} and conv_seq = #{convSeq}
+    where product_name = #{productName} and conv_seq = #{convSeq} and call_status = 0 
 </select>
 
 <!-- 새로운 발주 상품 추가 -->
@@ -179,10 +179,10 @@
   where c.conv_seq = #{convSeq};
 </insert>
 
-<!-- 발주 상품의 amount와 price 업데이트 -->
+<!-- 발주 상품의 amount와 price 업데이트 --> <!-- priceOrigin 추가 예정 -->
 <update id="updateCallProductConv" parameterType="possg.com.a.dto.CallProductConvDto">
 	update Call_product_conv
-	set amount = #{amount}, price = #{price}
+	set amount = #{amount}, price = #{price}, price_origin = #{priceOrigin}
 	where product_name = #{productName} and call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1';
 </update>
 
