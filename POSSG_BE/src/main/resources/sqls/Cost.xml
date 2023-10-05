@@ -57,5 +57,36 @@
 	where p.conv_seq = #{convSeq} AND p.del != '결제취소'
 </select>
 
+<select id="bestDeliverySalesProduct" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select product_name, sum(quantity) as count, sum(price) as price
+	from Delivery
+	where branch_name = #{branchName}
+	group by product_name
+	<if test="choice != null">
+	 <if test="choice == 0">
+	 	order by count desc;
+	 </if>
+	 <if test="choice == 1">
+	 	order by price desc;
+	 </if>
+	</if>
+</select>
+
+<select id="bestPaymentSalesProduct" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select i.item_name as productName, sum(i.qty) as count, sum(i.price) as price
+	from Payment as p
+	inner join Items i on i.receipt_id = p.receipt_id
+	where conv_seq = #{convSeq}
+	group by i.item_name
+	<if test="choice != null">
+	 <if test="choice == 0">
+	 	order by count desc;
+	 </if>
+	 <if test="choice == 1">
+	 	order by price desc;
+	 </if>
+	</if>
+</select>
+
 
 </mapper>

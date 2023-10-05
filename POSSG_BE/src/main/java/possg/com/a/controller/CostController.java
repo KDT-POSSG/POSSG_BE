@@ -12,12 +12,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Claims;
@@ -25,7 +25,6 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
-import possg.com.a.dto.ProductDto;
 import possg.com.a.service.CostService;
 import possg.com.a.util.TokenCreate;
 
@@ -52,12 +51,25 @@ public class CostController {
 		int convSeq = claim.get("convSeq", Integer.class);
 		dto.setConvSeq(convSeq);
 		
-		System.out.println(dto);
-		int count = service.addCost(dto);
-		System.out.println(count);
-		if(count != 0) {
-			return "YES";
-		}		
+		CostParam cost = new CostParam();
+		
+		cost.setConvSeq(convSeq);
+		cost.setCostMonth(dto.getCostMonth());
+		cost.setCostYear(dto.getCostYear());
+		
+		CostDto auth = service.selectCost(cost);
+		
+		if(auth == null) {
+			System.out.println(dto);
+			int count = service.addCost(dto);
+			System.out.println(count);
+			if(count != 0) {
+				return "YES";
+			}	
+		}
+		if(auth != null) {
+			service.updateCost(dto);
+		}			
 		return "NO";
 	}
 	
@@ -79,6 +91,50 @@ public class CostController {
 			return "YES";
 		}
 		return "NO";		
+	}
+	
+	@GetMapping("selectCost")
+	public ResponseEntity<?> selectCost(@RequestHeader("accessToken") String tokenHeader) {
+		System.out.println("CostController selectCost " + new Date());
+		
+		Claims claim = tokenParser(tokenHeader);		
+		int convSeq = claim.get("convSeq", Integer.class);		
+		CostParam param = new CostParam();						
+		LocalDate currentDate = LocalDate.now();     
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDateTime = currentDate.format(formatter);
+        int formattedYear = Integer.parseInt(formattedDateTime.substring(0, 4));
+        int formattedMonth = Integer.parseInt(formattedDateTime.substring(4, 6));
+        
+        param.setConvSeq(convSeq);
+        param.setCostYear(formattedYear);
+        param.setCostMonth(formattedMonth);
+        
+        CostDto cost = service.selectCost(param);
+        System.out.println(cost);
+        
+        if(cost != null) {
+        	return ResponseEntity.ok(cost);
+        }
+                
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("NO");
+	}
+	
+	@PostMapping("callSelectCost")
+	public ResponseEntity<?> callSelectCost(@RequestBody CostParam param,@RequestHeader("accessToken") String tokenHeader) {
+		System.out.println("CostController callSelectCost " + new Date());
+		
+		Claims claim = tokenParser(tokenHeader);
+        int convSeq = claim.get("convSeq", Integer.class);
+
+        param.setConvSeq(convSeq);
+        
+        CostDto cost = service.selectCost(param);
+        
+        if(cost != null) {
+        	return ResponseEntity.ok(cost);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("NO");
 	}
 
 	// 손익계산
@@ -479,10 +535,47 @@ public class CostController {
 
 	    return result;
 	}
-
 	
+	@GetMapping("bestSalesProduct")
+	public Map<String, Object> bestSalesProduct(CostParam param, @RequestHeader("accessToken") String accessToken){
+		System.out.println("CostController HourlySales " + new Date());
+		
+		Claims claim = tokenParser(accessToken);
+		String branchName = claim.get("branchName", String.class);
+	    int convSeq = claim.get("convSeq", Integer.class);
+	    
+	    param.setBranchName(branchName);
+	    param.setConvSeq(convSeq);
+	    
+	    System.out.println(param);
+	    
+	    List<CostParam> delivery = service.bestDeliverySalesProduct(param);
+	    List<CostParam> payment = service.bestPaymentSalesProduct(param);
+	    
+	    Map<String, Object> productMap = new HashMap<>();
+	    List<Map<String, Object>> deliveryItem = new ArrayList<>();
+	    List<Map<String, Object>> paymentItem = new ArrayList<>();
+	    for(CostParam item : delivery) {	    	
+    	    Map<String, Object> deliveryMap = new HashMap<>();
+		    deliveryMap.put("price", item.getPrice());
+		    deliveryMap.put("count", item.getCount());
+		    deliveryMap.put("productName", item.getProductName());
+		    deliveryItem.add(deliveryMap);
+	    }
+	    
+	    for(CostParam item : payment) {	    
+	    	Map<String, Object> paymentMap = new HashMap<>();
+	        paymentMap.put("price", item.getPrice());
+	        paymentMap.put("count", item.getCount());
+	        paymentMap.put("productName", item.getProductName());
+	        paymentItem.add(paymentMap);
+	    }
+	    productMap.put("delivery", deliveryItem);
+	    productMap.put("payment", paymentItem);
+	    
+		return productMap;
+	}
 
-	
 		
 	//-------------------------------------- 함수 로직 ----------------------------------------------------
 	// productName에 해당하는 판매 항목을 찾는 유틸리티 함수

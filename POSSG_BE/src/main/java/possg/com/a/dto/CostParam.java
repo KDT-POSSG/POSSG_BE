@@ -33,6 +33,13 @@ public class CostParam {
 		this.count = count;
 	}
 
+	public CostParam(int price, String productName, int count) {
+		super();
+		this.price = price;
+		this.productName = productName;
+		this.count = count;
+	}
+
 
 	public String getRef() {
 		return ref;
