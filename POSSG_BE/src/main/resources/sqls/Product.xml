@@ -140,7 +140,7 @@
 	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
 </select>
 
-<select id="getCallProductTotalPrice" parameterType="possg.com.a.dto.CallProductConvDto"
+<select id="getCallProductTotalPriceOrigin" parameterType="possg.com.a.dto.CallProductConvDto"
 	resultType="java.lang.Integer">
 	select sum(price_origin)
 	from Call_product_conv
