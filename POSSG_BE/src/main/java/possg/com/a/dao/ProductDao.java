@@ -59,4 +59,6 @@ public interface ProductDao {
 	int updateCallToOrderList(CallProductConvOrderListDto orderDto);
 
 	int updateProductOriginPrice(ProductDto dto);
+	
+	int getOrderListTotalNumber(CallProductConvParam param);
 }
