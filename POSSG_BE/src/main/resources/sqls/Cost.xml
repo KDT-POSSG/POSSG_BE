@@ -39,22 +39,22 @@
 	where conv_seq = #{convSeq}
 </select>
 
-<!-- payment엔 purchased_at delivery는 ref로 결제시간 확인해서 날짜별로 분류해서 뿌려야함 -->
 <!-- 매출 -->
 <select id="getDeliveryPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select 
 	ref,
 	price,
-	product_name
+	product_name,
+	quantity as count
 	from Delivery
 	where branch_name = #{branchName} and order_status != 0
 </select>
 
 <select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
-	SELECT p.price AS paymentPrice, p.purchased_at as ref, pro.product_name as product_name
-	FROM Payment AS p
-	inner join Product pro on p.product_seq = pro.product_seq
-	WHERE p.conv_seq = #{convSeq} AND del != '결제취소'
+	select i.qty as count, i.price as paymentPrice, i.item_name as productName, p.purchased_at as ref
+	from Payment as p
+	inner join Items i on i.receipt_id = p.receipt_id
+	where p.conv_seq = #{convSeq} AND p.del != '결제취소'
 </select>
 
 
