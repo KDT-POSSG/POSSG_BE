@@ -130,6 +130,28 @@
 	order by call_seq desc;
 </select>
 
+<!-- 대기 상품의 총 갯수 -->
+<select id="getCallProductTotalAmount" parameterType="possg.com.a.dto.CallProductConvDto"
+	resultType="java.lang.Integer">
+	select sum(amount)
+	from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</select>
+<!-- 대기 상품의 총 가격 -->
+<select id="getCallProductTotalPrice" parameterType="possg.com.a.dto.CallProductConvDto"
+	resultType="java.lang.Integer">
+	select sum(price)
+	from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+</select>
+
+<!-- 대기 상품 종류의 총 갯수 -->
+<select id="getCallProductTotalNumber" parameterType="possg.com.a.dto.CallProductConvDto" resultType="Integer">
+	select count(distinct product_name) from Call_product_conv
+	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != '-1'
+	order by call_seq desc;
+</select>
+
 <!-- 주어진 callRef에 해당하는 발주 상품 목록 획득 -->
 <select id="getRefCallProductConvList" parameterType="possg.com.a.dto.CallProductConvDto" resultType="possg.com.a.dto.CallProductConvDto">
 	select * from Call_product_conv
