@@ -252,8 +252,13 @@ public class ProductController {
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
 		if (dtoList.isEmpty()) {
 			System.out.println("발주 대기 상품 없음" + dtoList);
+			map.put("convList", new CallProductConvDto[0]);
+			map.put("price", 0); // 총 가격
+			map.put("amount", 0); // 총 수량
+			map.put("product", 0); // 총 종류 수량
 			return map;
 		}
+
 		System.out.println("발주 대기 목록:" + dtoList.toString());
 
 		// 상품의 총 가격
@@ -289,7 +294,7 @@ public class ProductController {
 		// 상품 종류의 총 수
 		int product = service.getCallProductTotalNumber(convDto);
 
-		map.put("dtoList", dtoList);
+		map.put("convList", dtoList);
 		map.put("price", price); // 총 가격
 		map.put("amount", amount); // 총 수량
 		map.put("product", product); // 총 종류 수량
@@ -342,7 +347,7 @@ public class ProductController {
 		return "NO";
 	}
 		
-	// 점주 발주 상품 리스트에 추가
+	// 점주 발주 대기 리스트에 추가
 	// input
 	// ProductDto: int convSeq, int productSeq, int price, String productName, String imgUrl, int stockLimit
 	@PostMapping("addCallProductConv")
