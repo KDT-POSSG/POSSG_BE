@@ -27,6 +27,7 @@ public class ProductService {
 		return dao.healthcheck();
 	}
 	
+	//Product
 	public List<ProductDto> productList(ProductParam param){
 		return dao.productList(param);
 	}
@@ -53,6 +54,7 @@ public class ProductService {
 		return dao.getTotalStock(name);
 	}
 	
+	// CallProductConv
 	public int addCallProductConv(ProductDto dto) {
 		return dao.addCallProductConv(dto);
 	}
@@ -81,6 +83,12 @@ public class ProductService {
 	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto){
 		return dao.getRefCallProductConvList(convDto);
 	}
+	public int getCallProductTotalPrice(CallProductConvDto convDto) {
+		return dao.getCallProductTotalPrice(convDto);
+	}
+	public int getCallProductTotalAmount(CallProductConvDto convDto) {
+		return dao.getCallProductTotalAmount(convDto);
+	}
 	public CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto){
 		return dao.getSeqCallProductConv(convDto);
 	}
@@ -103,6 +111,7 @@ public class ProductService {
 		return dao.deleteCallProduct(callDto);
 	}
 	
+	// OrderList
 	public List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param){
 		return dao.getAllConvOrderList(param);
 	}
