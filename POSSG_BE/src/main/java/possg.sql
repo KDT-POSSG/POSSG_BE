@@ -12,7 +12,7 @@ CREATE TABLE Convenience (
 	branch_name	VARCHAR(255) not null,			-- 편의점 점포명
 	phone_number VARCHAR(255) not null,			-- 편의점 점주 휴대폰 번호
 	registration_date TIMESTAMP not null,		-- 편의점 설립일	
-	conv_status int not null	 				-- 0: 폐점, 1: 운영중(activate)
+	conv_status int not null,	 				-- 0: 폐점, 1: 운영중(activate)
 	conv_key VARCHAR(100) unique,				-- 본사 인증 번호
     conv_location VARCHAR(255),					-- 매장 주소
     latitude double,							-- 위도
@@ -26,7 +26,7 @@ CREATE TABLE Customer (
 	customer_id	VARCHAR(255) default 'user0000' not null,		-- 고객 아이디 ( 비회원은 default로 ex) user0000) 나중에 삽입해주삼.
 	pin_number INT,												-- 결제 비밀 번호. 6자리?
 	customer_name VARCHAR(255) default 'anonymous' not null,	-- 고객 이름
-	phone_number VARCHAR(255),									-- 고객 휴대폰 번호
+	phone_number VARCHAR(255) not null,							-- 고객 휴대폰 번호
 	registration_date TIMESTAMP,								-- 고객 가입일 
     customer_status int default 1 not null,						-- 고객 탈퇴 여부 (0: 탈퇴 1: 가입됨)
     conv_seq int,												-- 간편 가입 시 가입 한 편의점 
@@ -36,19 +36,26 @@ CREATE TABLE Customer (
     foreign key(conv_seq) references Convenience(conv_seq)
 );
 
+select * from Customer;
+
+ALTER TABLE Customer MODIFY phone_number VARCHAR(255) NOT NULL;
+
+insert into Customer(pin_number, phone_number, registration_date, customer_status)
+values (1234, 01012345123, 20230830, 1);
+
 -- 점주 인증 토큰 
 create table token(
 	seq int auto_increment primary key,	-- 토큰 고유번호
 	refresh varchar(255) not null,		-- 로그인 시 저장 할 refresh 토큰
 	user_id varchar(255) not null		-- 유저 아이디
-)
+);
 
 -- 고객 인증 토큰
 create table customerToken(
 	seq int auto_increment primary key,	-- 토큰 고유번호
 	refresh varchar(255) not null,		-- 로그인 시 저장 할 refresh 토큰
 	customer_id varchar(255) not null	-- 유저 아이디
-)
+);
 
 -- 문자 인증 확인 db
 create table sms(
@@ -80,13 +87,12 @@ CREATE TABLE Delivery (
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
-	conv_seq INT not null,												--
+	conv_seq INT not null,
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
-	product_roman_name VARCHAR(255),									-- 
-	product_translation_name VARCHAR(255),								--
+	product_roman_name VARCHAR(255),
+	product_translation_name VARCHAR(255),
 	price INT not null,													-- 상품 가격
-	price_origin INT,													--
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
@@ -101,6 +107,7 @@ CREATE TABLE Product (
 CREATE TABLE Category (
 	category_id	INT auto_increment primary key, 	-- 상품 카테고리 고유번호
 	category_name VARCHAR(255) not null				-- 상품 카테고리명				
+);
 
 -- 배달 테이블 --
 CREATE TABLE Delivery (
@@ -157,6 +164,8 @@ CREATE TABLE Items(
     foreign key(item_id) references Product(product_seq)
 );
 
+
+
 -- 직원 테이블 --
 CREATE TABLE Employee (
 	employee_seq INT auto_increment primary key,				-- 직원 고유번호
@@ -198,6 +207,8 @@ CREATE TABLE Attendance (
     foreign key (employee_seq) references Employee(employee_seq)	-- Employee 테이블에서 참조
 );
 
+select * from Attendance;
+
 -- 홈 즐겨찾기 페이지 --
 CREATE table Favorite_page(
 	seq INT auto_increment primary key,		-- 즐겨찾기 고유번호
@@ -228,10 +239,8 @@ CREATE TABLE ConvenienceBookmark (
 -- 포인트 테이블 --
 CREATE TABLE PT(
 	pt_seq INT auto_increment primary key,							-- 포인트 고유번호 
-	customer_seq INT, 												-- customer 테이블에서 참조 
-	total_pt INT not null,											-- 총 포인트
-	variation INT,													-- 포인트 변화
-    foreign key(customer_seq) references Customer(customer_seq)		-- customer 테이블에서 참조 
+	phone_num varchar(255) not null, 								-- customer 테이블에서 참조 
+	total_pt INT default 0 not null									-- 총 포인트
 );
 
 -- 점주 발주 테이블 --

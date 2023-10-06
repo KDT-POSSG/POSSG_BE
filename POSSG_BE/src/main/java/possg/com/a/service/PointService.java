@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.PointDao;
+import possg.com.a.dto.PointDto;
 import possg.com.a.dto.PointParam;
 
 @Service
@@ -14,8 +15,8 @@ public class PointService {
 	@Autowired
 	PointDao dao;
 	
-	public int newPoint(String phoneNumber) {
-		return dao.newPoint(phoneNumber);
+	public int newPoint(PointDto dto) {
+		return dao.newPoint(dto);
 	};
 	
 	public int checkPoint(String phoneNumber) {
@@ -26,8 +27,8 @@ public class PointService {
 		return dao.addPoint(param);
 	};
 	
-	public int searchPoint(String phoneNumber) {
-		return dao.searchPoint(phoneNumber);
+	public PointDto searchPoint(PointParam param) {
+		return dao.searchPoint(param);
 	};
 	
 	public int usePoint(PointParam param) {

@@ -4,16 +4,20 @@ package possg.com.a.dto;
 public class PointParam {
 	private String phoneNumber;
     private int point;
+    private String pwd;
     
     public PointParam() {
     	
     }
 
-	public PointParam(String phoneNumber, int point) {
+	public PointParam(String phoneNumber, int point, String pwd) {
 		super();
 		this.phoneNumber = phoneNumber;
 		this.point = point;
+		this.pwd = pwd;
 	}
+
+
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -31,10 +35,18 @@ public class PointParam {
 		this.point = point;
 	}
 
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
 	@Override
 	public String toString() {
-		return "PointParam [phoneNumber=" + phoneNumber + ", point=" + point + "]";
+		return "PointParam [phoneNumber=" + phoneNumber + ", point=" + point + ", pwd=" + pwd + "]";
 	}
     
-    
+	
 }
