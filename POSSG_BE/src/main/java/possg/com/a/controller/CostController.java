@@ -47,29 +47,30 @@ public class CostController {
 		System.out.println("CostController addCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
-		
-		int convSeq = claim.get("convSeq", Integer.class);
-		dto.setConvSeq(convSeq);
-		
-		CostParam cost = new CostParam();
-		
-		cost.setConvSeq(convSeq);
-		cost.setCostMonth(dto.getCostMonth());
-		cost.setCostYear(dto.getCostYear());
-		
-		CostDto auth = service.selectCost(cost);
-		
-		if(auth == null) {
-			System.out.println(dto);
-			int count = service.addCost(dto);
-			System.out.println(count);
-			if(count != 0) {
-				return "YES";
-			}	
+		if(dto != null) {		
+			int convSeq = claim.get("convSeq", Integer.class);
+			dto.setConvSeq(convSeq);
+			
+			CostParam cost = new CostParam();
+			
+			cost.setConvSeq(convSeq);
+			cost.setCostMonth(dto.getCostMonth());
+			cost.setCostYear(dto.getCostYear());
+			
+			CostDto auth = service.selectCost(cost);
+			
+			if(auth == null) {
+				System.out.println(dto);
+				int count = service.addCost(dto);
+				System.out.println(count);
+				if(count != 0) {
+					return "YES";
+				}	
+			}
+			if(auth != null) {
+				service.updateCost(dto);
+			}
 		}
-		if(auth != null) {
-			service.updateCost(dto);
-		}			
 		return "NO";
 	}
 	
@@ -78,17 +79,18 @@ public class CostController {
 		System.out.println("CostController updateCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
-		 
-        int convSeq = claim.get("convSeq", Integer.class);	
-		 	 
-		dto.setConvSeq(convSeq);
-
-		System.out.println(dto);
-		
-		int count = service.updateCost(dto);
-		
-		if(count != 0) {
-			return "YES";
+		if(dto !=null) {			
+	        int convSeq = claim.get("convSeq", Integer.class);	
+			 	 
+			dto.setConvSeq(convSeq);
+	
+			System.out.println(dto);
+			
+			int count = service.updateCost(dto);
+			
+			if(count != 0) {
+				return "YES";
+			}
 		}
 		return "NO";		
 	}
