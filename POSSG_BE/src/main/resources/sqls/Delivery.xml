@@ -127,7 +127,7 @@
     p.del_total_price,
     p.del_remark,
     p.del_ref
-	FROM delivery as o
+	FROM Delivery as o
 	inner join Convenience j on o.branch_name = j.branch_name
 	inner join Delivery_list p on o.ref = p.del_ref
 	WHERE j.branch_name = #{branchName}
@@ -171,7 +171,7 @@
 
 
 <select id="getDeliveryStatus" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
-	select conv_location
+	select * 
 	from Convenience
 	where user_id = #{userId}
 </select>
