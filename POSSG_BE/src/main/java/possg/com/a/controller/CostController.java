@@ -49,12 +49,10 @@ public class CostController {
 		
 		Claims claim = tokenParser(tokenHeader);
 		if(dto != null) {		
-			int convSeq = claim.get("convSeq", Integer.class);
-			dto.setConvSeq(convSeq);
-			
+			int convSeq = claim.get("convSeq", Integer.class);		
 			
 			CostDto change = new CostDto();
-			
+			change.setConvSeq(convSeq);
 			change.setElectricityBill(Integer.parseInt(dto.getElectricityBill().replace(",", "")));
 			change.setGasBill(Integer.parseInt(dto.getGasBill().replace(",", "")));
 			change.setRent(Integer.parseInt(dto.getRent().replace(",", "")));
@@ -91,12 +89,10 @@ public class CostController {
 		
 		Claims claim = tokenParser(tokenHeader);
 		if(dto !=null) {			
-	        int convSeq = claim.get("convSeq", Integer.class);	
-			 	 
-			dto.setConvSeq(convSeq);
+	        int convSeq = claim.get("convSeq", Integer.class);				 	 
 			
 			CostDto change = new CostDto();
-			
+			change.setConvSeq(convSeq);
 			change.setElectricityBill(Integer.parseInt(dto.getElectricityBill().replace(",", "")));
 			change.setGasBill(Integer.parseInt(dto.getGasBill().replace(",", "")));
 			change.setRent(Integer.parseInt(dto.getRent().replace(",", "")));
