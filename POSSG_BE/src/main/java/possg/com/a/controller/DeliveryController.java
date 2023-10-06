@@ -431,9 +431,9 @@ public class DeliveryController {
 			
 			String userId = tokenCreate.getuserIdFromToken(accessToken);			
 			
-			service.getDeliveryStatus(userId);
+			ConvenienceDto dto = service.getDeliveryStatus(userId);
 			
-			if(userId == null) {
+			if(dto.getConvLocation() == null) {
 				return "NO";
 			}
 			return "YES";
