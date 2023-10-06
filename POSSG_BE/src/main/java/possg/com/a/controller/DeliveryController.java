@@ -351,7 +351,7 @@ public class DeliveryController {
 	        return "NO";	        	        
 		}
 
-
+		
 		// 배달목록 누르면 detail 페이지 상세보기
 		@GetMapping("allDeliveryList")
 		public List<Map<String, Object>> allDelivery(@RequestParam String ref, @RequestHeader("accessToken") String accessToken) {
@@ -413,7 +413,7 @@ public class DeliveryController {
 		
 		// 장바구니 삭제
 		@PostMapping("deleteDelivery")
-		public String deleteDelivery(DeliveryDto dto, @RequestHeader("accessToken") String accessToken) {
+		public String deleteDelivery(@RequestBody DeliveryDto dto, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			int count = service.deleteDelivery(dto);
