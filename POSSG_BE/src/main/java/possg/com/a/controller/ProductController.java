@@ -474,13 +474,13 @@ public class ProductController {
 	// 발주 대기 상품 삭제
 	// input: String callRef, String productName, int convSeq
 	// 상품 삭제 시 주문 목록 업데이트 기능 추가
-	@PostMapping("deleteCallProduct")
-	public String deleteCallProduct(@RequestBody CallProductConvDto convDto) {
+	@PostMapping("deleteCallProductConv")
+	public String deleteCallProductConv(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
 		
 		for(String name : convDto.getNameList()) {
 			convDto.setProductName(name);
-			int count = service.deleteCallProduct(convDto);
+			int count = service.deleteCallProductConv(convDto);
 			if(count == 0) {
 				return "NO";
 			}
@@ -661,27 +661,48 @@ public class ProductController {
 	}
 	
 	// 점주 발주 상품 수령 완료
-	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
-	// input: int callReq, int convSeq
-	@PostMapping("deleteConvOrderList")
-	public String deleteConvOrderList(@RequestBody CallProductConvOrderListDto orderConv) {
-		System.out.println("ProductController deleteConvOrderList() " + new Date());
-		System.out.println(orderConv.getCallRef());
-		//callRef="202309051811";
-		int count = service.deleteCallRefProductConv(orderConv);
-		System.out.println("ProductController deleteConvOrderList() count: " + count);
+	// input: int callRef, int convSeq
+	@PostMapping("statusUpdateConvOrderAndProduct")
+	public String statusUpdateConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController statusUpdateConvOrderAndProduct() " + new Date());
+		System.out.println(orderDto.getCallRef());
+
+		int count = service.statusUpdateConvOrderAndProduct(orderDto);
+		System.out.println("orderCount: " + count);
 		if (count > 0) {
-			
-			int orderCount = service.deleteConvOrderList(orderConv);
-			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
-			if (orderCount > 0) {
-		        return "YES";
-		    }
-	    }
+			return "YES";
+		}
 		return "NO";
 	}
 	
+	// 배송 완료 후 발주 기록 처리
+	// input: String callRef, int convSeq
+	@PostMapping("completeConvOrderAndProduct")
+	public String completeConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController completeConvOrderAndProduct() " + new Date());
+		System.out.println(orderDto.getCallRef());
+
+		int count = service.completeConvOrderAndProduct(orderDto);
+		System.out.println("orderCount: " + count);
+		if (count > 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 	
+	// 발주 목록 삭제
+	// input: String callRef, int convSeq
+	@PostMapping("deleteConvOrderList")
+	public String deleteConvOrderList(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController deleteConvOrderList() " + new Date());
+		
+		int count = service.cancelConvOrderList(orderDto);
+		System.out.println("count: " + count);
+		if (count > 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 	/* 편의점 */
 	// 점포명으로 편의점 검색
 	@PostMapping("getConvenienceInfo")

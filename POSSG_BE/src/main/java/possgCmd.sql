@@ -85,4 +85,21 @@ ALTER TABLE Employee ADD conv_seq int AFTER employee_seq;
 INSERT INTO Employee (emp_name, conv_seq, birth_date, gender, phone_number, hire_date, salary) 
 VALUES ('temp',1 ,'dlfwlao', '10101010', '일지매', '센텀시티 이마트', '01011112222', '20230805', 1);
 
+
+select * from Product;
+select * from Product where product_seq = 1542;
+select * from Call_product_conv;
+select * from Call_product_conv_order_list;
+
+DELETE FROM Call_product_conv WHERE call_seq >= 1 ;
+DELETE FROM Call_product_conv_order_list WHERE seq >= 1;
+INSERT INTO Call_product_conv_order_list (seq, conv_seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, 0, '-1', '2000-01-01', -1, 0, 0, 'temp');
+INSERT INTO Call_product_conv_order_list (seq, conv_seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, 0, '0', '2000-01-01', -1, 0, 0, 'temp');
+
+ALTER TABLE Call_product_conv
+ADD price_origin int AFTER price;
 */
