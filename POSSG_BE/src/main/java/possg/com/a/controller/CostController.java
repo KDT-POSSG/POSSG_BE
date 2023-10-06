@@ -59,6 +59,8 @@ public class CostController {
 			change.setSecurityMaintenanceFee(Integer.parseInt(dto.getSecurityMaintenanceFee().replace(",", "")));
 			change.setTotalLaborCost(Integer.parseInt(dto.getTotalLaborCost().replace(",", "")));
 			change.setWaterBill(Integer.parseInt(dto.getWaterBill().replace(",", "")));
+			change.setCostMonth(dto.getCostMonth());
+			change.setCostYear(dto.getCostYear());
 		
 			CostParam cost = new CostParam();
 			
@@ -99,6 +101,8 @@ public class CostController {
 			change.setSecurityMaintenanceFee(Integer.parseInt(dto.getSecurityMaintenanceFee().replace(",", "")));
 			change.setTotalLaborCost(Integer.parseInt(dto.getTotalLaborCost().replace(",", "")));
 			change.setWaterBill(Integer.parseInt(dto.getWaterBill().replace(",", "")));
+			change.setCostMonth(dto.getCostMonth());
+			change.setCostYear(dto.getCostYear());
 				
 			int count = service.updateCost(change);
 			
