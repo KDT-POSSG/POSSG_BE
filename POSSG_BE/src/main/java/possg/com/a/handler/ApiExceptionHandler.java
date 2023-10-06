@@ -18,6 +18,8 @@ public class ApiExceptionHandler implements AccessDeniedHandler {
 	@Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
+		
+		System.out.println("exception handler 발동!!!!!!!!!!!!!! 로그인으로 넘어가라~~~~~~");
         response.sendRedirect(request.getContextPath() + "/NoSecurityZoneController/login");
     }
 
