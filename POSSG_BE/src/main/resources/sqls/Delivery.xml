@@ -139,7 +139,7 @@
 
 <!-- 배송진행 상태 업데이트 -->
 <update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
-	update Delivery as o, delivery_list as p
+	update Delivery as o, Delivery_list as p
 	 set o.order_status = o.order_status + 1,
     p.del_status = p.del_status + 1
 	where o.ref = #{ref} and p.del_ref = #{ref}
@@ -149,7 +149,7 @@
 		resultType="java.lang.Integer">
 		select count(*) 
 		from  Delivery as o
-		inner join delivery_list  p on o.ref = p.del_ref
+		inner join Delivery_list  p on o.ref = p.del_ref
 		
 		<if test="orderStatus == 1 ">
 			where o.branch_name = #{branchName} and o.order_status = 1
