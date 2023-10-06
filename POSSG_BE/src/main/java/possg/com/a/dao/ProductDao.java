@@ -42,25 +42,26 @@ public interface ProductDao {
 	
 	List<CallProductConvDto> getAllCallProductConvList(CallProductConvParam param);
 	List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto);
-	int getCallProductTotalPrice(CallProductConvDto convDto);
-	int getCallProductTotalPriceOrigin(CallProductConvDto convDto);
-	int getCallProductTotalAmount(CallProductConvDto convDto);
+	CallProductConvParam getCallProductTotalInfo(CallProductConvDto convDto);
 	CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto);
 	List<CallProductConvDto> findCallProductConvName(CallProductConvDto convDto);
 	int getCallProductTotalNumber(CallProductConvDto convDto);
 	int updateRefCallProductConv(CallProductConvOrderListDto orderDto);
 	int cancelCallRefProductConv(CallProductConvOrderListDto orderDto);
-	int deleteCallRefProductConv(CallProductConvOrderListDto orderDto);
-	int deleteCallProduct(CallProductConvDto callDto);
+	int statusUpdateCallRefProductConv(CallProductConvOrderListDto orderDto);
+	int deleteCallProductConv(CallProductConvDto convDto);
+	int completeCallRefProductConv(CallProductConvDto convDto);
 	
 	List<CallProductConvOrderListDto> getAllConvOrderList(CallProductConvParam param);
 	CallProductConvOrderListDto getRefConvOrderList(CallProductConvDto convDto);
 	int addConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateConvOrderList(CallProductConvOrderListDto orderDto);
 	int cancelConvOrderList(CallProductConvOrderListDto orderDto);
-	int deleteConvOrderList(CallProductConvOrderListDto orderDto);
+	int statusUpdateConvOrderList(CallProductConvOrderListDto orderDto);
 	int updateCallToOrderList(CallProductConvOrderListDto orderDto);
 
+	int statusUpdateConvOrderAndProduct(CallProductConvOrderListDto orderDto);
+	int completeConvOrderAndProduct(CallProductConvOrderListDto orderDto);
 	int updateProductOriginPrice(ProductDto dto);
 	
 	int getOrderListTotalNumber(CallProductConvParam param);
