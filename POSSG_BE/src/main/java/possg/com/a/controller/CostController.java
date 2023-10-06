@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import possg.com.a.dto.CostChangeTypeDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
 import possg.com.a.service.CostService;
@@ -43,7 +44,7 @@ public class CostController {
 	}
 	
 	@PostMapping("addCost")
-	public String addCost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String addCost(@RequestBody CostChangeTypeDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController addCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
@@ -51,6 +52,16 @@ public class CostController {
 			int convSeq = claim.get("convSeq", Integer.class);
 			dto.setConvSeq(convSeq);
 			
+			
+			CostDto change = new CostDto();
+			
+			change.setElectricityBill(Integer.parseInt(dto.getElectricityBill().replace(",", "")));
+			change.setGasBill(Integer.parseInt(dto.getGasBill().replace(",", "")));
+			change.setRent(Integer.parseInt(dto.getRent().replace(",", "")));
+			change.setSecurityMaintenanceFee(Integer.parseInt(dto.getSecurityMaintenanceFee().replace(",", "")));
+			change.setTotalLaborCost(Integer.parseInt(dto.getTotalLaborCost().replace(",", "")));
+			change.setWaterBill(Integer.parseInt(dto.getWaterBill().replace(",", "")));
+		
 			CostParam cost = new CostParam();
 			
 			cost.setConvSeq(convSeq);
@@ -61,21 +72,21 @@ public class CostController {
 			
 			if(auth == null) {
 				System.out.println(dto);
-				int count = service.addCost(dto);
+				int count = service.addCost(change);
 				System.out.println(count);
 				if(count != 0) {
 					return "YES";
 				}	
 			}
 			if(auth != null) {
-				service.updateCost(dto);
+				service.updateCost(change);
 			}
 		}
 		return "NO";
 	}
 	
 	@PostMapping("updateCost")
-	public String updateCost(@RequestBody CostDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String updateCost(@RequestBody CostChangeTypeDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController updateCost " + new Date());
 		
 		Claims claim = tokenParser(tokenHeader);
@@ -83,10 +94,17 @@ public class CostController {
 	        int convSeq = claim.get("convSeq", Integer.class);	
 			 	 
 			dto.setConvSeq(convSeq);
-	
-			System.out.println(dto);
 			
-			int count = service.updateCost(dto);
+			CostDto change = new CostDto();
+			
+			change.setElectricityBill(Integer.parseInt(dto.getElectricityBill().replace(",", "")));
+			change.setGasBill(Integer.parseInt(dto.getGasBill().replace(",", "")));
+			change.setRent(Integer.parseInt(dto.getRent().replace(",", "")));
+			change.setSecurityMaintenanceFee(Integer.parseInt(dto.getSecurityMaintenanceFee().replace(",", "")));
+			change.setTotalLaborCost(Integer.parseInt(dto.getTotalLaborCost().replace(",", "")));
+			change.setWaterBill(Integer.parseInt(dto.getWaterBill().replace(",", "")));
+				
+			int count = service.updateCost(change);
 			
 			if(count != 0) {
 				return "YES";

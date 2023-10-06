@@ -1,22 +1,22 @@
 package possg.com.a.dto;
 
-public class CostDto {
-    private int costSeq;
-    private int rent;
-    private int waterBill;
-    private int electricityBill;
-    private int gasBill;
-    private int totalLaborCost;
-    private int securityMaintenanceFee;
+public class CostChangeTypeDto {
+ 	private int costSeq;
+    private String rent;
+    private String waterBill;
+    private String electricityBill;
+    private String gasBill;
+    private String totalLaborCost;
+    private String securityMaintenanceFee;
     private int convSeq;
     private int costYear;
     private int costMonth;
+    
+    public CostChangeTypeDto() {
+	}
 
-    // 생성자
-    public CostDto() {}
-
-	public CostDto(int costSeq, int rent, int waterBill, int electricityBill, int gasBill, int totalLaborCost,
-			int securityMaintenanceFee, int convSeq, int costYear, int costMonth) {
+	public CostChangeTypeDto(int costSeq, String rent, String waterBill, String electricityBill, String gasBill,
+			String totalLaborCost, String securityMaintenanceFee, int convSeq, int costYear, int costMonth) {
 		super();
 		this.costSeq = costSeq;
 		this.rent = rent;
@@ -38,51 +38,51 @@ public class CostDto {
 		this.costSeq = costSeq;
 	}
 
-	public int getRent() {
+	public String getRent() {
 		return rent;
 	}
 
-	public void setRent(int rent) {
+	public void setRent(String rent) {
 		this.rent = rent;
 	}
 
-	public int getWaterBill() {
+	public String getWaterBill() {
 		return waterBill;
 	}
 
-	public void setWaterBill(int waterBill) {
+	public void setWaterBill(String waterBill) {
 		this.waterBill = waterBill;
 	}
 
-	public int getElectricityBill() {
+	public String getElectricityBill() {
 		return electricityBill;
 	}
 
-	public void setElectricityBill(int electricityBill) {
+	public void setElectricityBill(String electricityBill) {
 		this.electricityBill = electricityBill;
 	}
 
-	public int getGasBill() {
+	public String getGasBill() {
 		return gasBill;
 	}
 
-	public void setGasBill(int gasBill) {
+	public void setGasBill(String gasBill) {
 		this.gasBill = gasBill;
 	}
 
-	public int getTotalLaborCost() {
+	public String getTotalLaborCost() {
 		return totalLaborCost;
 	}
 
-	public void setTotalLaborCost(int totalLaborCost) {
+	public void setTotalLaborCost(String totalLaborCost) {
 		this.totalLaborCost = totalLaborCost;
 	}
 
-	public int getSecurityMaintenanceFee() {
+	public String getSecurityMaintenanceFee() {
 		return securityMaintenanceFee;
 	}
 
-	public void setSecurityMaintenanceFee(int securityMaintenanceFee) {
+	public void setSecurityMaintenanceFee(String securityMaintenanceFee) {
 		this.securityMaintenanceFee = securityMaintenanceFee;
 	}
 
@@ -112,9 +112,10 @@ public class CostDto {
 
 	@Override
 	public String toString() {
-		return "CostDto [costSeq=" + costSeq + ", rent=" + rent + ", waterBill=" + waterBill + ", electricityBill="
-				+ electricityBill + ", gasBill=" + gasBill + ", totalLaborCost=" + totalLaborCost
+		return "CostChangeTypeDto [costSeq=" + costSeq + ", rent=" + rent + ", waterBill=" + waterBill
+				+ ", electricityBill=" + electricityBill + ", gasBill=" + gasBill + ", totalLaborCost=" + totalLaborCost
 				+ ", securityMaintenanceFee=" + securityMaintenanceFee + ", convSeq=" + convSeq + ", costYear="
 				+ costYear + ", costMonth=" + costMonth + "]";
 	}
+    
 }
