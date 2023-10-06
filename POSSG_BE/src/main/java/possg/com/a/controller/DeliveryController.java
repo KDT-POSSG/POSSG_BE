@@ -340,7 +340,7 @@ public class DeliveryController {
 		}
 		
 		@PostMapping("statusUpdate")
-		public String statusUpdate(DeliveryJoinDto dto, @RequestHeader("accessToken") String accessToken) {
+		public String statusUpdate(@RequestBody DeliveryJoinDto dto, @RequestHeader("accessToken") String accessToken) {
 			 System.out.println("DeliveryController statusUpdate " + new Date());			
 						 
 	        int statusUpdate = service.statusUpdate(dto);
@@ -413,7 +413,7 @@ public class DeliveryController {
 		
 		// 장바구니 삭제
 		@PostMapping("deleteDelivery")
-		public String deleteDelivery(DeliveryDto dto) {
+		public String deleteDelivery(DeliveryDto dto, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			int count = service.deleteDelivery(dto);
@@ -430,6 +430,7 @@ public class DeliveryController {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			String userId = tokenCreate.getuserIdFromToken(accessToken);			
+			System.out.println(userId);
 			
 			ConvenienceDto dto = service.getDeliveryStatus(userId);
 			

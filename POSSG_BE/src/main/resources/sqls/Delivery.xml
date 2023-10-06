@@ -171,7 +171,7 @@
 
 
 <select id="getDeliveryStatus" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
-	select conv_location
+	select * 
 	from Convenience
 	where user_id = #{userId}
 </select>
