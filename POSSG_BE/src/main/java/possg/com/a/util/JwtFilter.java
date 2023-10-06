@@ -20,7 +20,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-/*
+
 public class JwtFilter extends OncePerRequestFilter {
 	
 	private final TokenCreate tokenCreate;
@@ -46,6 +46,8 @@ public class JwtFilter extends OncePerRequestFilter {
 		boolean isError = false;	
 		
 		final String authorization = request.getHeader("accessToken");
+		
+		
 		logger.info("Authorization" + authorization);
 		 
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
@@ -95,4 +97,3 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 	
 }
-*/

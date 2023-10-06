@@ -15,6 +15,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,11 +56,14 @@ public class DeliveryController {
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
-	public String callAddDelivery(DeliveryDto dto, @RequestHeader("USTK") String tokenHeader) {
+	public String callAddDelivery(@RequestBody DeliveryDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
 			return null;
+		}
+		if(dto.getLocation() != null) {
+			return "NO";
 		}
 		
 		int customerSeq = tokenParser(tokenHeader);
@@ -115,7 +119,7 @@ public class DeliveryController {
 	
 	// 주문전 배달 장바구니 목록 보여주기
 	@GetMapping("selectDelivery")
-	public List<DeliveryDto>selectDelivery(@RequestHeader("USTK") String tokenHeader) {
+	public List<DeliveryDto>selectDelivery(@RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController selectDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -138,7 +142,7 @@ public class DeliveryController {
 	// 
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
-	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("USTK") String tokenHeader) {
+	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -191,12 +195,12 @@ public class DeliveryController {
 	
 	// 점주 배달 추가
 		@PostMapping("convAddDelivery")
-		public String convAddDelivery(ConvenienceDto dto, @RequestHeader("accessToken") String accessToken) {
+		public String convAddDelivery(@RequestBody ConvenienceDto dto, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController convAddDelivery " + new Date());
 			
 			//토큰 파싱
 					accessToken = accessToken.replace("Bearer ", "");
-					 
+					 System.out.println(dto);
 					 JwtParser jwtParser = Jwts.parserBuilder()
 				    		    .setSigningKey(tokenCreate.securityKey)
 				    		    .build();
@@ -206,7 +210,7 @@ public class DeliveryController {
 				        int convSeq = refreshClaims.get("convSeq", Integer.class);		 
 					 	 
 					 dto.setConvSeq(convSeq);
-					 
+
 					 int count = service.convAddDelivery(dto);
 			
 			if(count !=  0) {
@@ -421,15 +425,15 @@ public class DeliveryController {
 		}
 		
 		// 배달점포인지 체크
-		@PostMapping("deliveryCheck")
+		@GetMapping("deliveryCheck")
 		public String deliveryCheck(@RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			String userId = tokenCreate.getuserIdFromToken(accessToken);			
 			
-			service.getDeliveryStatus(userId);
+			ConvenienceDto dto = service.getDeliveryStatus(userId);
 			
-			if(userId == null) {
+			if(dto.getConvLocation() == null) {
 				return "NO";
 			}
 			return "YES";
