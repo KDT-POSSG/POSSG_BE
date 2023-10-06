@@ -660,7 +660,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 수령 완료
+	// 점주 발주 상품 배송 상태 업데이트
 	// input: int callRef, int convSeq
 	@PostMapping("statusUpdateConvOrderAndProduct")
 	public String statusUpdateConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {
