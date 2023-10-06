@@ -31,7 +31,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpSession;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
-
+import possg.com.a.handler.ApiExceptionHandler;
 import possg.com.a.handler.CustomLogoutSuccessHandler;
 import possg.com.a.service.ConvenienceService;
 
@@ -62,18 +62,20 @@ public class SecurityConfig {
 	//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	//http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
+    	http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
     	
     	http.authorizeHttpRequests(req ->
 			req
-				//.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
-				//.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
-				//.anyRequest().authenticated()
-				.requestMatchers("/**").permitAll()
-		);
+				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
+				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
+				.anyRequest().authenticated()
+				//.requestMatchers("/**").permitAll()
+				)
+		    	.exceptionHandling()
+		        	.accessDeniedHandler(new ApiExceptionHandler());    	
     	http.csrf((csrf) -> csrf.disable());
     	http.cors();
-    	
+    	   	
     	http
     		.logout()
     		.logoutUrl("/logout")
