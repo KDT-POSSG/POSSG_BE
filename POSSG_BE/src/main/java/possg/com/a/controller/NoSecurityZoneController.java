@@ -338,7 +338,7 @@ public class NoSecurityZoneController {
 			}
 		// 고객로그인
 		@PostMapping("customerLogin")
-		public ResponseEntity<?> customerLogin(CustomerDto dto) {
+		public ResponseEntity<?> customerLogin(@RequestBody CustomerDto dto) {
 			System.out.println("CustomerController customerLogin " + new Date());
 			CustomerDto customer = cusService.customerLogin(dto); 
 			System.out.println(customer);
