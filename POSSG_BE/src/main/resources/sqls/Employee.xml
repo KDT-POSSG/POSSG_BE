@@ -33,6 +33,23 @@
 	    WHERE emp_name LIKE CONCAT('%', #{empName}, '%') and c.conv_seq = #{convSeq}
 	</select>
 	
+	<!-- 직원 번호로 조회 -->
+	<select id="findNumEmployee" parameterType="Integer" resultType="possg.com.a.dto.EmployeeParam">
+		SELECT 
+	    	e.employee_seq AS employeeSeq,
+	    	c.branch_name AS branchName,
+	        e.emp_name AS empName,
+	        e.birth_date AS birthDate,
+	        e.gender AS gender,
+	        e.phone_number AS phoneNumber,
+	        e.hire_date AS hireDate,
+	        e.termination_date AS terminationDate,
+	        e.salary AS salary	 
+	    FROM Employee e
+	    JOIN Convenience c ON e.conv_seq = c.conv_seq
+	    WHERE e.employee_seq = #{employeeSeq}
+	</select>
+	
 	 <!-- 모든 직원 조회 -->
     <select id="findallemployee" parameterType="java.lang.Integer" resultType="possg.com.a.dto.EmployeeParam">
         SELECT 
