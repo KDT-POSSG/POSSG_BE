@@ -69,19 +69,18 @@ public class DeliveryController {
 		int customerSeq = tokenParser(tokenHeader);
 		
 		CustomerDto userId = service.selectCustomer(customerSeq);
-		
 		// 갯수에 따라 가격 맞춰서 넣기			
 		ProductDto product = new ProductDto();
 		
 		product.setProductName(dto.getProductName());
+		product.setConvSeq(dto.getConvSeq());
 
 		DeliveryDto delivery = new DeliveryDto();
 		delivery.setUserId(customerSeq);
 		
 		List<DeliveryDto> deli = service.selectDelivery(delivery);
-		
 		List<ProductDto> prodto = productService.findProductName(product);
-		
+		System.out.println(prodto);
 		dto.setPrice(dto.getQuantity() * prodto.get(0).getPrice());
 		dto.setUserId(customerSeq);
 		dto.setLocation(userId.getLocation());
