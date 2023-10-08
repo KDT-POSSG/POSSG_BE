@@ -125,8 +125,10 @@ public class PaymentController {
 		System.out.println("PaymentController paymentOneList " + new Date());
 		
 		PaymentParam param = service.paymentOneList(receiptId);
+		System.out.println(param.toString());
 		
 		List<ItemsDto> list = service2.searchItems(receiptId);
+		System.out.println(list.toString());
 		
 		// 결제정보, 상세목록정보
 		Map<String, Object> map = new HashMap<String, Object>();

@@ -11,6 +11,7 @@ public class PaymentParam {
 	private String method;
 	private int price;
 	private String purchasedAt;
+	private String receiptUrl;
 	private String cardCompany;
 	private String cardNum;
 	private String del;
@@ -19,9 +20,10 @@ public class PaymentParam {
 		
 	}
 
+
 	public PaymentParam(String customerSeq, String customerName, String branchName, String representativeName,
-			String receiptId, String pg, String method, int price, String purchasedAt, String cardCompany,
-			String cardNum, String del) {
+			String receiptId, String pg, String method, int price, String purchasedAt, String receiptUrl,
+			String cardCompany, String cardNum, String del) {
 		super();
 		this.customerSeq = customerSeq;
 		this.customerName = customerName;
@@ -32,10 +34,13 @@ public class PaymentParam {
 		this.method = method;
 		this.price = price;
 		this.purchasedAt = purchasedAt;
+		this.receiptUrl = receiptUrl;
 		this.cardCompany = cardCompany;
 		this.cardNum = cardNum;
 		this.del = del;
 	}
+
+
 
 	public String getCustomerSeq() {
 		return customerSeq;
@@ -132,14 +137,26 @@ public class PaymentParam {
 	public void setDel(String del) {
 		this.del = del;
 	}
+	
+
+	public String getReceiptUrl() {
+		return receiptUrl;
+	}
+
+
+	public void setReceiptUrl(String receiptUrl) {
+		this.receiptUrl = receiptUrl;
+	}
+
 
 	@Override
 	public String toString() {
 		return "PaymentParam [customerSeq=" + customerSeq + ", customerName=" + customerName + ", branchName="
 				+ branchName + ", representativeName=" + representativeName + ", receiptId=" + receiptId + ", pg=" + pg
-				+ ", method=" + method + ", price=" + price + ", purchasedAt=" + purchasedAt + ", cardCompany="
-				+ cardCompany + ", cardNum=" + cardNum + ", del=" + del + "]";
+				+ ", method=" + method + ", price=" + price + ", purchasedAt=" + purchasedAt + ", receiptUrl="
+				+ receiptUrl + ", cardCompany=" + cardCompany + ", cardNum=" + cardNum + ", del=" + del + "]";
 	}
-	
+
+
 	
 }
