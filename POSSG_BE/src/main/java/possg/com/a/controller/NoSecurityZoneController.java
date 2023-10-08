@@ -311,7 +311,7 @@ public class NoSecurityZoneController {
 
 			// 웹에서 고객가입#
 			@PostMapping("addWebCustomer")
-			public String addWebCustomer(CustomerDto dto) {
+			public String addWebCustomer(@RequestBody CustomerDto dto) {
 				System.out.println("CustomerController addWebCustomer " + new Date());
 					
 				if(dto.getPwd() == null) {
