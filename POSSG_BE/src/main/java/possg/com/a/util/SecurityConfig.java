@@ -65,7 +65,7 @@ public class SecurityConfig {
     	http.addFilterBefore(new JwtFilter(tokenCreate), UsernamePasswordAuthenticationFilter.class);
     	
     	http.authorizeHttpRequests(req ->
-			req
+			req				
 				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck").permitAll()
 				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
 				.anyRequest().authenticated()
