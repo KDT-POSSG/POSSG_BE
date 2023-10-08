@@ -140,7 +140,7 @@ public class DeliveryController {
 	// 
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
-	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String insertDeliveryList(@RequestBody DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
