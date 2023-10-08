@@ -36,7 +36,8 @@
     		p.purchased_at AS purchasedAt,
     		p.card_company AS cardCompany,
     		p.card_num AS cardNum,
-    		p.del AS del
+    		p.del AS del,
+    		p.receipt_url AS receiptUrl
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
