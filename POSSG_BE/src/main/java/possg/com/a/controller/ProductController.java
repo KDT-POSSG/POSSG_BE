@@ -43,9 +43,9 @@ import possg.com.a.dto.ProductParam;
 import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
 import possg.com.a.service.TranslationService;
+import possg.com.a.util.NaverCloudUtil;
+import possg.com.a.util.ProductUtil;
 import possg.com.a.util.SecurityConfig;
-import util.NaverCloudUtil;
-import util.ProductUtil;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,6 +78,12 @@ public class ProductController {
 		System.out.println("ProductParam= " + param);
 		
 		List<ProductDto> list = service.productList(param);
+		if (list.isEmpty()) {
+			map.put("ProductList", new ProductDto[0]);
+			map.put("pageProduct", 0);
+			map.put("cnt", 0); // react 중 pagination 사용시 활용
+			return map;
+		}
 		System.out.println("ProductList= " + list.get(0));
 		
 		int cnt = 0;
@@ -91,6 +97,7 @@ public class ProductController {
 				cnt ++;
 			}
 		}
+		
 		System.out.println("ProductList= " + list);
 		// 상품의 총 수
 		int count = service.getProductTotalNumber(param);
@@ -263,21 +270,15 @@ public class ProductController {
 		}
 
 		System.out.println("발주 대기 목록:" + dtoList.toString());
-
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(tempDto);
-		// 상품 원가 총 가격
-		int priceOrigin = service.getCallProductTotalPriceOrigin(tempDto);
-		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(tempDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(tempDto);
+		
+		// 상품의 총 수량, 종류 수량, 판매가, 원가
+		CallProductConvParam totalParam = service.getCallProductTotalInfo(tempDto);
 		
 		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("priceOrigin", priceOrigin); // 원가 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
+		map.put("price", totalParam.getTotalPrice()); // 총 가격
+		map.put("priceOrigin", totalParam.getTotalPriceOrigin()); // 원가 총 가격
+		map.put("amount", totalParam.getTotalAmount()); // 총 수량
+		map.put("product", totalParam.getTotalProduct()); // 총 종류 수량
 		return map;
 	}
 	
@@ -297,21 +298,15 @@ public class ProductController {
 			map.put("product", 0); // 총 종류 수량
 			return map;
 		}
-
-		// 상품의 총 가격
-		int price = service.getCallProductTotalPrice(convDto);
-		// 상품 원가 총 가격
-		int priceOrigin = service.getCallProductTotalPriceOrigin(convDto);
-		// 상품의 총 수
-		int amount = service.getCallProductTotalAmount(convDto);
-		// 상품 종류의 총 수
-		int product = service.getCallProductTotalNumber(convDto);
-
+		
+		// 상품의 총 수량, 종류 수량, 판매가, 원가
+		CallProductConvParam totalParam = service.getCallProductTotalInfo(convDto);
+		
 		map.put("convList", dtoList);
-		map.put("price", price); // 총 가격
-		map.put("priceOrigin", priceOrigin); // 원가 총 가격
-		map.put("amount", amount); // 총 수량
-		map.put("product", product); // 총 종류 수량
+		map.put("price", totalParam.getTotalPrice()); // 총 가격
+		map.put("priceOrigin", totalParam.getTotalPriceOrigin()); // 원가 총 가격
+		map.put("amount", totalParam.getTotalAmount()); // 총 수량
+		map.put("product", totalParam.getTotalProduct()); // 총 종류 수량
 		return map;
 	}
 
@@ -360,10 +355,10 @@ public class ProductController {
 		// 재고가 충분한 경우
 		return "NO";
 	}
-		
+	// stock 반영 코드 만들어야함
 	// 점주 발주 대기 리스트에 추가
 	// input
-	// ProductDto: int convSeq, String productName, int price, int priceOrigin, String imgUrl, int stockLimit
+	// ProductDto: int convSeq, String productName, int price, int priceOrigin, String imgUrl
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(@RequestBody ProductDto productDto) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
@@ -414,9 +409,9 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	
+	// NO
 	// 발주 대기 상품 리스트 업데이트
-	// input: convSeq, productName, amount, priceDiscount, callRef
+	// input: convSeq, productName, amount, price, priceOrigin, callRef
 	@PostMapping("updateCallProductConv")
 	public String updateCallProductConv(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController updateCallProductConv() " + new Date());
@@ -437,7 +432,7 @@ public class ProductController {
 		}
 		CallProductConvDto crntConvDto = nameTemp.get(0);
 		
-		if (crntConvDto.getAmount() < convDto.getAmount()) {
+		if (convDto.getAmount()<1) {
 			responseMessage = "구매 수량을 한 개 이상이 되도록 다시 설정해주세요.";
 			System.out.println(responseMessage);
 			return responseMessage;
@@ -478,47 +473,54 @@ public class ProductController {
 					return responseMessage="YES";
 				}
 			}
+			return responseMessage="YES";
 		}
 		return responseMessage="NO";
 	}
 	
+	//NO
 	// 발주 대기 상품 삭제
 	// input: String callRef, String productName, int convSeq
 	// 상품 삭제 시 주문 목록 업데이트 기능 추가
-	@PostMapping("deleteCallProduct")
-	public String deleteCallProduct(@RequestBody CallProductConvDto convDto) {
+	@PostMapping("deleteCallProductConv")
+	public String deleteCallProductConv(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
-		
+		if (convDto.getNameList().isEmpty()) {
+			System.out.println("NameList가 없음" + convDto.toString());
+			return "NO";
+		}
 		for(String name : convDto.getNameList()) {
 			convDto.setProductName(name);
-			int count = service.deleteCallProduct(convDto);
+			int count = service.deleteCallProductConv(convDto);
 			if(count == 0) {
 				return "NO";
 			}
 		}
-		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
-	    if (callList.isEmpty()) {
-	    	System.out.println("동일한 ref 상품이 없음");
-	    	return "NO";
-	    }
-		// 비고(remark)이 null인 경우 빈 문자열로 설정
-	    if (convDto.getRemark() == null) {
-	    	convDto.setRemark("");
-	    }
-
-	    // 발주 상품 수 및 총 가격 계산
-	    int totalProduct = callList.size();
-	    int totalPrice = 0;
-	    for (CallProductConvDto item : callList) {
-	        totalPrice += item.getPrice()*item.getAmount();
-	    }
-	    
-	    // 동일한 ref의 call_product_conv_order_list
-	    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
-    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
-		int countOrder = service.updateCallToOrderList(tempDto);
-		if(countOrder <= 0) {
-			return "NO";
+		if (!convDto.getCallRef().equals("0")) {
+			List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
+		    if (callList.isEmpty()) {
+		    	System.out.println("동일한 ref 상품이 없음");
+		    	return "YES";
+		    }
+			// 비고(remark)이 null인 경우 빈 문자열로 설정
+		    if (convDto.getRemark() == null) {
+		    	convDto.setRemark("");
+		    }
+	
+		    // 발주 상품 수 및 총 가격 계산
+		    int totalProduct = callList.size();
+		    int totalPrice = 0;
+		    for (CallProductConvDto item : callList) {
+		        totalPrice += item.getPrice()*item.getAmount();
+		    }
+		    
+		    // 동일한 ref의 call_product_conv_order_list
+		    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
+	    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
+			int countOrder = service.updateCallToOrderList(tempDto);
+			if(countOrder <= 0) {
+				return "NO";
+			}
 		}
 		return "YES";
 	}
@@ -671,28 +673,49 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 수령 완료
-	// 입력 call_ref에 해당하는 발주 상품 목록 및 발주 주문 목록의 call_status = -1 할당
-	// input: int callReq, int convSeq
-	@PostMapping("deleteConvOrderList")
-	public String deleteConvOrderList(@RequestBody CallProductConvOrderListDto orderConv) {
-		System.out.println("ProductController deleteConvOrderList() " + new Date());
-		System.out.println(orderConv.getCallRef());
-		//callRef="202309051811";
-		int count = service.deleteCallRefProductConv(orderConv);
-		System.out.println("ProductController deleteConvOrderList() count: " + count);
+	// 점주 발주 상품 배송 상태 업데이트
+	// input: int callRef, int convSeq
+	@PostMapping("statusUpdateConvOrderAndProduct")
+	public String statusUpdateConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController statusUpdateConvOrderAndProduct() " + new Date());
+		System.out.println(orderDto.getCallRef());
+
+		int count = service.statusUpdateConvOrderAndProduct(orderDto);
+		System.out.println("orderCount: " + count);
 		if (count > 0) {
-			
-			int orderCount = service.deleteConvOrderList(orderConv);
-			System.out.println("ProductController deleteConvOrderList() orderCount: " + count);
-			if (orderCount > 0) {
-		        return "YES";
-		    }
-	    }
+			return "YES";
+		}
 		return "NO";
 	}
 	
+	// 배송 완료 후 발주 기록 처리
+	// input: String callRef, int convSeq
+	@PostMapping("completeConvOrderAndProduct")
+	public String completeConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController completeConvOrderAndProduct() " + new Date());
+		System.out.println(orderDto.getCallRef());
+
+		int count = service.completeConvOrderAndProduct(orderDto);
+		System.out.println("orderCount: " + count);
+		if (count > 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 	
+	// 발주 목록 삭제
+	// input: String callRef, int convSeq
+	@PostMapping("deleteConvOrderList")
+	public String deleteConvOrderList(@RequestBody CallProductConvOrderListDto orderDto) {
+		System.out.println("ProductController deleteConvOrderList() " + new Date());
+		
+		int count = service.cancelConvOrderList(orderDto);
+		System.out.println("count: " + count);
+		if (count > 0) {
+			return "YES";
+		}
+		return "NO";
+	}
 	/* 편의점 */
 	// 점포명으로 편의점 검색
 	@PostMapping("getConvenienceInfo")
@@ -713,52 +736,6 @@ public class ProductController {
 		return dtoList;
 	}
 	
-
-	// 음성인식 wav -> String
-	@PostMapping("/fileUpload")
-	public String fileUpload(@RequestParam("uploadFile")MultipartFile uploadFile,
-							HttpServletRequest request) throws IOException {
-		System.out.println("NaverCloudController fileUpload" + new Date());
-		
-		// tomcat
-		String uploadPath = request.getServletContext().getRealPath("/upload");
-		
-		// 파일명 취득
-		String filename = uploadFile.getOriginalFilename();
-		String filepath = uploadPath + File.separator + filename;
-		
-		System.out.println(filepath);
-		
-		//fileupload
-		try {
-		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filepath)));
-		os.write(uploadFile.getBytes());
-		os.close();
-		} catch (Exception e) {
-			return "file load fail";
-		}
-		
-		// Naver Cloud
-		String response = NaverCloudUtil.processSTT(filepath);
-		
-		return response;
-	}
-
-	@PostMapping("/tts")
-	public String tts(@RequestParam("message") String message,
-			@RequestParam("speaker") String speaker,
-	                  HttpServletRequest request) {
-	    System.out.println("NaverCloudController tts " + new Date());
-	    System.out.println(message);
-	    // tomcat
-	    String uploadPath = request.getServletContext().getRealPath("/upload");
-	    Map<String,String> msg = NaverCloudUtil.processTTS(message, uploadPath, speaker);
-
-	    // mp3 파일의 URL 생성
-	    String audioURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/" + msg.get("tempname") + ".mp3";
-	    System.out.println(audioURL);
-	    return audioURL;
-	}
 		
 	// 상품 원가 할당
 	@GetMapping("updateProductOriginPrice")
@@ -780,29 +757,6 @@ public class ProductController {
 
 		return "YES";
 	}
-	
-
-	
-	@GetMapping("/events")
-    public SseEmitter handle() {
-        SseEmitter emitter = new SseEmitter();
-        
-        // 별도의 스레드에서 이벤트를 보내는 로직을 구현
-        new Thread(() -> {
-            try {
-                // 1초마다 만료되는 제품 정보를 보냅니다.
-                for (int i = 0; i < 10; i++) {
-                    emitter.send("제품 정보 " + i);
-                    Thread.sleep(1000);
-                }
-                emitter.complete();
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
-        }).start();
-        
-        return emitter;
-    }
 	
 	// 데모 상품 크롤링
 	

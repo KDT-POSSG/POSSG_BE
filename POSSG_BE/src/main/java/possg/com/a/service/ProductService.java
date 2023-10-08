@@ -83,15 +83,10 @@ public class ProductService {
 	public List<CallProductConvDto> getRefCallProductConvList(CallProductConvDto convDto){
 		return dao.getRefCallProductConvList(convDto);
 	}
-	public int getCallProductTotalPrice(CallProductConvDto convDto) {
-		return dao.getCallProductTotalPrice(convDto);
+	public CallProductConvParam getCallProductTotalInfo(CallProductConvDto convDto) {
+		return dao.getCallProductTotalInfo(convDto);
 	}
-	public int getCallProductTotalPriceOrigin(CallProductConvDto convDto) {
-		return dao.getCallProductTotalPriceOrigin(convDto);
-	}
-	public int getCallProductTotalAmount(CallProductConvDto convDto) {
-		return dao.getCallProductTotalAmount(convDto);
-	}
+	
 	public CallProductConvDto getSeqCallProductConv(CallProductConvDto convDto){
 		return dao.getSeqCallProductConv(convDto);
 	}
@@ -107,11 +102,14 @@ public class ProductService {
 	public int cancelCallRefProductConv(CallProductConvOrderListDto orderDto) {
 		return dao.cancelCallRefProductConv(orderDto);
 	}
-	public int deleteCallRefProductConv(CallProductConvOrderListDto orderDto) {
-		return dao.deleteCallRefProductConv(orderDto);
+	public int statusUpdateCallRefProductConv(CallProductConvOrderListDto orderDto) {
+		return dao.statusUpdateCallRefProductConv(orderDto);
 	}
-	public int deleteCallProduct(CallProductConvDto callDto) {
-		return dao.deleteCallProduct(callDto);
+	public int deleteCallProductConv(CallProductConvDto callDto) {
+		return dao.deleteCallProductConv(callDto);
+	}
+	public int completeCallRefProductConv(CallProductConvDto convDto) {
+		return dao.completeCallRefProductConv(convDto);
 	}
 	
 	// OrderList
@@ -130,11 +128,18 @@ public class ProductService {
 	public int cancelConvOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.cancelConvOrderList(orderDto);
 	}
-	public int deleteConvOrderList(CallProductConvOrderListDto orderDto) {
-		return dao.deleteConvOrderList(orderDto);
+	public int statusUpdateConvOrderList(CallProductConvOrderListDto orderDto) {
+		return dao.statusUpdateConvOrderList(orderDto);
 	}
 	public int updateCallToOrderList(CallProductConvOrderListDto orderDto) {
 		return dao.updateCallToOrderList(orderDto);
+	}
+	
+	public int statusUpdateConvOrderAndProduct(CallProductConvOrderListDto orderDto) {
+		return dao.statusUpdateConvOrderAndProduct(orderDto);
+	}
+	public int completeConvOrderAndProduct(CallProductConvOrderListDto orderDto) {
+		return dao.completeConvOrderAndProduct(orderDto);
 	}
 	
 	public int updateProductOriginPrice(ProductDto dto) {

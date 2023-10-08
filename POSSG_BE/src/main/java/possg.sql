@@ -251,8 +251,9 @@ CREATE TABLE call_product_Conv (
 	amount INT not null,										-- 주문 양
 	rp_name VARCHAR(255) not null,								-- 대표자명
 	b_name VARCHAR(255) not null,								-- 점포명	
-	price INT not null,											-- 발주 가격	
-  call_date Timestamp not null,								-- 발주 날짜	
+	price INT not null,											-- 상품 가격	
+	price_origin INT,											-- 발주 원가
+  	call_date Timestamp not null,								-- 발주 날짜	
 	product_name VARCHAR(255) not null,							-- 상품 이름
 	call_ref varchar(255) not null,								-- 발주 목록 묶음
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)

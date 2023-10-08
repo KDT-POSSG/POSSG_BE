@@ -64,5 +64,7 @@ jobs:
               -e JWT_TOKEN=${{ secrets.JWT_TOKEN }} \
               -e NAVERDEV_ID=${{ secrets.NAVERDEV_ID }} \
               -e NAVERDEV_PW=${{ secrets.NAVERDEV_PW }} \
+              -e NAVERCLOUD_ID=${{ secrets.NAVERCLOUD_ID }} \
+              -e NAVERCLOUD_PW=${{ secrets.NAVERCLOUD_PW }} \
               --link mysql:db \
               ${{ secrets.DOCKERHUB_USERNAME }}/possg-be:latest

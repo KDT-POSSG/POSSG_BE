@@ -36,7 +36,7 @@
 <select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="Integer">
 	select call_total_price
 	from Call_product_conv_order_list
-	where conv_seq = #{convSeq}
+	where conv_seq = #{convSeq} and call_status != -1 and call_status != 0
 </select>
 
 <!-- 매출 -->
