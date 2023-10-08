@@ -115,6 +115,8 @@ public class NoSecurityZoneController {
 	        token.setUserId(conv.getUserId());
 	        token.setRefresh(refreshToken);
 	        
+	        service.logout(conv.getUserId());
+	        
 	        int refresh = service.insertToken(token);
 	        
 	        ConvenienceDto requestDto = new ConvenienceDto();
@@ -128,7 +130,8 @@ public class NoSecurityZoneController {
     
 	        // HTTP 요청 헤더 설정
 	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("accessToken", accessToken);	           	
+	        headers.add("accessToken", accessToken);
+	        headers.add("refreshToken", refreshToken);
 
 	        return ResponseEntity.ok().headers(headers).body(requestDto);
 	    }
@@ -315,23 +318,21 @@ public class NoSecurityZoneController {
 					return "NO";
 				}		
 				CustomerDto cus = cusService.getCustomer(dto);
-				System.out.println(cus);
+				System.out.println(cus);						
 				
-				String phoneNum = cus.getPhoneNumber();
-				
-				System.out.println(phoneNum);
+				if(cus == null) {
+					//신규 고객일 경우
+					int count = cusService.addWebCustomer(dto);
+					if(count != 0) {
+						return "YES";
+					}				
+				}				
+
 				// 기존 고객일 경우 
-				if(phoneNum != null) {
 					int updateCount = cusService.existingCustomers(dto);
 					System.out.println(updateCount);
 					if(updateCount != 0) {
-						return "UPDATE_YES";
-					}		
-				}
-				//신규 고객일 경우
-				int count = cusService.addWebCustomer(dto);
-				if(count != 0) {
-					return "YES";
+						return "UPDATE_YES";	
 				}
 				return "NO";
 			}
@@ -342,8 +343,7 @@ public class NoSecurityZoneController {
 			CustomerDto customer = cusService.customerLogin(dto); 
 			System.out.println(customer);
 			if (dto != null) {
-				String accessToken = tokenCreate.generateCustomerToken(customer);
-				
+				String accessToken = tokenCreate.generateCustomerToken(customer);				
 				String refreshToken = tokenCreate.generateCustomerRefreshToken(customer);
 				
 				CustomerTokenDto token = new CustomerTokenDto();
