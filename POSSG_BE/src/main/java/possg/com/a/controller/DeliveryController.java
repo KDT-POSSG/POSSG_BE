@@ -352,7 +352,7 @@ public class DeliveryController {
 		
 		// 배달목록 누르면 detail 페이지 상세보기
 		@GetMapping("allDeliveryList")
-		public List<Map<String, Object>> allDelivery(@RequestBody String ref, @RequestHeader("accessToken") String accessToken) {
+		public List<Map<String, Object>> allDelivery(@RequestParam String ref, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController allDeliveryList " + new Date());
 			
 			DeliveryDto dto = new DeliveryDto();
