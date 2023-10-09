@@ -134,7 +134,7 @@
 	AND  o.order_status = #{orderStatus} AND o.order_status != 0
 
 	order by p.seq desc
-	limit ${(pageNumber* 10)}, 10
+	limit ${(pageNumber* 12)}, 12
 </select>
 
 <!-- 배송진행 상태 업데이트 -->
