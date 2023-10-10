@@ -90,4 +90,10 @@
 	    ORDER BY a.attendance DESC
 	</select>
 	
+	<!-- 단일 근태 리스트 총 갯수 -->
+	<select id="getAllAttendance" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(*)
+		FROM Attendance
+		where employee_seq = #{employeeSeq}
+	</select>
 </mapper>
