@@ -31,7 +31,7 @@ public class DeliveryService {
 		return dao.callAddDelivery(dto);
 	}
 	
-	public List<DeliveryDto> allDeliveryList(DeliveryDto dto) {
+	public List<DeliveryJoinDto> allDeliveryList(DeliveryDto dto) {
 		return dao.allDeliveryList(dto);
 	}
 	
@@ -73,6 +73,10 @@ public class DeliveryService {
 	
 	public ConvenienceDto getDeliveryStatus(String userId) {
 		return dao.getDeliveryStatus(userId);
+	}
+	
+	public int refuseDelivery(String ref) {
+		return dao.refuseDelivery(ref);
 	}
 
 }

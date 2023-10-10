@@ -102,9 +102,26 @@
 </update>
 
   <!-- 상세 배달 목록 -->
-<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
-	select *
-	from Delivery
+<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryJoinDto">
+	select 
+	dl.seq,
+    d.user_id,
+    d.product_seq,
+    d.order_status,
+    d.quantity,
+    d.product_name,
+    d.ref,
+    d.location,
+    d.price,
+    d.branch_name,
+    dl.del_date,
+    dl.del_status,
+    dl.del_total_number,
+    dl.del_total_price,
+    dl.del_remark,
+    dl.del_ref
+	from Delivery as d
+	inner join Delivery_list dl on dl.del_ref = d.ref
 	where ref = #{ref} and branch_name = #{branchName}
 
 </select>
@@ -131,8 +148,21 @@
 	inner join Convenience j on o.branch_name = j.branch_name
 	inner join Delivery_list p on o.ref = p.del_ref
 	WHERE j.branch_name = #{branchName}
-	AND  o.order_status = #{orderStatus} AND o.order_status != 0
-
+		<if test="orderStatus == 1 ">
+			 AND o.order_status = 1
+		</if>
+		
+		<if test="orderStatus == 2 ">
+			AND o.order_status = 2
+		</if>
+		
+		<if test="orderStatus == 3 ">
+			AND o.order_status = 3
+		</if>
+		
+		<if test="orderStatus == 4 ">
+			AND o.order_status = 4 OR o.order_status = -1
+		</if>
 	order by p.seq desc
 	limit ${(pageNumber* 12)}, 12
 </select>
@@ -164,9 +194,8 @@
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			where o.branch_name = #{branchName} and o.order_status = 4
-		</if>
-		
+			where o.branch_name = #{branchName} AND (o.order_status = 4 OR o.order_status = -1)
+		</if>		
 </select>
 
 
@@ -175,5 +204,12 @@
 	from Convenience
 	where user_id = #{userId}
 </select>
+
+<delete id="refuseDelivery" parameterType="String"> 
+	update Delivery as o, Delivery_list as p
+	set o.order_status = -1,
+    p.del_status = -1
+	where p.del_ref = #{ref} and o.ref = #{ref} and o.order_status = 1
+</delete>
 
 </mapper>
