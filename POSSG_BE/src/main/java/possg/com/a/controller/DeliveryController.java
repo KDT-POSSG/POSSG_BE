@@ -62,13 +62,12 @@ public class DeliveryController {
 		if(tokenHeader == null) {
 			return null;
 		}
-		if(dto.getLocation() != null) {
-			return "NO";
-		}
 		
 		int customerSeq = tokenParser(tokenHeader);
+		System.out.println(customerSeq);
 		
 		CustomerDto userId = service.selectCustomer(customerSeq);
+		System.out.println(userId);
 		// 갯수에 따라 가격 맞춰서 넣기			
 		ProductDto product = new ProductDto();
 		
@@ -141,7 +140,7 @@ public class DeliveryController {
 	// 
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
-	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
+	public String insertDeliveryList(@RequestBody DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
