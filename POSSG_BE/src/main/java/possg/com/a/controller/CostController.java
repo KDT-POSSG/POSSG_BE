@@ -200,23 +200,24 @@ public class CostController {
 		for(int item : orderPrice) {
 			totalOrderPrice = totalOrderPrice + item;
 		}
-		
+		int totalLoss = 0;
 		 // 월별 비교
         if(param.getChoice() == 1) {      
-        	int totalLoss = 0;
+        	
+        	Map<String, Object> map = new HashMap<>();   
         	CostDto loss = service.selectCost(param);
+        	
         	if(loss == null) {
         		totalLoss = 0;
         	}
-        	
-        	Map<String, Object> map = new HashMap<>();
-        	
-	        if(loss.getCostMonth() == formattedMonth) {
-	        	
-	        	// 지출금액
-	        	totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
-	        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;	        		 			
-	        }	                	        
+        	if(loss != null) {       		        	      	
+        	     	
+		        if(loss.getCostMonth() == formattedMonth) {		        	
+		        	// 지출금액
+		        	totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
+		        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;	        		 			
+		        }
+        	}
 	        //매출
 	        int totalPrice = 0;
 			for (CostParam item : payment) {
@@ -250,7 +251,6 @@ public class CostController {
         }
 		// 총 지출 금액
         // 년별 비교
-        int totalLoss = 0;
         for(CostDto item : lossList) {
         	
         	totalLoss = totalLoss + item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
