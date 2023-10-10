@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,11 +30,8 @@ import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 import possg.com.a.dto.ProductDto;
-import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
-import possg.com.a.util.JwtFilter;
-import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
 
 @RestController
@@ -52,10 +48,7 @@ public class DeliveryController {
 	}
 	
 	@Autowired
-	ProductService productService;
-	
-	private JwtFilter jwtFilter;
-	
+	ProductService productService;	
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
