@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.EmployeeDao;
 import possg.com.a.dto.EmployeeDto;
+import possg.com.a.dto.EmployeeParam;
 import possg.com.a.dto.SettlementDto;
 
 @Service
@@ -39,5 +40,9 @@ public class EmployeeService {
 	
 	public int getallemployee(int convSeq) {
 		return dao.getallemployee(convSeq);
+	};
+	
+	public EmployeeParam findNumEmployee(int employeeSeq) {
+		return dao.findNumEmployee(employeeSeq);
 	};
 }

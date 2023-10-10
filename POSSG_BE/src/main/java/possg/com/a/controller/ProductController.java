@@ -78,6 +78,12 @@ public class ProductController {
 		System.out.println("ProductParam= " + param);
 		
 		List<ProductDto> list = service.productList(param);
+		if (list.isEmpty()) {
+			map.put("ProductList", new ProductDto[0]);
+			map.put("pageProduct", 0);
+			map.put("cnt", 0); // react 중 pagination 사용시 활용
+			return map;
+		}
 		System.out.println("ProductList= " + list.get(0));
 		
 		int cnt = 0;
@@ -349,10 +355,10 @@ public class ProductController {
 		// 재고가 충분한 경우
 		return "NO";
 	}
-		
+	// stock 반영 코드 만들어야함
 	// 점주 발주 대기 리스트에 추가
 	// input
-	// ProductDto: int convSeq, String productName, int price, int priceOrigin, String imgUrl, int stockLimit
+	// ProductDto: int convSeq, String productName, int price, int priceOrigin, String imgUrl
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(@RequestBody ProductDto productDto) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
@@ -403,9 +409,9 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	
+	// NO
 	// 발주 대기 상품 리스트 업데이트
-	// input: convSeq, productName, amount, priceDiscount, callRef
+	// input: convSeq, productName, amount, price, priceOrigin, callRef
 	@PostMapping("updateCallProductConv")
 	public String updateCallProductConv(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController updateCallProductConv() " + new Date());
@@ -426,7 +432,7 @@ public class ProductController {
 		}
 		CallProductConvDto crntConvDto = nameTemp.get(0);
 		
-		if (crntConvDto.getAmount() < convDto.getAmount()) {
+		if (convDto.getAmount()<1) {
 			responseMessage = "구매 수량을 한 개 이상이 되도록 다시 설정해주세요.";
 			System.out.println(responseMessage);
 			return responseMessage;
@@ -467,17 +473,22 @@ public class ProductController {
 					return responseMessage="YES";
 				}
 			}
+			return responseMessage="YES";
 		}
 		return responseMessage="NO";
 	}
 	
+	//NO
 	// 발주 대기 상품 삭제
 	// input: String callRef, String productName, int convSeq
 	// 상품 삭제 시 주문 목록 업데이트 기능 추가
 	@PostMapping("deleteCallProductConv")
 	public String deleteCallProductConv(@RequestBody CallProductConvDto convDto) {
 		System.out.println("ProductController delteCallProduct() " + new Date());
-		
+		if (convDto.getNameList().isEmpty()) {
+			System.out.println("NameList가 없음" + convDto.toString());
+			return "NO";
+		}
 		for(String name : convDto.getNameList()) {
 			convDto.setProductName(name);
 			int count = service.deleteCallProductConv(convDto);
@@ -485,29 +496,31 @@ public class ProductController {
 				return "NO";
 			}
 		}
-		List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
-	    if (callList.isEmpty()) {
-	    	System.out.println("동일한 ref 상품이 없음");
-	    	return "NO";
-	    }
-		// 비고(remark)이 null인 경우 빈 문자열로 설정
-	    if (convDto.getRemark() == null) {
-	    	convDto.setRemark("");
-	    }
-
-	    // 발주 상품 수 및 총 가격 계산
-	    int totalProduct = callList.size();
-	    int totalPrice = 0;
-	    for (CallProductConvDto item : callList) {
-	        totalPrice += item.getPrice()*item.getAmount();
-	    }
-	    
-	    // 동일한 ref의 call_product_conv_order_list
-	    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
-    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
-		int countOrder = service.updateCallToOrderList(tempDto);
-		if(countOrder <= 0) {
-			return "NO";
+		if (!convDto.getCallRef().equals("0")) {
+			List<CallProductConvDto> callList = service.getRefCallProductConvList(convDto);
+		    if (callList.isEmpty()) {
+		    	System.out.println("동일한 ref 상품이 없음");
+		    	return "YES";
+		    }
+			// 비고(remark)이 null인 경우 빈 문자열로 설정
+		    if (convDto.getRemark() == null) {
+		    	convDto.setRemark("");
+		    }
+	
+		    // 발주 상품 수 및 총 가격 계산
+		    int totalProduct = callList.size();
+		    int totalPrice = 0;
+		    for (CallProductConvDto item : callList) {
+		        totalPrice += item.getPrice()*item.getAmount();
+		    }
+		    
+		    // 동일한 ref의 call_product_conv_order_list
+		    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
+	    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
+			int countOrder = service.updateCallToOrderList(tempDto);
+			if(countOrder <= 0) {
+				return "NO";
+			}
 		}
 		return "YES";
 	}
@@ -660,7 +673,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 점주 발주 상품 수령 완료
+	// 점주 발주 상품 배송 상태 업데이트
 	// input: int callRef, int convSeq
 	@PostMapping("statusUpdateConvOrderAndProduct")
 	public String statusUpdateConvOrderAndProduct(@RequestBody CallProductConvOrderListDto orderDto) {

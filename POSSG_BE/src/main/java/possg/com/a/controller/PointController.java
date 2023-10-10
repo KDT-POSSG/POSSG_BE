@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import possg.com.a.dto.PointDto;
 import possg.com.a.dto.PointParam;
 import possg.com.a.service.PointService;
 
@@ -19,17 +20,17 @@ public class PointController {
 	PointService service;
 	
 	@PostMapping("newPoint")
-	public String newPoint(@RequestParam String phoneNumber) {
+	public String newPoint(@RequestBody PointDto dto) {
 		System.out.println("PointController newPoint " + new Date());
 		
 		// 이미 가입 되어있는지 체크
-		int check = service.checkPoint(phoneNumber);
+		int check = service.checkPoint(dto.getPhoneNumber());
 		if(check > 0) {
 			return "ALREADY CHECK";
 		}
 		
 		// 가입 안되어있으면 추가
-		int count = service.newPoint(phoneNumber);
+		int count = service.newPoint(dto);
 		
 		if(count > 0) {
 			return "YES";
@@ -56,23 +57,30 @@ public class PointController {
 		return "NO";
 	};
 	
+	// 고객 포인트 조회
 	@GetMapping("searchPoint")
-	public int searchPoint(@RequestParam String phoneNumber) {
+	public int searchPoint(@RequestBody PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());
+		//System.out.println(param.toString());
 		
 		// 이미 가입 되어있는지 체크
-		int check = service.checkPoint(phoneNumber);
+		int check = service.checkPoint(param.getPhoneNumber());
 		if (check <= 0) {
 			return -1;
 		}
 		
-		int remainPoint = service.searchPoint(phoneNumber);
-		return remainPoint;
+		// 비밀번호 틀릴경우
+		PointDto dto = service.searchPoint(param);
+		if (dto == null) {
+			return -2;
+		}
+
+		return dto.getTotalPoint();
 	}
 	
 	@PostMapping("usePoint")
 	public String usePoint(@RequestBody PointParam param) {
-		System.out.println("PointController addPoint " + new Date());
+		System.out.println("PointController usePoint " + new Date());
 		
 		// 이미 가입 되어있는지 체크
 		int check = service.checkPoint(param.getPhoneNumber());
@@ -81,8 +89,12 @@ public class PointController {
 		}
 		
 		// 포인트 사용량이 잔여 포인트보다 많은지 체크 
-		int remainPoint = service.searchPoint(param.getPhoneNumber());
-		if (param.getPoint() > remainPoint) {
+		PointDto dto = service.searchPoint(param);
+		if (dto == null) {
+			return "INVALID PASSWORD";
+		}
+		
+		if (param.getPoint() > dto.getTotalPoint()) {
 			return "INSUFFICIENT POINT";
 		}
 		
