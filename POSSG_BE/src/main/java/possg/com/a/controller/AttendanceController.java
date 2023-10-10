@@ -1,7 +1,9 @@
 package possg.com.a.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import possg.com.a.dto.AttendanceDto;
 import possg.com.a.dto.AttendanceParam;
+import possg.com.a.dto.EmployeeParam;
 import possg.com.a.service.AttendanceService;
+import possg.com.a.service.EmployeeService;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
@@ -21,6 +25,9 @@ public class AttendanceController {
 	
 	@Autowired
 	AttendanceService service;
+	
+	@Autowired
+	EmployeeService service2;
 	
 	// 출근
 	@PostMapping("attendance")
@@ -30,7 +37,18 @@ public class AttendanceController {
 		int emp_seq = dto.getEmployeeSeq(); // 직원 번호
 		
 		AttendanceParam param = service.attendanceCheck(emp_seq);
-		//System.out.println(param.toString());
+		
+		// 첫 출근인 경우
+		if (param == null) {
+			int count = service.attendance(dto);
+			
+			if(count > 0) {
+				return "YES";
+			}
+			
+			return "NO";
+		}
+		
 		
 		// 이미 출근해 있는 경우 
 		if (param.getLeaveWork() == null && param.getAttendance() != null) {
@@ -78,11 +96,22 @@ public class AttendanceController {
 	};
 	
 	@GetMapping("selectOneAttendance")
-	public List<AttendanceParam> selectOneAttendance(@RequestParam int employeeSeq){
+	public Map<String, Object> selectOneAttendance(@RequestParam int employeeSeq){
 		System.out.println("AttendanceController selectOneAttendance " + new Date());
 		
-		List<AttendanceParam> list = service.selectOneAttendance(employeeSeq);
+		// 직원 정보
+		EmployeeParam param = service2.findNumEmployee(employeeSeq);
+		//System.out.println(param.toString());
 		
-		return list;
+		// 직원 근태 정보 
+		List<AttendanceParam> list = service.selectOneAttendance(employeeSeq);
+		//System.out.println(list.toString());
+		
+		// 직원정보와 근태정보 
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("param", param);
+		map.put("list", list);
+		
+		return map;
 	};
 }

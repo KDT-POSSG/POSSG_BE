@@ -46,20 +46,20 @@
 <!-- 로그아웃하면 refresh토큰 삭제 -->
 <delete id="deleteRefresh" parameterType="possg.com.a.dto.CustomerTokenDto">
 	delete 
-	from customer_token
+	from Customer_token
 	where customer_id=#{customerId}
 </delete>
 
 <!-- 토큰저장 -->
 <insert id="customerRefresh" parameterType="possg.com.a.dto.CustomerTokenDto">
-	insert into customer_token(refresh, customer_id)
+	insert into Customer_token(refresh, customer_id)
 	values(#{refresh}, #{customerId})
 </insert>
 
 <!-- access토큰의 아이디를 파싱하여 userId로 보내주면 db에 저장된 customer_id랑 비교해서 같은 refresh토큰만 선택 -->
 <select id="customerSelectToken" parameterType="possg.com.a.dto.CustomerTokenDto" resultType="String">
 	select refresh
-	from customer_token
+	from Customer_token
 	where customer_id = #{customerId}
 </select>
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +22,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-/*
+
 public class JwtFilter extends OncePerRequestFilter {
 	
 	private final TokenCreate tokenCreate;
@@ -36,8 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 	    return Arrays.stream(excludedEndpoints)
 	        .anyMatch(e -> new AntPathMatcher().match(e, request.getRequestURI()));
-	  }
-		
+	  }		
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -46,6 +47,8 @@ public class JwtFilter extends OncePerRequestFilter {
 		boolean isError = false;	
 		
 		final String authorization = request.getHeader("accessToken");
+		
+		
 		logger.info("Authorization" + authorization);
 		 
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
@@ -82,7 +85,8 @@ public class JwtFilter extends OncePerRequestFilter {
 		    } else {
 		    	System.out.println("accessToken이 만료되었습니다");
 		    	isError = true;		        
-		        request.getRequestDispatcher("/tokenController/errorRedirect").forward(request, response);
+		    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		    	return;
 		    }
 		    
 	    } else { // access 토큰이 없다면
@@ -95,4 +99,3 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 	
 }
-*/

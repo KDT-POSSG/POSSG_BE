@@ -15,6 +15,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +56,7 @@ public class DeliveryController {
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
-	public String callAddDelivery(DeliveryDto dto, @RequestHeader("USTK") String tokenHeader) {
+	public String callAddDelivery(@RequestBody DeliveryDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -63,21 +64,22 @@ public class DeliveryController {
 		}
 		
 		int customerSeq = tokenParser(tokenHeader);
+		System.out.println(customerSeq);
 		
 		CustomerDto userId = service.selectCustomer(customerSeq);
-		
+		System.out.println(userId);
 		// 갯수에 따라 가격 맞춰서 넣기			
 		ProductDto product = new ProductDto();
 		
 		product.setProductName(dto.getProductName());
+		product.setConvSeq(dto.getConvSeq());
 
 		DeliveryDto delivery = new DeliveryDto();
 		delivery.setUserId(customerSeq);
 		
 		List<DeliveryDto> deli = service.selectDelivery(delivery);
-		
 		List<ProductDto> prodto = productService.findProductName(product);
-		
+		System.out.println(prodto);
 		dto.setPrice(dto.getQuantity() * prodto.get(0).getPrice());
 		dto.setUserId(customerSeq);
 		dto.setLocation(userId.getLocation());
@@ -115,7 +117,7 @@ public class DeliveryController {
 	
 	// 주문전 배달 장바구니 목록 보여주기
 	@GetMapping("selectDelivery")
-	public List<DeliveryDto>selectDelivery(@RequestHeader("USTK") String tokenHeader) {
+	public List<DeliveryDto>selectDelivery(@RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController selectDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -138,7 +140,7 @@ public class DeliveryController {
 	// 
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
-	public String insertDeliveryList(DeliveryListDto dto, @RequestHeader("USTK") String tokenHeader) {
+	public String insertDeliveryList(@RequestBody DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("DeliveryController callAddDelivery " + new Date());
 		
 		if(tokenHeader == null) {
@@ -191,12 +193,12 @@ public class DeliveryController {
 	
 	// 점주 배달 추가
 		@PostMapping("convAddDelivery")
-		public String convAddDelivery(ConvenienceDto dto, @RequestHeader("accessToken") String accessToken) {
+		public String convAddDelivery(@RequestBody ConvenienceDto dto, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController convAddDelivery " + new Date());
 			
 			//토큰 파싱
 					accessToken = accessToken.replace("Bearer ", "");
-					 
+					 System.out.println(dto);
 					 JwtParser jwtParser = Jwts.parserBuilder()
 				    		    .setSigningKey(tokenCreate.securityKey)
 				    		    .build();
@@ -206,7 +208,7 @@ public class DeliveryController {
 				        int convSeq = refreshClaims.get("convSeq", Integer.class);		 
 					 	 
 					 dto.setConvSeq(convSeq);
-					 
+
 					 int count = service.convAddDelivery(dto);
 			
 			if(count !=  0) {
@@ -336,7 +338,7 @@ public class DeliveryController {
 		}
 		
 		@PostMapping("statusUpdate")
-		public String statusUpdate(DeliveryJoinDto dto, @RequestHeader("accessToken") String accessToken) {
+		public String statusUpdate(@RequestBody DeliveryJoinDto dto, @RequestHeader("accessToken") String accessToken) {
 			 System.out.println("DeliveryController statusUpdate " + new Date());			
 						 
 	        int statusUpdate = service.statusUpdate(dto);
@@ -347,7 +349,7 @@ public class DeliveryController {
 	        return "NO";	        	        
 		}
 
-
+		
 		// 배달목록 누르면 detail 페이지 상세보기
 		@GetMapping("allDeliveryList")
 		public List<Map<String, Object>> allDelivery(@RequestParam String ref, @RequestHeader("accessToken") String accessToken) {
@@ -409,7 +411,7 @@ public class DeliveryController {
 		
 		// 장바구니 삭제
 		@PostMapping("deleteDelivery")
-		public String deleteDelivery(DeliveryDto dto) {
+		public String deleteDelivery(@RequestBody DeliveryDto dto, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			int count = service.deleteDelivery(dto);
@@ -421,15 +423,16 @@ public class DeliveryController {
 		}
 		
 		// 배달점포인지 체크
-		@PostMapping("deliveryCheck")
+		@GetMapping("deliveryCheck")
 		public String deliveryCheck(@RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController deleteDelivery " + new Date());
 			
 			String userId = tokenCreate.getuserIdFromToken(accessToken);			
+			System.out.println(userId);
 			
-			service.getDeliveryStatus(userId);
+			ConvenienceDto dto = service.getDeliveryStatus(userId);
 			
-			if(userId == null) {
+			if(dto.getConvLocation() == null) {
 				return "NO";
 			}
 			return "YES";

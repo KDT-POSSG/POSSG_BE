@@ -50,4 +50,12 @@ public class CostService {
 	public List<Integer> selectOrderPrice(CostParam param) {
 		return dao.selectOrderPrice(param);
 	}
+	
+	public List<CostParam> bestDeliverySalesProduct(CostParam param) {
+		return dao.bestDeliverySalesProduct(param);
+	}
+	
+	public List<CostParam> bestPaymentSalesProduct(CostParam param) {
+		return dao.bestPaymentSalesProduct(param);
+	}
 }

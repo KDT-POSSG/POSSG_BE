@@ -72,7 +72,6 @@ from Convenience
 where user_id = #{userId}
 </select>
 
-
 <!-- key중복체크 -->
 <select id="keycheck" parameterType="java.lang.String"
 	resultType="java.lang.Integer">
@@ -91,7 +90,7 @@ where user_id = #{userId}
 <select id="selectToken" parameterType="possg.com.a.dto.TokenDto" resultType="String">
 	select refresh
 	from Token
-	where user_id = #{userId}
+	where refresh = #{refresh}
 </select>
 
 <insert id="insertSms" parameterType="Integer">
