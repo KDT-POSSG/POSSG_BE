@@ -79,7 +79,11 @@ public class CostController {
 				}	
 			}
 			if(auth != null) {
-				service.updateCost(change);
+				int count =service.updateCost(change);
+				System.out.println("authnotnull" + count);
+				if(count != 0) {
+					return "YES";
+				}
 			}
 		}
 		return "NO";
