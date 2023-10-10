@@ -203,11 +203,14 @@ public class CostController {
 		
 		 // 월별 비교
         if(param.getChoice() == 1) {      
-        	
+        	int totalLoss = 0;
         	CostDto loss = service.selectCost(param);
+        	if(loss == null) {
+        		totalLoss = 0;
+        	}
         	
         	Map<String, Object> map = new HashMap<>();
-        	int totalLoss = 0;
+        	
 	        if(loss.getCostMonth() == formattedMonth) {
 	        	
 	        	// 지출금액
