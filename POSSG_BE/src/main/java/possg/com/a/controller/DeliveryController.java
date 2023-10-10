@@ -305,8 +305,8 @@ public class DeliveryController {
 			    int count = service.getDeliveryCount(param);
 				
 			    
-			    int AllPage = count / 10;
-				if((count % 10) > 0) {
+			    int AllPage = count / 12;
+				if((count % 12) > 0) {
 					AllPage = AllPage + 1;
 				}	
 		    			
