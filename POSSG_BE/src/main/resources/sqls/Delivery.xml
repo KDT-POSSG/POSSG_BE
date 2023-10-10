@@ -169,10 +169,12 @@
 
 <!-- 배송진행 상태 업데이트 -->
 <update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
-	update Delivery as o, Delivery_list as p
-	 set o.order_status = o.order_status + 1,
-    p.del_status = p.del_status + 1
-	where o.ref = #{ref} and p.del_ref = #{ref}
+    UPDATE Delivery AS o, Delivery_list AS p
+    SET 
+        o.order_status = CASE WHEN o.order_status &lt; 4 THEN o.order_status + 1 ELSE o.order_status END,
+        p.del_status = CASE WHEN p.del_status &lt; 4 THEN p.del_status + 1 ELSE p.del_status END
+    WHERE 
+        o.ref = #{ref} AND p.del_ref = #{ref}
 </update>
 
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
