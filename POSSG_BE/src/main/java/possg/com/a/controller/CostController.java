@@ -231,6 +231,7 @@ public class CostController {
 			map.put("totalLoss", totalLoss);
 			map.put("totalPrice", totalPrice);
 			map.put("profit", profit);
+			map.put("date", param.getDate());
 	        
 	        // 순수익
 	        return map;	       
@@ -266,6 +267,7 @@ public class CostController {
 		map.put("totalLoss", totalLoss);
 		map.put("totalPrice", totalPrice);
 		map.put("profit", profit);
+		map.put("date", param.getDate());
 		
 		return map;
 		

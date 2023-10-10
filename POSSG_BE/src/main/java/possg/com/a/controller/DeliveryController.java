@@ -34,6 +34,7 @@ import possg.com.a.dto.ProductDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
+import possg.com.a.util.JwtFilter;
 import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
 
@@ -52,6 +53,8 @@ public class DeliveryController {
 	
 	@Autowired
 	ProductService productService;
+	
+	private JwtFilter jwtFilter;
 	
 	
 	// 배달 장바구니에 추가
