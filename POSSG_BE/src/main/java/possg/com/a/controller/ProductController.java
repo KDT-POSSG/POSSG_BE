@@ -63,8 +63,9 @@ public class ProductController {
 	@GetMapping("healthcheck")
 	public String healthcheck() {
 		System.out.println("ProductController healthcheck " + new Date());
-		
-		return "Hello";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String formattedDate = sdf.format(new Date());
+		return formattedDate;
 	}
 	
 	public String responseMessage;
@@ -409,7 +410,7 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	// NO
+	
 	// 발주 대기 상품 리스트 업데이트
 	// input: convSeq, productName, amount, price, priceOrigin, callRef
 	@PostMapping("updateCallProductConv")
@@ -477,14 +478,13 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	
-	//NO
+
 	// 발주 대기 상품 삭제
-	// input: String callRef, String productName, int convSeq
+	// input: String callRef, List<String> nameList, int convSeq
 	// 상품 삭제 시 주문 목록 업데이트 기능 추가
 	@PostMapping("deleteCallProductConv")
 	public String deleteCallProductConv(@RequestBody CallProductConvDto convDto) {
-		System.out.println("ProductController delteCallProduct() " + new Date());
+		System.out.println("ProductController deleteCallProduct() " + new Date());
 		if (convDto.getNameList().isEmpty()) {
 			System.out.println("NameList가 없음" + convDto.toString());
 			return "NO";

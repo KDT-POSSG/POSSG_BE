@@ -36,19 +36,10 @@ public class TextController {
 	
 	private String responseMessage;
 	
-	@PostMapping("/stt")
+	// 음성인식 wav -> String
 	public String stt(@RequestParam("uploadFile") MultipartFile uploadFile
 			,HttpServletRequest request) throws IOException {
 		
-	    // STT로 변환
-	    String text = fileUpload(uploadFile, request);
-
-	    return text;
-	}
-	
-	// 음성인식 wav -> String
-	public String fileUpload(MultipartFile uploadFile,
-							HttpServletRequest request) throws IOException {
 		System.out.println("NaverCloudController fileUpload" + new Date());
 		
 		// tomcat
