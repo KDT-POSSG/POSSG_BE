@@ -184,19 +184,19 @@
 		inner join Delivery_list  p on o.ref = p.del_ref
 		
 		<if test="orderStatus == 1 ">
-			where o.branch_name = #{branchName} and o.order_status = 1
+			where o.branch_name = #{branchName} and p.del_status = 1
 		</if>
 		
 		<if test="orderStatus == 2 ">
-			where o.branch_name = #{branchName} and o.order_status = 2
+			where o.branch_name = #{branchName} and p.del_status = 2
 		</if>
 		
 		<if test="orderStatus == 3 ">
-			where o.branch_name = #{branchName} and o.order_status = 3
+			where o.branch_name = #{branchName} and p.del_status = 3
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			where o.branch_name = #{branchName} AND (o.order_status = 4 OR o.order_status = -1)
+			where o.branch_name = #{branchName} AND (p.del_status = 4 OR p.del_status = -1)
 		</if>		
 </select>
 

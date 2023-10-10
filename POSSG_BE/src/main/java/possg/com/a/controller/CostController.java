@@ -232,6 +232,11 @@ public class CostController {
 			map.put("totalPrice", totalPrice);
 			map.put("profit", profit);
 			map.put("date", param.getDate());
+			
+			if(totalLoss == 0 || totalPrice == 0) {		
+				Map<String, Object> emptyMap = new HashMap<>();
+				return emptyMap;
+			}
 	        
 	        // 순수익
 	        return map;	       
@@ -269,7 +274,13 @@ public class CostController {
 		map.put("profit", profit);
 		map.put("date", param.getDate());
 		
+		if(totalLoss == 0 || totalPrice == 0) {		
+			Map<String, Object> emptyMap = new HashMap<>();
+			return emptyMap;
+		}
+		
 		return map;
+		
 		
 	}
 
