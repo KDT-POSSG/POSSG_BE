@@ -266,7 +266,7 @@ public class DeliveryController {
 		            deliveryMap.put("delTotalNumber", deliveryJoinDto.getDelTotalNumber());
 		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
 		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
-
+		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
 		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 		            Set<Integer> addedProductSeqs = new HashSet<>(); 
 
@@ -281,7 +281,7 @@ public class DeliveryController {
 		                        detail.put("quantity", item.getQuantity());
 		                        detail.put("price", item.getPrice());
 		                        detail.put("product_seq", productSeq);
-		                        detail.put("delStatus", item.getDelStatus());
+
 		                        deliveryDetails.add(detail);
 		                        System.out.println("detail"+detail);
 		                        addedProductSeqs.add(productSeq);
@@ -368,7 +368,7 @@ public class DeliveryController {
 	            // 필드 값 설정
 	            deliveryMap.put("orderSeq", deliveryDto.getOrderSeq());
 	            deliveryMap.put("userId", deliveryDto.getUserId());
-	            deliveryMap.put("orderStatus", deliveryDto.getOrderStatus());
+	            deliveryMap.put("delStatus", deliveryDto.getDelStatus());
 	            deliveryMap.put("ref", deliveryDto.getRef());
 	            deliveryMap.put("location", deliveryDto.getLocation());
 	            deliveryMap.put("branchName", deliveryDto.getBranchName());
