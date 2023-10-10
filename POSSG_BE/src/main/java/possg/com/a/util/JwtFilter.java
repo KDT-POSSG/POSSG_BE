@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 	    return Arrays.stream(excludedEndpoints)
 	        .anyMatch(e -> new AntPathMatcher().match(e, request.getRequestURI()));
-	  }		
+	  }			
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -47,7 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
 		boolean isError = false;	
 		
 		final String authorization = request.getHeader("accessToken");
-		
 		
 		logger.info("Authorization" + authorization);
 		 
