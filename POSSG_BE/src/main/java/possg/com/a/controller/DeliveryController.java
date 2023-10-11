@@ -373,7 +373,8 @@ public class DeliveryController {
 	            deliveryMap.put("location", deliveryDto.getLocation());
 	            deliveryMap.put("branchName", deliveryDto.getBranchName());
 	            deliveryMap.put("delDate", deliveryDto.getDelDate());
-	            deliveryMap.put("delTotalPrice", deliveryDto.getDelTotalPrice());	            
+	            deliveryMap.put("delTotalPrice", deliveryDto.getDelTotalPrice());
+	            deliveryMap.put("delRemark", deliveryDto.getDelRemark());
 
 	            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 
