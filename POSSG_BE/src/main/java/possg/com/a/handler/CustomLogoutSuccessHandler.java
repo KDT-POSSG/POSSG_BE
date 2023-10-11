@@ -35,12 +35,10 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
-		System.out.println("로그아웃이 여기서 진행됩니다.");
+		System.out.println("로그아웃이 진행됩니다.");
 		String authorizationHeader = request.getHeader("accessToken");
-		String key = env.getProperty("custom.security.key");
 		String token = authorizationHeader.replace("Bearer", "").replace(" ", "");
-		
-		// 여기서 JSESSIONID 삭제시켜주기
+	
 		Claims claims =
 				Jwts.parserBuilder()
 				.setSigningKey(env.getProperty("custom.security.key")
@@ -50,6 +48,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 		
 		service.logout(userId);
 		
+		request.getSession().invalidate();
+		
+		response.sendRedirect("/tokenController/afterLogout");
 	}
 
 }

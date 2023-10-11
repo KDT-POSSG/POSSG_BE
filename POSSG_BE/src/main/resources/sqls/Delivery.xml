@@ -149,22 +149,33 @@
 	inner join Delivery_list p on o.ref = p.del_ref
 	WHERE j.branch_name = #{branchName}
 		<if test="orderStatus == 1 ">
-			 AND o.order_status = 1
+			 AND p.del_status = 1
 		</if>
 		
 		<if test="orderStatus == 2 ">
-			AND o.order_status = 2
+			AND p.del_status = 2
 		</if>
 		
 		<if test="orderStatus == 3 ">
-			AND o.order_status = 3
+			AND p.del_status = 3
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			AND o.order_status = 4 OR o.order_status = -1
+			AND p.del_status = 4 OR p.del_status = -1
 		</if>
 	order by p.seq desc
 	limit ${(pageNumber* 12)}, 12
+</select>
+
+<select id="allDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryCount">
+	SELECT 
+    COUNT(CASE WHEN dl.del_status = 1 THEN 1 END) AS status1,
+    COUNT(CASE WHEN dl.del_status = 2 THEN 1 END) AS status2,
+    COUNT(CASE WHEN dl.del_status = 3 THEN 1 END) AS status3
+	FROM Delivery as d
+	inner join Delivery_list dl on d.ref = dl.del_ref
+	where d.branch_name = #{branchName}
+
 </select>
 
 <!-- 배송진행 상태 업데이트 -->

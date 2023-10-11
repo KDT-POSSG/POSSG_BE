@@ -168,8 +168,7 @@ public class NoSecurityZoneController {
 		 int count1 = service.updateCodeStatus(conv);
 		 if(count1 != 0) {
 			 return "NO";
-		 }
-		 
+		 }		 
 		 return "YES"; 
 	 } 
 	 return "NO"; 
