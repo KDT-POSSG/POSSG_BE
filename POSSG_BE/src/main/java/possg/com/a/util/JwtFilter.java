@@ -82,14 +82,14 @@ public class JwtFilter extends OncePerRequestFilter {
    	 		    	
 		    	
 		    } else {
-		    	System.out.println("accessToken이 만료되었습니다");
+		    	System.out.println("accessToken이 만료되었습니다"); // 401
 		    	isError = true;		        
 		    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		    	return;
 		    }
 		    
 	    } else { // access 토큰이 없다면
-	    	System.out.println("access토큰이 없습니다.");
+	    	System.out.println("access토큰이 없습니다."); // 
 			return;
 	    }
 	    
