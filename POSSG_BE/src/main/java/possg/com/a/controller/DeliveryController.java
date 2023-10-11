@@ -142,6 +142,10 @@ public class DeliveryController {
 		if(tokenHeader == null) {
 			return "NO";
 		}
+		if(dto.getDelRemark() == null) {
+			dto.setDelRemark("");
+		}
+		
 		
 		int customerSeq = tokenParser(tokenHeader);
 			

@@ -281,7 +281,7 @@ public class CostController {
 		map.put("profit", profit);
 		map.put("date", param.getDate());
 		
-		if(totalLoss == 0 || totalPrice == 0) {		
+		if(totalLoss == 0 && totalPrice == 0) {		
 			Map<String, Object> emptyMap = new HashMap<>();
 			return emptyMap;
 		}
