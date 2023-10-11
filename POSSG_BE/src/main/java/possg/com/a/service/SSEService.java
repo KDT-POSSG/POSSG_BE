@@ -20,9 +20,8 @@ public class SSEService {
 	@Autowired
 	SSEDao dao;
 	
-	public Flux<ProductDto> getExpiredProductsStream() {
-        return Flux.interval(Duration.ofSeconds(5))
-        		.startWith(0L)
-                .flatMap(tick -> Flux.fromIterable(dao.checkExpiredProduct()));
+	public Flux<List<ProductDto>> getExpiredProductsStream() {
+        return Flux.interval(Duration.ofSeconds(60)) // 테스트용으로 아직 60초로 설정
+                .map(tick -> dao.checkExpiredProduct());
     }
 }
