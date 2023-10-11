@@ -80,7 +80,7 @@
     <!-- 직원 퇴사 처리 (퇴사일 업데이트) -->
     <update id="terminateEmployee" parameterType="java.lang.Integer">
         UPDATE Employee
-        SET termination_date = now()
+        SET termination_date = DATE_ADD(NOW(), INTERVAL 9 HOUR)
         WHERE employee_seq = #{employeeSeq}
     </update>
 </mapper>

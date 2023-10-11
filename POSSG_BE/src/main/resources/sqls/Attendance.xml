@@ -5,7 +5,7 @@
 	<!-- 출근 -->
 	<insert id="attendance" parameterType="possg.com.a.dto.AttendanceDto">
 		INSERT INTO Attendance (employee_seq, attendance, remark, matter)
-        VALUES (#{employeeSeq}, now(), "출근", #{matter})
+        VALUES (#{employeeSeq}, DATE_ADD(NOW(), INTERVAL 9 HOUR), "출근", #{matter})
 	</insert>
 	
 	<!-- 출근 확인 -->
@@ -36,8 +36,8 @@
 	<update id="leavework" parameterType="Integer">
 	    UPDATE Attendance
 	    SET remark = "퇴근",
-	    	leave_work = now(),
-	        work_hours = TIMEDIFF(now(), attendance)
+	    	leave_work = DATE_ADD(NOW(), INTERVAL 9 HOUR),
+	        work_hours = TIMEDIFF(DATE_ADD(NOW(), INTERVAL 9 HOUR), attendance)
 	    WHERE employee_seq = #{employeeSeq} AND leave_work is null
 		ORDER BY attendance DESC
 		LIMIT 1
