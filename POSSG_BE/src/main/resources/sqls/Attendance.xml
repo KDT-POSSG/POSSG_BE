@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="possg.com.a.dao.AttendanceDao">
+	
 	<!-- 출근 -->
 	<insert id="attendance" parameterType="possg.com.a.dto.AttendanceDto">
 		INSERT INTO Attendance (employee_seq, attendance, remark, matter)
