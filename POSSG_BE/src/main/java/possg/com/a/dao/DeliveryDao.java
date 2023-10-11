@@ -23,7 +23,7 @@ public interface DeliveryDao {
 	int callAddDelivery(DeliveryDto dto);
 	
 	
-	List<DeliveryDto> allDeliveryList(DeliveryDto dto);
+	List<DeliveryJoinDto> allDeliveryList(DeliveryDto dto);
 	
 	List<DeliveryDto> selectDelivery(DeliveryDto dto);
 	
@@ -44,6 +44,8 @@ public interface DeliveryDao {
 	int statusUpdate(DeliveryJoinDto dto);
 	
 	ConvenienceDto getDeliveryStatus(String userId);
+	
+	int refuseDelivery(String ref);
 	
 	
 	// List<DeliveryDto> getAllDeliveryOrderList();

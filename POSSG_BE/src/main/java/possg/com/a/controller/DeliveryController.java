@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,10 +30,8 @@ import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 import possg.com.a.dto.ProductDto;
-import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
-import possg.com.a.util.SecurityConfig;
 import possg.com.a.util.TokenCreate;
 
 @RestController
@@ -51,8 +48,7 @@ public class DeliveryController {
 	}
 	
 	@Autowired
-	ProductService productService;
-	
+	ProductService productService;	
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
@@ -146,6 +142,10 @@ public class DeliveryController {
 		if(tokenHeader == null) {
 			return "NO";
 		}
+		if(dto.getDelRemark() == null) {
+			dto.setDelRemark("조심히 안전하게 와주세요");
+		}
+		
 		
 		int customerSeq = tokenParser(tokenHeader);
 			
@@ -238,6 +238,7 @@ public class DeliveryController {
 		        List<DeliveryJoinDto> dto = service.convenienceDeliveryList(param);
 		        Set<Integer> uniqueProductSeqs = new HashSet<>();
 		        List<DeliveryJoinDto> uniqueDtos = new ArrayList<>();
+		        System.out.println(dto);
 
 		        for (DeliveryJoinDto dtos : dto) {
 		            int productSeq = dtos.getProductSeq();
@@ -248,74 +249,68 @@ public class DeliveryController {
 		                uniqueDtos.add(dtos);
 		            }
 		        }       
-		        System.out.println(uniqueDtos);
+		        System.out.println("uniqueDtos"+uniqueDtos);
 		        // 그룹화된 데이터를 담을 List
 		        List<Map<String, Object>> groupedData = new ArrayList<>();
-		        Map<String, Object> deliveryMap = new LinkedHashMap<>();
+		        
 
 		        for (DeliveryJoinDto deliveryJoinDto : uniqueDtos) {
-		            // 필드 값 설정
-		            
+		            // 필드 값 설정   		        	
+		        	Map<String, Object> deliveryMap = new LinkedHashMap<>();
 		            deliveryMap.put("userId", deliveryJoinDto.getUserId());
-		            deliveryMap.put("orderStatus", deliveryJoinDto.getOrderStatus());
 		            deliveryMap.put("ref", deliveryJoinDto.getRef());
 		            deliveryMap.put("location", deliveryJoinDto.getLocation());
 		            deliveryMap.put("branchName", deliveryJoinDto.getBranchName());
 		            deliveryMap.put("seq", deliveryJoinDto.getSeq());
 		            deliveryMap.put("delDate", deliveryJoinDto.getDelDate());
-		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
 		            deliveryMap.put("delTotalNumber", deliveryJoinDto.getDelTotalNumber());
 		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
 		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
-		            deliveryMap.put("delRef", deliveryJoinDto.getDelRef());
+		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
+		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
+		            Set<Integer> addedProductSeqs = new HashSet<>(); 
 
-					List<Map<String, Object>> deliveryDetails = new ArrayList<>();
+		            for (DeliveryJoinDto item : dto) {
+		                if (item.getSeq() == deliveryJoinDto.getSeq()) {
+		                    int productSeq = item.getProductSeq();
 
-					 Set<Integer> addedProductSeqs = new HashSet<>(); 
+		                    // delStatus가 -1인 상품이 걸러지는지 확인하고, 원치 않는다면 아래 조건을 수정 또는 제거
+		                    if (!addedProductSeqs.contains(productSeq)) {
+		                        Map<String, Object> detail = new HashMap<>();
+		                        detail.put("product_name", item.getProductName());
+		                        detail.put("quantity", item.getQuantity());
+		                        detail.put("price", item.getPrice());
+		                        detail.put("product_seq", productSeq);
 
-					    for (DeliveryJoinDto item : dto) {
-					        if (item.getSeq() == deliveryJoinDto.getSeq()) {
-					            int productSeq = item.getProductSeq();
-
-					            if (!addedProductSeqs.contains(productSeq)) {
-					                Map<String, Object> detail = new HashMap<>();
-					                detail.put("product_name", item.getProductName());
-					                detail.put("quantity", item.getQuantity());
-					                detail.put("price", item.getPrice());
-					                detail.put("product_seq", productSeq);
-					                deliveryDetails.add(detail);
-					                
-					                addedProductSeqs.add(productSeq);
-					            }
-					        }
-					    }
-
-		            
-
+		                        deliveryDetails.add(detail);
+		                        System.out.println("detail"+detail);
+		                        addedProductSeqs.add(productSeq);
+		                    }
+		                }
+		            }
 		            deliveryMap.put("details", deliveryDetails);
-
+		            System.out.println("deliveryMap"+deliveryMap);
 		            // 그룹화된 데이터를 추가
 		            groupedData.add(deliveryMap);
 		        }
 		        
-		        System.out.println(groupedData);
+		        System.out.println("group"+groupedData);
 
 		        // 중복된 데이터를 그룹화
 		        List<Map<String, Object>> uniqueGroupedData = new ArrayList<>();
 		        for (Map<String, Object> dataMap : groupedData) {
 		            if (!uniqueGroupedData.contains(dataMap)) {
 		                uniqueGroupedData.add(dataMap);
-		            }
-		            
+		            }		            
 		        }
 		        
-		        System.out.println(uniqueGroupedData);
+		        System.out.println("unique"+uniqueGroupedData);
 		     // 편의점 보유 상품 총 개수
 			    int count = service.getDeliveryCount(param);
 				
 			    
-			    int AllPage = count / 10;
-				if((count % 10) > 0) {
+			    int AllPage = count / 12;
+				if((count % 12) > 0) {
 					AllPage = AllPage + 1;
 				}	
 		    			
@@ -324,7 +319,7 @@ public class DeliveryController {
 				map.put("DeliveryList", uniqueGroupedData);
 				map.put("AllPage", AllPage);
 				map.put("PageNumber", param.getPageNumber());
-				map.put("Cnt", count);	//리액트 할때 추가해줬던거
+				map.put("Cnt", count);
 				
 				
 		        // 결과 반환
@@ -352,7 +347,7 @@ public class DeliveryController {
 		
 		// 배달목록 누르면 detail 페이지 상세보기
 		@GetMapping("allDeliveryList")
-		public List<Map<String, Object>> allDelivery(@RequestParam String ref, @RequestHeader("accessToken") String accessToken) {
+		public Map<String, Object> allDelivery(@RequestParam String ref, @RequestHeader("accessToken") String accessToken) {
 			System.out.println("DeliveryController allDeliveryList " + new Date());
 			
 			DeliveryDto dto = new DeliveryDto();
@@ -364,24 +359,27 @@ public class DeliveryController {
 			dto.setBranchName(branchName);
 			dto.setRef(ref);
 			System.out.println(dto);
-			List<DeliveryDto> delivery = service.allDeliveryList(dto);			
+			List<DeliveryJoinDto> delivery = service.allDeliveryList(dto);			
 			
 			// 그룹화된 데이터를 담을 List
 	        List<Map<String, Object>> groupedData = new ArrayList<>();
 	        Map<String, Object> deliveryMap = new LinkedHashMap<>();
-	        for (DeliveryDto deliveryDto : delivery) {
+	        for (DeliveryJoinDto deliveryDto : delivery) {
 	            // 필드 값 설정
 	            deliveryMap.put("orderSeq", deliveryDto.getOrderSeq());
 	            deliveryMap.put("userId", deliveryDto.getUserId());
-	            deliveryMap.put("orderStatus", deliveryDto.getOrderStatus());
+	            deliveryMap.put("delStatus", deliveryDto.getDelStatus());
 	            deliveryMap.put("ref", deliveryDto.getRef());
 	            deliveryMap.put("location", deliveryDto.getLocation());
 	            deliveryMap.put("branchName", deliveryDto.getBranchName());
+	            deliveryMap.put("delDate", deliveryDto.getDelDate());
+	            deliveryMap.put("delTotalPrice", deliveryDto.getDelTotalPrice());
+	            deliveryMap.put("delRemark", deliveryDto.getDelRemark());
 
 	            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 
 	            // 중복된 seq 값을 그룹으로 묶기
-	            for (DeliveryDto item : delivery) {
+	            for (DeliveryJoinDto item : delivery) {
 	                if (item.getRef().equals(deliveryDto.getRef()) ) {
 	                    Map<String, Object> detail = new HashMap<>();
 	                    detail.put("product_name", item.getProductName());
@@ -397,16 +395,8 @@ public class DeliveryController {
 	            // 그룹화된 데이터를 추가
 	            groupedData.add(deliveryMap);
 	        }
-	        
-	        // 중복된 데이터를 그룹화
-	        List<Map<String, Object>> uniqueGroupedData = new ArrayList<>();
-	        for (Map<String, Object> dataMap : groupedData) {
-	            if (!uniqueGroupedData.contains(dataMap)) {
-	                uniqueGroupedData.add(dataMap);
-	            }
-	        }
 						
-			return uniqueGroupedData;	
+			return deliveryMap;	
 		}
 		
 		// 장바구니 삭제
@@ -437,6 +427,21 @@ public class DeliveryController {
 			}
 			return "YES";
 		}
+
+		@PostMapping("refuseDelivery")
+		public String refuseDelivery(@RequestBody DeliveryDto dto, @RequestHeader("accessToken") String accessToken) {
+			System.out.println("DeliveryController refuseDelivery " + new Date());
+			
+			int count = service.refuseDelivery(dto.getRef());
+			System.out.println(dto);
+			System.out.println(count);
+			
+			if(count != 0) {
+				return "YES";
+			}
+			return "NO";
+		}
+
 		
 		//---------------------------------------------------함수------------------------------------------------------
 	
