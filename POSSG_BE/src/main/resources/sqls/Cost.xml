@@ -47,7 +47,7 @@
 	product_name,
 	quantity as count
 	from Delivery
-	where branch_name = #{branchName} and order_status != 0 and call_status != -1
+	where branch_name = #{branchName} and order_status != 0 and order_status != -1
 </select>
 
 <select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
