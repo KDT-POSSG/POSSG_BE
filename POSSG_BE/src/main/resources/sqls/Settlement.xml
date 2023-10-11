@@ -5,7 +5,7 @@
 	<!-- 시재 기록 -->
 	<insert id="addsettlement" parameterType="possg.com.a.dto.SettlementDto">
 		INSERT INTO Settlement (conv_seq, rdate, cash, memo)
-        VALUES (#{convSeq}, now(), #{cash}, #{memo})
+        VALUES (#{convSeq}, DATE_ADD(NOW(), INTERVAL 9 HOUR), #{cash}, #{memo})
     </insert>
     
     <!-- 시재 리스트 조회 -->
