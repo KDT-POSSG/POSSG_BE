@@ -143,7 +143,7 @@ public class DeliveryController {
 			return "NO";
 		}
 		if(dto.getDelRemark() == null) {
-			dto.setDelRemark("");
+			dto.setDelRemark("조심히 안전하게 와주세요");
 		}
 		
 		
