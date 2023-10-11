@@ -19,6 +19,37 @@ CREATE TABLE Payment (
     foreign key(conv_seq) references convenience(conv_seq)		
 );
 
+-- 본사 확인 인증 키
+CREATE TABLE Account_num(
+	account_num_seq INT auto_increment primary key,	-- 고유번호
+	account_code VARCHAR(255) not null,				-- 본사 지급 번호
+	code_status INT not null						-- 코드 사용 상태 번호 0:사용전 1:사용중
+);
+
+-- 점주 인증 토큰 
+create table Token(
+	seq int auto_increment primary key,	-- 토큰 고유번호
+	refresh varchar(500) not null,		-- 로그인 시 저장 할 refresh 토큰
+	user_id varchar(500) not null		-- 유저 아이디
+);
+
+drop table Token;
+
+
+-- 고객 인증 토큰
+create table CustomerToken(
+	seq int auto_increment primary key,	-- 토큰 고유번호
+	refresh varchar(255) not null,		-- 로그인 시 저장 할 refresh 토큰
+	customer_id varchar(255) not null	-- 유저 아이디
+);
+
+-- 문자 인증 확인 db
+create table Sms(
+	seq int auto_increment primary key,		-- 문자 고유번호
+    sms_num int not null					-- 문자 번호
+);
+
+
 select * from Payment;
 
 -- 결제 아이템 목록들(ref)--
@@ -62,6 +93,8 @@ CREATE TABLE Employee (
 	salary INT not null,										-- 직원 월급
     foreign key(conv_seq) references Convenience(conv_seq)		-- 편의점 테이블 참조
 );
+
+select * from employee;
 
 select count(*)
 		FROM Employee 
