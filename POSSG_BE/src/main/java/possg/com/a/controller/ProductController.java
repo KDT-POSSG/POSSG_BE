@@ -164,9 +164,7 @@ public class ProductController {
 		return resultDto;
 		
 	}
-	// 유통기한 선택 기준도 만들 것
-	// 검색 기준에 유통기한을 추가하여 해댕 재고가 부족할 경우 결제 취소
-	// update 이후 tempDto.size()가 2 이상일 경우 stock_quantity가 0인 튜플 삭제
+
 	// input: int amount, String productName, int convSeq, String expirationDate
 	@PostMapping("buyProduct")
 	public String buyProduct(@RequestBody ProductDto dto) {
