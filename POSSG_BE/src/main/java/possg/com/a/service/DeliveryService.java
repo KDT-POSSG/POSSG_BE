@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import possg.com.a.dao.DeliveryDao;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.dto.DeliveryDto;
 
 import possg.com.a.dto.DeliveryJoinDto;
@@ -31,7 +32,7 @@ public class DeliveryService {
 		return dao.callAddDelivery(dto);
 	}
 	
-	public List<DeliveryDto> allDeliveryList(DeliveryDto dto) {
+	public List<DeliveryJoinDto> allDeliveryList(DeliveryDto dto) {
 		return dao.allDeliveryList(dto);
 	}
 	
@@ -73,6 +74,14 @@ public class DeliveryService {
 	
 	public ConvenienceDto getDeliveryStatus(String userId) {
 		return dao.getDeliveryStatus(userId);
+	}
+	
+	public int refuseDelivery(String ref) {
+		return dao.refuseDelivery(ref);
+	}
+	
+	public DeliveryCount allDeliveryCount(DeliveryParam param) {
+		return dao.allDeliveryCount(param);
 	}
 
 }

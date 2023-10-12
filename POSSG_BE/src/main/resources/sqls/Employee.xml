@@ -11,7 +11,7 @@
 	<!-- 직원 정보 수정 -->
 	<update id="updateEmployee" parameterType="possg.com.a.dto.EmployeeDto">
 	    UPDATE Employee
-	    SET emp_name = #{empName}, birth_date = #{birthDate}, gender = #{gender},
+	    SET emp_name = #{empName}, hire_date= #{hireDate}, birth_date = #{birthDate}, gender = #{gender},
 	        phone_number = #{phoneNumber}, salary = #{salary}
 	    WHERE employee_seq = #{employeeSeq}
 	</update>
@@ -65,7 +65,9 @@
 	    FROM Employee e
 	    JOIN Convenience c ON e.conv_seq = c.conv_seq
         WHERE c.conv_seq = #{convSeq}
-        ORDER BY e.hire_date DESC;
+        ORDER BY 
+        	CASE WHEN e.termination_date IS NULL THEN 0 ELSE 1 END, 
+        	e.employee_seq ASC;
     </select>
     
     <!-- 직원 총 수 -->
@@ -78,7 +80,7 @@
     <!-- 직원 퇴사 처리 (퇴사일 업데이트) -->
     <update id="terminateEmployee" parameterType="java.lang.Integer">
         UPDATE Employee
-        SET termination_date = now()
+        SET termination_date = DATE_ADD(NOW(), INTERVAL 9 HOUR)
         WHERE employee_seq = #{employeeSeq}
     </update>
 </mapper>

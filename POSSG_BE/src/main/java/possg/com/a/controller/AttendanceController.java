@@ -107,8 +107,12 @@ public class AttendanceController {
 		List<AttendanceParam> list = service.selectOneAttendance(employeeSeq);
 		//System.out.println(list.toString());
 		
+		// 근태 갯수 (페이지네이션)
+		int cnt = service.getAllAttendance(employeeSeq); 
+		
 		// 직원정보와 근태정보 
 		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cnt", cnt);
 		map.put("param", param);
 		map.put("list", list);
 		

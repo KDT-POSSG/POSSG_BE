@@ -36,4 +36,8 @@ public class AttendanceService {
 	public AttendanceParam attendanceCheck(int employeeSeq) {
 		return dao.attendanceCheck(employeeSeq);
 	};
+	
+	public int getAllAttendance(int employeeSeq) {
+		return dao.getAllAttendance(employeeSeq);
+	};
 }

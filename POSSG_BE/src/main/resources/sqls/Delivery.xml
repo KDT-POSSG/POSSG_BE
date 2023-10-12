@@ -102,9 +102,26 @@
 </update>
 
   <!-- 상세 배달 목록 -->
-<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryDto">
-	select *
-	from Delivery
+<select id="allDeliveryList" parameterType="possg.com.a.dto.DeliveryDto" resultType="possg.com.a.dto.DeliveryJoinDto">
+	select 
+	dl.seq,
+    d.user_id,
+    d.product_seq,
+    d.order_status,
+    d.quantity,
+    d.product_name,
+    d.ref,
+    d.location,
+    d.price,
+    d.branch_name,
+    dl.del_date,
+    dl.del_status,
+    dl.del_total_number,
+    dl.del_total_price,
+    dl.del_remark,
+    dl.del_ref
+	from Delivery as d
+	inner join Delivery_list dl on dl.del_ref = d.ref
 	where ref = #{ref} and branch_name = #{branchName}
 
 </select>
@@ -131,18 +148,44 @@
 	inner join Convenience j on o.branch_name = j.branch_name
 	inner join Delivery_list p on o.ref = p.del_ref
 	WHERE j.branch_name = #{branchName}
-	AND  o.order_status = #{orderStatus} AND o.order_status != 0
-
+		<if test="orderStatus == 1 ">
+			 AND p.del_status = 1
+		</if>
+		
+		<if test="orderStatus == 2 ">
+			AND p.del_status = 2
+		</if>
+		
+		<if test="orderStatus == 3 ">
+			AND p.del_status = 3
+		</if>
+		
+		<if test="orderStatus == 4 ">
+			AND p.del_status = 4 OR p.del_status = -1
+		</if>
 	order by p.seq desc
 	limit ${(pageNumber* 12)}, 12
 </select>
 
+<select id="allDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryCount">
+	SELECT 
+    COUNT(CASE WHEN dl.del_status = 1 THEN 1 END) AS beforeOrder,
+    COUNT(CASE WHEN dl.del_status = 2 THEN 1 END) AS afterOrder,
+    COUNT(CASE WHEN dl.del_status = 3 THEN 1 END) AS Delivering
+	FROM Delivery as d
+	inner join Delivery_list dl on d.ref = dl.del_ref
+	where d.branch_name = #{branchName}
+
+</select>
+
 <!-- 배송진행 상태 업데이트 -->
 <update id="statusUpdate" parameterType="possg.com.a.dto.DeliveryJoinDto">
-	update Delivery as o, Delivery_list as p
-	 set o.order_status = o.order_status + 1,
-    p.del_status = p.del_status + 1
-	where o.ref = #{ref} and p.del_ref = #{ref}
+    UPDATE Delivery AS o, Delivery_list AS p
+    SET 
+        o.order_status = CASE WHEN o.order_status &lt; 4 THEN o.order_status + 1 ELSE o.order_status END,
+        p.del_status = CASE WHEN p.del_status &lt; 4 THEN p.del_status + 1 ELSE p.del_status END
+    WHERE 
+        o.ref = #{ref} AND p.del_ref = #{ref}
 </update>
 
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
@@ -152,21 +195,20 @@
 		inner join Delivery_list  p on o.ref = p.del_ref
 		
 		<if test="orderStatus == 1 ">
-			where o.branch_name = #{branchName} and o.order_status = 1
+			where o.branch_name = #{branchName} and p.del_status = 1
 		</if>
 		
 		<if test="orderStatus == 2 ">
-			where o.branch_name = #{branchName} and o.order_status = 2
+			where o.branch_name = #{branchName} and p.del_status = 2
 		</if>
 		
 		<if test="orderStatus == 3 ">
-			where o.branch_name = #{branchName} and o.order_status = 3
+			where o.branch_name = #{branchName} and p.del_status = 3
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			where o.branch_name = #{branchName} and o.order_status = 4
-		</if>
-		
+			where o.branch_name = #{branchName} AND (p.del_status = 4 OR p.del_status = -1)
+		</if>		
 </select>
 
 
@@ -175,5 +217,12 @@
 	from Convenience
 	where user_id = #{userId}
 </select>
+
+<delete id="refuseDelivery" parameterType="String"> 
+	update Delivery as o, Delivery_list as p
+	set o.order_status = -1,
+    p.del_status = -1
+	where p.del_ref = #{ref} and o.ref = #{ref} and o.order_status = 1
+</delete>
 
 </mapper>

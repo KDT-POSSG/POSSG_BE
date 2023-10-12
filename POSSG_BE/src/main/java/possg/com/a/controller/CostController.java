@@ -79,7 +79,11 @@ public class CostController {
 				}	
 			}
 			if(auth != null) {
-				service.updateCost(change);
+				int count =service.updateCost(change);
+				System.out.println("authnotnull" + count);
+				if(count != 0) {
+					return "YES";
+				}
 			}
 		}
 		return "NO";
@@ -196,20 +200,24 @@ public class CostController {
 		for(int item : orderPrice) {
 			totalOrderPrice = totalOrderPrice + item;
 		}
-		
+		int totalLoss = 0;
 		 // 월별 비교
         if(param.getChoice() == 1) {      
         	
+        	Map<String, Object> map = new HashMap<>();   
         	CostDto loss = service.selectCost(param);
         	
-        	Map<String, Object> map = new HashMap<>();
-        	int totalLoss = 0;
-	        if(loss.getCostMonth() == formattedMonth) {
-	        	
-	        	// 지출금액
-	        	totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
-	        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;	        		 			
-	        }	                	        
+        	if(loss == null) {
+        		totalLoss = 0;
+        	}
+        	if(loss != null) {       		        	      	
+        	     	
+		        if(loss.getCostMonth() == formattedMonth) {		        	
+		        	// 지출금액
+		        	totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
+		        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;	        		 			
+		        }
+        	}
 	        //매출
 	        int totalPrice = 0;
 			for (CostParam item : payment) {
@@ -231,13 +239,18 @@ public class CostController {
 			map.put("totalLoss", totalLoss);
 			map.put("totalPrice", totalPrice);
 			map.put("profit", profit);
+			map.put("date", param.getDate());
+			
+			if(totalLoss == 0 || totalPrice == 0) {		
+				Map<String, Object> emptyMap = new HashMap<>();
+				return emptyMap;
+			}
 	        
 	        // 순수익
 	        return map;	       
         }
 		// 총 지출 금액
         // 년별 비교
-        int totalLoss = 0;
         for(CostDto item : lossList) {
         	
         	totalLoss = totalLoss + item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
@@ -266,8 +279,15 @@ public class CostController {
 		map.put("totalLoss", totalLoss);
 		map.put("totalPrice", totalPrice);
 		map.put("profit", profit);
+		map.put("date", param.getDate());
+		
+		if(totalLoss == 0 && totalPrice == 0) {		
+			Map<String, Object> emptyMap = new HashMap<>();
+			return emptyMap;
+		}
 		
 		return map;
+		
 		
 	}
 
