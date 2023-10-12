@@ -84,14 +84,32 @@ public class NaverCloudUtil {
                 while ((inputLine = br.readLine()) != null) {
                     response.append(inputLine);
                 }
+                
                 br.close();
+                if(response.isEmpty()) {
+                	try {
+                        File file = new File(filepath);
+                        if (file.delete()) {
+                            System.out.println("File deleted successfully");
+                        } else {
+                            System.out.println("Failed to delete the file");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while deleting the file: " + e);
+                    }
+                    
+                	return "";
+                }
                 // 결과 출력
                 System.out.println(response.toString());
+                
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-     // 오디오 파일 삭제
+        
+        
+        // 오디오 파일 삭제
         try {
             File file = new File(filepath);
             if (file.delete()) {

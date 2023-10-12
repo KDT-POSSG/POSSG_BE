@@ -37,6 +37,7 @@ public class TextController {
 	private String responseMessage;
 	
 	// 음성인식 wav -> String
+	@PostMapping("/stt")
 	public String stt(@RequestParam("uploadFile") MultipartFile uploadFile
 			,HttpServletRequest request) throws IOException {
 		

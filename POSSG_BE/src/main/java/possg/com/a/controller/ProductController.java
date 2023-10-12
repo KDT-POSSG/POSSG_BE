@@ -164,6 +164,49 @@ public class ProductController {
 		return resultDto;
 		
 	}
+	// 유통기한 선택 기준도 만들 것
+	// 검색 기준에 유통기한을 추가하여 해댕 재고가 부족할 경우 결제 취소
+	// update 이후 tempDto.size()가 2 이상일 경우 stock_quantity가 0인 튜플 삭제
+	// input: int amount, String productName, int convSeq, String expirationDate
+	@PostMapping("buyProduct")
+	public String buyProduct(@RequestBody ProductDto dto) {
+		System.out.println(dto);
+		System.out.println("ProductController buyProduct() " + new Date());
+		List<ProductDto> tempDto = service.getProductSeqAndTotalStock(dto);
+		if(tempDto.isEmpty()) {
+			System.out.println("상품이 없습니다." + tempDto.toString());
+			return "NO";
+		}
+
+		if(tempDto.get(0).getTotalStock() < dto.getAmount()) {
+			System.out.println("재고가 부족합니다." + tempDto.get(0).getTotalStock());
+			return "NO";
+		}
+		
+		int stock_calc = dto.getAmount(); 
+		for(int i=0; i < tempDto.size(); i++) {
+			stock_calc = tempDto.get(i).getStockQuantity() - Math.abs(stock_calc);
+			if(stock_calc >= 0) {
+				tempDto.get(i).setStockQuantity(stock_calc);
+				int count_big = service.updateProductStock(tempDto.get(i));
+				if(count_big>0) {
+					System.out.println("update 성공");
+					/*
+					int count_del = service.deleteProductRegiInfo(dto);
+					if(count_del > 0) {
+						System.out.println("delete 성공");
+					}
+					*/
+					return "YES";
+				}
+			}
+		}
+		if(tempDto.get(0).getTotalStock() >= dto.getAmount()) {
+			System.out.println("전산오류 상품입니다. 해당 상품을 카운터에서 수거하고, 다른 상품을 가져와주세요");
+		}
+		return "NO";
+	}
+	
 	
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
