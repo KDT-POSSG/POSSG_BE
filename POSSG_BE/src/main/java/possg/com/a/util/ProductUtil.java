@@ -29,7 +29,7 @@ public class ProductUtil {
 	public static List<ProductDto> productScrap(ProductService proService) throws InterruptedException {
 		System.out.println("ProductController productScrap " + new Date());
 		
-		int conv_seq = 1;
+		int conv_seq = 5;
 		
         int cnt = 1;
         
@@ -41,8 +41,8 @@ public class ProductUtil {
         	
         	// 상품 상세정보 필요시 크롤링 페이지 다른 주소로 변경 (변경 시 파라미터 수정 필요)>> https://emile.emarteveryday.co.kr/
         	
-            String url = "https://www.emart24.co.kr/goods/event?search=&page=" + cnt + "&category_seq=&align=";
-        	//String url = "https://www.emart24.co.kr/goods/ff?search=&page=" + cnt + "&category_seq=&align=";
+            //String url = "https://www.emart24.co.kr/goods/event?search=&page=" + cnt + "&category_seq=&align=";
+        	String url = "https://www.emart24.co.kr/goods/ff?search=&page=" + cnt + "&category_seq=&align=";
             try {
             	Document document = Jsoup.connect(url)
                         .timeout(10 * 1000)  // 10초 타임아웃
@@ -54,7 +54,7 @@ public class ProductUtil {
                     break;
                 }
                 for (Element item : items) {
-                    int category_id = 1; //2; // 카테고리 (1: 행사상품, 2: 신선식품)
+                    int category_id = 2; //2; // 카테고리 (1: 행사상품, 2: 신선식품)
                     String product_name = item.select(".itemtitle a").text(); // 제품 이름
                     String product_roman_name = KoreanRomanizer.romanize(product_name, KoreanCharacter.ConsonantAssimilation.Regressive);
                     
@@ -74,7 +74,7 @@ public class ProductUtil {
                     String barcode = "0000000000000";
                     String img_url = item.select(".itemImg img").attr("src"); // 이미지 URL
                     
-                    System.out.println("세일 여부: " + category_id);
+                    System.out.println("상품 종류: " + category_id);
                     System.out.println("제품 이름: " + product_name);
                     System.out.println("제품 로마자 이름:" + product_roman_name);
                     System.out.println("할인 전 가격: " + price);
@@ -134,7 +134,7 @@ public class ProductUtil {
     	    }
     	}     
         // 동일한 상품 존재
-        System.out.println("ProductController no product to add " + new Date());
+        //System.out.println("ProductController no product to add " + new Date());
     	return true;
 	}
 	
@@ -144,16 +144,16 @@ public class ProductUtil {
     	// 현재 날짜 가져오기
         Calendar calendar = Calendar.getInstance();
         
-        /*
+        
         // 원하는 날짜로 설정 (10월 27일)
         calendar.set(Calendar.MONTH, Calendar.OCTOBER); // 10월 (0부터 시작이므로 9)
-        calendar.set(Calendar.DAY_OF_MONTH, 27); // 27일
-        */
+        calendar.set(Calendar.DAY_OF_MONTH, 24); // 27일
+        
         // 랜덤 객체 생성
         Random random = new Random();
         
         // 0~365 사이의 랜덤한 숫자 생성
-        int randomDays = random.nextInt(180);//random.nextInt(1, 7);
+        int randomDays = random.nextInt(1,14);//random.nextInt(180);
         
         // 랜덤한 날짜를 더하기
         calendar.add(Calendar.DAY_OF_YEAR, randomDays);

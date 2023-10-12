@@ -23,6 +23,10 @@ public interface ProductDao {
 	List<ProductDto> getAllProduct(ProductParam param);
 	int updateProductRomanName(ProductDto dto);
 	int getProductTotalNumber(ProductParam param);
+	List<ProductDto> getProductSeqAndTotalStock(ProductDto dto);
+	int updateProductStock(ProductDto dto);
+	int deleteProduct(ProductDto dto);
+	int deleteProductRegiInfo(ProductDto dto);
 	
 	int addProduct(ProductDto dto);
 	

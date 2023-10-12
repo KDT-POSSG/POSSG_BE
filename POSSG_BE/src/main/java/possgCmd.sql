@@ -102,4 +102,31 @@ VALUES (0, 0, '0', '2000-01-01', -1, 0, 0, 'temp');
 
 ALTER TABLE Call_product_conv
 ADD price_origin int AFTER price;
+
+select * from Product where product_name not like concat('%', ")", '%');
+select * from Product where product_seq=1800;
+select * from Call_product_conv;
+select * from Call_product_conv_order_list;
+
+DELETE FROM Call_product_conv WHERE call_seq >= 1 ;
+DELETE FROM Call_product_conv_order_list WHERE seq >= 1;
+DELETE FROM Call_product_conv_order_list WHERE seq = 15;
+INSERT INTO Call_product_conv_order_list (seq, conv_seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, 0, '-1', '2000-01-01', -1, 0, 0, 'temp');
+INSERT INTO Call_product_conv_order_list (seq, conv_seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, 0, '0', '2000-01-01', -1, 0, 0, 'temp');
+
+ALTER TABLE Call_product_conv
+ADD price_origin int AFTER price;
+
+update Call_product_conv 
+set call_ref = "20231005151149" where call_seq = 29;
+
+update Call_product_conv 
+set price_origin = 4830 where call_seq = 29; 
+
+update Call_product_conv 
+set call_status = 3 where call_seq = 29; 
 */
