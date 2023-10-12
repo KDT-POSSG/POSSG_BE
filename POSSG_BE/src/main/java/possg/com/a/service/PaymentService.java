@@ -40,4 +40,8 @@ public class PaymentService {
 	public List<PaymentParam> paymentNumList(String receiptId) {
 		return dao.paymentNumList(receiptId);
 	};
+	
+	public int cashCheck(String receiptId) {
+		return dao.cashCheck(receiptId);
+	};
 }
