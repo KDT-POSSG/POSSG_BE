@@ -55,6 +55,21 @@ public class PaymentController {
 		
 		String check = "";
 		
+		// 현금 결제인 경우
+		int cashCheck = service.cashCheck(receiptId);
+		System.out.println(cashCheck);
+		
+		if (cashCheck > 0) {
+			int count = service.cancelpayment(receiptId);
+			if(count > 0) {
+				return "YES";
+			}
+			else{
+				return "CANCEL YES BUT UPDATE NO";
+			}
+		}
+		
+		
 		try {
 			
 			// REST API KEY, PRIVATE KEY
@@ -63,11 +78,14 @@ public class PaymentController {
 
 		    System.out.println("토큰: " + token.get("access_token")); // 토큰 확인
 		    
+		    
+		    
 		    // 토큰 에러 안나려면 꼭 허가 IP를 넣어줘야함 --> FIREWALL_BLOCKED때문에
 		    if(token.get("error_code") != null) { 
 		    	check = (String)token.get("error_code");
 		    	return check;
 		    }
+		    
 		    
 		    Cancel cancel = new Cancel();
 		    cancel.receiptId = receiptId;

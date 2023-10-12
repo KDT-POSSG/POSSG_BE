@@ -97,4 +97,11 @@
 		where conv_seq = #{convSeq}
 	</select>
 	
+	<!-- 현금 결제인지 체크 -->
+	<select id="cashCheck" parameterType="String" resultType="Integer">
+		SELECT count(*)
+		FROM Payment
+		WHERE receipt_id = #{receipt_id} AND pg = "현금"
+	</select>
+	
 </mapper>
