@@ -112,15 +112,6 @@
   order by expiration_date asc;
 </select>
 
-<!-- 주어진 productName에 해당하는 상품번호와 상품의 총 재고량 획득 -->
-<select id="getProductSeqAndTotalStock" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
-  select product_seq, stock_quantity, expiration_date, conv_seq,
-  (select sum(stock_quantity) from Product where product_name = #{productName} and conv_seq = #{convSeq}) as total_stock
-  from Product 
-  where product_name = #{productName} and conv_seq = #{convSeq} and expiration_date = #{expirationDate}
-  order by expiration_date asc;
-</select>
-
 <!-- 바코드 검색 -->
 <select id="findProductBarcode" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
     select * 
