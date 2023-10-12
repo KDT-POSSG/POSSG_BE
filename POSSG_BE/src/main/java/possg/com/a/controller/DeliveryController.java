@@ -330,7 +330,14 @@ public class DeliveryController {
 		        if (!uniqueGroupedData.isEmpty()) {
 		            return map;
 		        } else {
-		            return null;
+		        	
+		        	Map<String, Object> emptyMap = new HashMap<String, Object>();
+		        	
+		        	emptyMap.put("before", countStatus.getBeforeOrder());
+		        	emptyMap.put("after", countStatus.getAfterOrder());
+		        	emptyMap.put("delivering", countStatus.getDelivering());
+		        	
+		            return emptyMap;
 		        }
 		    }
 		    return null;

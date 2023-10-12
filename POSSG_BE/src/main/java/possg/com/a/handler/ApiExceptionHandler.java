@@ -9,8 +9,9 @@ import java.io.IOException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Component
+@RestControllerAdvice
 public class ApiExceptionHandler implements AccessDeniedHandler {
 	
 	@Override

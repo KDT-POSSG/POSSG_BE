@@ -122,7 +122,7 @@
     dl.del_ref
 	from Delivery as d
 	inner join Delivery_list dl on dl.del_ref = d.ref
-	where ref = #{ref} and branch_name = #{branchName}
+	where dl.del_ref = #{ref} and dl.branch_name = #{branchName}
 
 </select>
 
