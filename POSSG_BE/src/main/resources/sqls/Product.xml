@@ -404,8 +404,8 @@ resultType="possg.com.a.dto.ProductDto">
 	select * from Product
 </select>
 
-<!-- 유통기한 지난 상품 업데이트 -->
-<update id="updateExpirationDateFlag">
+<!-- 유통기한 지난 상품 자동 업데이트 -->
+<update id="updateExpirationFlagAuto">
 	update Product
     set expiration_flag = 1
     where expiration_flag = 0 and UNIX_TIMESTAMP(expiration_date) &lt; UNIX_TIMESTAMP(NOW())
