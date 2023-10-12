@@ -162,7 +162,11 @@ public class ProductService {
 		return dao.getOrderListTotalNumber(param);
 	}
 	
-	public int updateExpirationDateFlag() {
-		return dao.updateExpirationDateFlag();
+	public int updateExpirationFlagAuto() {
+		return dao.updateExpirationFlagAuto();
+	}
+	
+	public int updateProductExpirationFlag(ProductDto dto) {
+		return dao.updateProductExpirationFlag(dto);
 	}
 }
