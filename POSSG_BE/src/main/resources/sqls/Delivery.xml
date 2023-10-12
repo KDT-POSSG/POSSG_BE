@@ -82,8 +82,8 @@
 
 <!-- 배달주문 하기 -->
 <insert id="insertDeliveryList" parameterType="possg.com.a.dto.DeliveryListDto">
-	insert Delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark)
-	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark})
+	insert Delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name)
+	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark}, #{branchName})
 </insert>
 
 <select id="selectCustomer" parameterType="Integer" resultType="possg.com.a.dto.CustomerDto">
@@ -122,13 +122,13 @@
     dl.del_ref
 	from Delivery as d
 	inner join Delivery_list dl on dl.del_ref = d.ref
-	where ref = #{ref} and branch_name = #{branchName}
+	where dl.del_ref = #{ref} and dl.branch_name = #{branchName}
 
 </select>
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
 <select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
-	SELECT  p.seq,
+	SELECT  distinct p.seq,
     o.user_id,
     o.product_seq,
     o.order_status,
@@ -168,14 +168,12 @@
 </select>
 
 <select id="allDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryCount">
-	SELECT 
-    COUNT(CASE WHEN dl.del_status = 1 THEN 1 END) AS beforeOrder,
-    COUNT(CASE WHEN dl.del_status = 2 THEN 1 END) AS afterOrder,
-    COUNT(CASE WHEN dl.del_status = 3 THEN 1 END) AS Delivering
-	FROM Delivery as d
-	inner join Delivery_list dl on d.ref = dl.del_ref
-	where d.branch_name = #{branchName}
-
+	SELECT
+    COUNT(CASE WHEN del_status = 1 THEN 1 END) AS beforeOrder,
+    COUNT(CASE WHEN del_status = 2 THEN 1 END) AS afterOrder,
+    COUNT(CASE WHEN del_status = 3 THEN 1 END) AS Delivering
+	FROM Delivery_list
+	where branch_name = #{branchName}
 </select>
 
 <!-- 배송진행 상태 업데이트 -->
@@ -191,23 +189,21 @@
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
 		resultType="java.lang.Integer">
 		select count(*) 
-		from  Delivery as o
-		inner join Delivery_list  p on o.ref = p.del_ref
-		
+		from  Delivery_list		
 		<if test="orderStatus == 1 ">
-			where o.branch_name = #{branchName} and p.del_status = 1
+			where branch_name = #{branchName} and del_status = 1
 		</if>
 		
 		<if test="orderStatus == 2 ">
-			where o.branch_name = #{branchName} and p.del_status = 2
+			where branch_name = #{branchName} and del_status = 2
 		</if>
 		
 		<if test="orderStatus == 3 ">
-			where o.branch_name = #{branchName} and p.del_status = 3
+			where branch_name = #{branchName} and del_status = 3
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			where o.branch_name = #{branchName} AND (p.del_status = 4 OR p.del_status = -1)
+			where branch_name = #{branchName} AND (del_status = 4 OR del_status = -1)
 		</if>		
 </select>
 

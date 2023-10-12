@@ -40,6 +40,18 @@ public class ProductService {
 	public int getProductTotalNumber(ProductParam param) {
 		return dao.getProductTotalNumber(param);
 	}
+	public List<ProductDto> getProductSeqAndTotalStock(ProductDto dto){
+		return dao.getProductSeqAndTotalStock(dto);
+	}
+	public int updateProductStock(ProductDto dto) {
+		return dao.updateProductStock(dto);
+	}
+	public int deleteProduct(ProductDto dto) {
+		return dao.deleteProduct(dto);
+	}
+	public int deleteProductRegiInfo(ProductDto dto) {
+		return dao.deleteProductRegiInfo(dto);
+	}
 	public int addProduct(ProductDto dto) {
 		return dao.addProduct(dto);
 	}
@@ -148,5 +160,13 @@ public class ProductService {
 	
 	public int getOrderListTotalNumber(CallProductConvParam param) {
 		return dao.getOrderListTotalNumber(param);
+	}
+	
+	public int updateExpirationFlagAuto() {
+		return dao.updateExpirationFlagAuto();
+	}
+	
+	public int updateProductExpirationFlag(ProductDto dto) {
+		return dao.updateProductExpirationFlag(dto);
 	}
 }

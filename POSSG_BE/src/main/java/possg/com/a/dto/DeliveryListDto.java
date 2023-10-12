@@ -9,12 +9,13 @@ public class DeliveryListDto {
     private int delTotalPrice;
     private String delRemark;
     private int userId;
+    private String branchName;
     
     public DeliveryListDto() {
 	}
-      
+
 	public DeliveryListDto(int seq, String delRef, String delDate, int delStatus, int delTotalNumber, int delTotalPrice,
-			String delRemark, int userId) {
+			String delRemark, int userId, String branchName) {
 		super();
 		this.seq = seq;
 		this.delRef = delRef;
@@ -24,6 +25,7 @@ public class DeliveryListDto {
 		this.delTotalPrice = delTotalPrice;
 		this.delRemark = delRemark;
 		this.userId = userId;
+		this.branchName = branchName;
 	}
 
 	public int getSeq() {
@@ -90,13 +92,20 @@ public class DeliveryListDto {
 		this.userId = userId;
 	}
 
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
+
 	@Override
 	public String toString() {
 		return "DeliveryListDto [seq=" + seq + ", delRef=" + delRef + ", delDate=" + delDate + ", delStatus="
 				+ delStatus + ", delTotalNumber=" + delTotalNumber + ", delTotalPrice=" + delTotalPrice + ", delRemark="
-				+ delRemark + ", userId=" + userId + "]";
+				+ delRemark + ", userId=" + userId + ", branchName=" + branchName + "]";
 	}
-
-	
+      
 
 }

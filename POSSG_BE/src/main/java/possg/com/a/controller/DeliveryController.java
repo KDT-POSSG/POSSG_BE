@@ -138,7 +138,7 @@ public class DeliveryController {
 	// 배달 주문하기 
 	@PostMapping("insertDeliveryList")
 	public String insertDeliveryList(@RequestBody DeliveryListDto dto, @RequestHeader("accessToken") String tokenHeader) {
-		System.out.println("DeliveryController callAddDelivery " + new Date());
+		System.out.println("DeliveryController insertDeliveryList " + new Date());
 		
 		if(tokenHeader == null) {
 			return "NO";
@@ -155,7 +155,6 @@ public class DeliveryController {
 		delivery.setUserId(customerSeq);
 
 		List<DeliveryDto> deli = service.selectDelivery(delivery);
-
 		int price = 0;
 		int quantity = 0;
 		for(DeliveryDto forDto :deli) {
@@ -174,6 +173,8 @@ public class DeliveryController {
         dto.setDelTotalPrice(price);
 		dto.setDelTotalNumber(quantity);
 		dto.setDelRef(formattedDateTime);
+		dto.setBranchName(deli.get(0).getBranchName());
+		System.out.println(deli.get(0).getBranchName());
 		
 		if(dto.getDelTotalNumber() == 0 || dto.getDelTotalPrice() == 0) {
 			System.out.println("물건이 안담겨 있음");
@@ -238,12 +239,12 @@ public class DeliveryController {
 		        // 모든 데이터 추출
 		        List<DeliveryJoinDto> dto = service.convenienceDeliveryList(param);
 		        DeliveryCount countStatus = service.allDeliveryCount(param);
-		        Set<Integer> uniqueProductSeqs = new HashSet<>();
+		        Set<String> uniqueProductSeqs = new HashSet<>();
 		        List<DeliveryJoinDto> uniqueDtos = new ArrayList<>();
 		        System.out.println(dto);
 		        System.out.println(countStatus);
 		        for (DeliveryJoinDto dtos : dto) {
-		            int productSeq = dtos.getProductSeq();
+		            String productSeq = dtos.getRef();
 
 		            // uniqueProductSeqs에 ProductSeq가 중복되지 않는 경우만 uniqueDtos에 추가합니다.
 		            if (!uniqueProductSeqs.contains(productSeq)) {
@@ -269,17 +270,14 @@ public class DeliveryController {
 		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
 		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
 		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
-		            deliveryMap.put("before", countStatus.getBeforeOrder());
-		            deliveryMap.put("after", countStatus.getAfterOrder());
-		            deliveryMap.put("delivering", countStatus.getDelivering());
+		            
 		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 		            Set<Integer> addedProductSeqs = new HashSet<>(); 
 
 		            for (DeliveryJoinDto item : dto) {
 		                if (item.getSeq() == deliveryJoinDto.getSeq()) {
 		                    int productSeq = item.getProductSeq();
-
-		                    // delStatus가 -1인 상품이 걸러지는지 확인하고, 원치 않는다면 아래 조건을 수정 또는 제거
+		                    
 		                    if (!addedProductSeqs.contains(productSeq)) {
 		                        Map<String, Object> detail = new HashMap<>();
 		                        detail.put("product_name", item.getProductName());
@@ -311,8 +309,7 @@ public class DeliveryController {
 		        
 		        System.out.println("unique"+uniqueGroupedData);
 		     // 편의점 보유 상품 총 개수
-			    int count = service.getDeliveryCount(param);
-				
+			    int count = service.getDeliveryCount(param);							    
 			    
 			    int AllPage = count / 12;
 				if((count % 12) > 0) {
@@ -321,17 +318,26 @@ public class DeliveryController {
 		    			
 								
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("DeliveryList", uniqueGroupedData);
-				map.put("AllPage", AllPage);
-				map.put("PageNumber", param.getPageNumber());
-				map.put("Cnt", count);
-				
+				map.put("deliveryList", uniqueGroupedData);
+				map.put("allPage", AllPage);
+				map.put("pageNumber", param.getPageNumber());
+				map.put("cnt", count);
+				map.put("before", countStatus.getBeforeOrder());
+	            map.put("after", countStatus.getAfterOrder());
+	            map.put("delivering", countStatus.getDelivering());
 				
 		        // 결과 반환
 		        if (!uniqueGroupedData.isEmpty()) {
 		            return map;
 		        } else {
-		            return null;
+		        	
+		        	Map<String, Object> emptyMap = new HashMap<String, Object>();
+		        	
+		        	emptyMap.put("before", countStatus.getBeforeOrder());
+		        	emptyMap.put("after", countStatus.getAfterOrder());
+		        	emptyMap.put("delivering", countStatus.getDelivering());
+		        	
+		            return emptyMap;
 		        }
 		    }
 		    return null;

@@ -12,6 +12,7 @@ public class ProductDto {
     private int priceDiscount;
     private int stockQuantity;
     private String expirationDate;
+    private int expirationFlag=0;
     private double discountRate;
     private int promotionInfo;
     private String barcode;
@@ -32,7 +33,7 @@ public class ProductDto {
     }
 
 	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
-			int price, int priceOrigin, int priceDiscount, int stockQuantity, String expirationDate,
+			int price, int priceOrigin, int priceDiscount, int stockQuantity, String expirationDate, int expirationFlag,
 			double discountRate, int promotionInfo, String barcode, String imgUrl) {
 		super();
 		this.productSeq = productSeq;
@@ -45,10 +46,12 @@ public class ProductDto {
 		this.priceDiscount = priceDiscount;
 		this.stockQuantity = stockQuantity;
 		this.expirationDate = expirationDate;
+		this.expirationFlag = expirationFlag;
 		this.discountRate = discountRate;
 		this.promotionInfo = promotionInfo;
 		this.barcode = barcode;
 		this.imgUrl = imgUrl;
+		
 	}
 
 	public int getProductSeq() {
@@ -139,6 +142,14 @@ public class ProductDto {
 		this.expirationDate = expirationDate;
 	}
 
+	public int getExpirationFlag() {
+		return expirationFlag;
+	}
+
+	public void setExpirationFlag(int expirationFlag) {
+		this.expirationFlag = expirationFlag;
+	}
+
 	public double getDiscountRate() {
 		return discountRate;
 	}
@@ -208,7 +219,7 @@ public class ProductDto {
 		return "ProductDto [productSeq=" + productSeq + ", convSeq=" + convSeq + ", categoryId=" + categoryId
 				+ ", productName=" + productName + ", productRomanName=" + productRomanName
 				+ ", productTranslationName=" + productTranslationName + ", price=" + price + ", priceOrigin=" + priceOrigin + ", priceDiscount="
-				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate
+				+ priceDiscount + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate + ", expirationFlag=" + expirationFlag
 				+ ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo + ", barcode=" + barcode
 				+ ", imgUrl=" + imgUrl  + ", amount=" + amount + "]";
 	}

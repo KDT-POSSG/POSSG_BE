@@ -96,6 +96,7 @@ CREATE TABLE Product (
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
+	expiration_flag INT,												-- 유통기한 만료 플래그
 	discount_rate DECIMAL(5, 2),										-- 할인율
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호
@@ -259,7 +260,7 @@ CREATE TABLE call_product_Conv (
 	call_status INT not null,									-- 발주 상태 (0: 발주 대기/ 1: 발주 접수중/ 2: 접수완료/ 3: 배송중/ 4: 배송완료)
 	img_url VARCHAR(255),										-- 상품 이미지
     foreign key(conv_seq) references Convenience(conv_seq),		-- 편의점 테이블에서 참조
-    foreign key(product_seq) references Product(product_seq),	-- customer 테이블에서 참조
+    foreign key(product_seq) references Product(product_seq),	-- 상품 테이블에서 참조
     foreign key(call_ref) references call_product_conv_order_list(call_ref)
 );
 

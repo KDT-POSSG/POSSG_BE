@@ -18,14 +18,16 @@
 	, MIN(price_discount) AS price_discount
 	, SUM(stock_quantity) AS stock_quantity
 	, MIN(expiration_date) AS expiration_date
+	, MIN(expiration_flag) AS expiration_flag
 	, MAX(discount_rate) AS discount_rate
 	, MIN(promotion_info) AS promotion_info
 	, MAX(barcode) AS barcode
 	, MAX(img_url) AS img_url
 	from Product
 	<where>
+		expiration_flag = 0
 		<if test="convSeq != null and convSeq != ''">
-		    conv_seq = #{convSeq}
+		    and conv_seq = #{convSeq}
 		</if>
 		<if test="choice != null and choice != '' and search != null and search != '' ">
 			<if test="choice == 'productName'">
@@ -52,7 +54,7 @@
 			</otherwise>
 		</choose>
 	</where>
-	GROUP BY product_name
+	group by product_name
 	order by 
 		case when SUM(stock_quantity) = 0 then 1 else 0 end,
 	<choose>
@@ -84,38 +86,73 @@
 <!-- 가장 최근에 추가된 상품의 product_seq 획득 -->
 <select id="getLastProduct" parameterType="possg.com.a.dto.ProductDto" resultType="Integer">
 	select max(product_seq) from Product;
-	where conv_seq = #{convSeq}
+	where conv_seq = #{convSeq} and expiration_flag = 0
 </select>
 
 <!-- 주어진 productName에 해당하는 상품 정보 획득 -->
 <select id="findProductName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
     select * 
     from Product 
-    where product_name = #{productName} and conv_seq = #{convSeq}
+    where product_name = #{productName} and conv_seq = #{convSeq} and expiration_flag = 0
 </select>
 
 <!-- 주어진 productName에 해당하는 상품의 총 재고량 획득 -->
 <select id="getTotalStock" parameterType="possg.com.a.dto.ProductDto" resultType="int">
   select SUM(stock_quantity) 
   from Product 
-  where product_name = #{productName} and conv_seq = #{convSeq}
+  where product_name = #{productName} and conv_seq = #{convSeq} and expiration_flag = 0
+</select>
+
+<!-- 주어진 productName에 해당하는 상품번호와 상품의 총 재고량 획득 -->
+<select id="getProductSeqAndTotalStock" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+  select product_seq, stock_quantity, expiration_date, conv_seq,
+  (select sum(stock_quantity) from Product where product_name = #{productName} and conv_seq = #{convSeq}) as total_stock
+  from Product 
+  where product_name = #{productName} and conv_seq = #{convSeq} and expiration_date = #{expirationDate} and expiration_flag = 0
+  order by expiration_date asc;
 </select>
 
 <!-- 바코드 검색 -->
 <select id="findProductBarcode" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
     select * 
     from Product 
-    where barcode = #{barcode} and conv_seq = #{convSeq}
+    where barcode = #{barcode} and conv_seq = #{convSeq} and expiration_flag = 0
 </select>
 
 <!-- 새로운 상품을 추가 -->
 <insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
 	insert into Product(conv_seq, category_id, product_name, product_roman_name, price, price_origin, price_discount, 
-	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
-	values(#{convSeq}, #{categoryId}, #{productName}, #{product_roman_name}, #{price}, #{price_origin}, #{priceDiscount}, 
-			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
+	stock_quantity, expiration_date, expiration_flag, discount_rate, promotion_info, barcode, img_url)
+	values(#{convSeq}, #{categoryId}, #{productName}, #{productRomanName}, #{price}, #{priceOrigin}, #{priceDiscount}, 
+			#{stockQuantity}, #{expirationDate}, #{expirationFlag}, #{discountRate}, 
 			#{promotionInfo}, #{barcode}, #{imgUrl})
 </insert>
+
+<!-- 상품 재고 업데이트 -->
+<update id="updateProductStock" parameterType="possg.com.a.dto.ProductDto">
+	update Product
+	set stock_quantity = #{stockQuantity}
+	where product_seq = #{productSeq}
+</update>
+
+<!-- 상품 삭제 -->
+<delete id="deleteProduct" parameterType="possg.com.a.dto.ProductDto">
+    delete from Product
+    where product_seq = #{productSeq}
+</delete>
+
+<!-- 상품 삭제: 동일한 상품중 잔여 정보 -->
+<delete id="deleteProductRegiInfo" parameterType="possg.com.a.dto.ProductDto">
+    delete from Product
+    where product_name = #{productName} and expiration_date != #{expirationDate} and stock_quantity = 0 and conv_seq = #{convSeq} and expiration_flag = 0
+</delete>
+
+<!-- 상품: 유통기한 만료 상품 폐기 처리 -->
+<update id="updateProductExpirationFlag" parameterType="possg.com.a.dto.ProductDto">
+	update Product
+	set expiration_flag = #{expirationFlag}
+	where product_seq = #{productSeq}
+</update>
 
 <!-- 점주 발주 대기 -->
 <!-- 모든 발주 대기 목록 획득. (call_status -1 제외) -->
@@ -357,6 +394,14 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 resultType="possg.com.a.dto.ProductDto">
 	select * from Product
 </select>
+
+<!-- 유통기한 지난 상품 자동 업데이트 -->
+<update id="updateExpirationFlagAuto">
+	update Product
+    set expiration_flag = 1
+    where expiration_flag = 0 and UNIX_TIMESTAMP(expiration_date) &lt; UNIX_TIMESTAMP(NOW())
+</update>
+
 <!-- 상품 원가 할당 -->
 <update id="updateProductOriginPrice" parameterType="possg.com.a.dto.ProductDto">
 	update Product
