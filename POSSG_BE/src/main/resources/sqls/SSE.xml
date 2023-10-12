@@ -7,7 +7,8 @@
 		SELECT *
 		FROM Product
 		<!--	 WHERE expiration_date &lt; CURRENT_TIMESTAMP -->
-		WHERE expiration_date &lt; DATE_ADD(NOW(), INTERVAL 2+9 HOUR) <!-- &lt;는 < 와 같은 의미, KST +9 표준시간으로 변경 -->
+		WHERE 
+			expiration_date &lt; DATE_ADD(NOW(), INTERVAL 2+9 HOUR) <!-- &lt;는 < 와 같은 의미, KST +9 표준시간으로 변경 -->
 		ORDER BY expiration_date ASC;
 	</select>
 </mapper>
