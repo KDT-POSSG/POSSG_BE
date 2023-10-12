@@ -169,9 +169,9 @@
 
 <select id="allDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryCount">
 	SELECT 
-    COUNT(CASE WHEN dl.del_status = 1 THEN 1 END) AS status1,
-    COUNT(CASE WHEN dl.del_status = 2 THEN 1 END) AS status2,
-    COUNT(CASE WHEN dl.del_status = 3 THEN 1 END) AS status3
+    COUNT(CASE WHEN dl.del_status = 1 THEN 1 END) AS beforeOrder,
+    COUNT(CASE WHEN dl.del_status = 2 THEN 1 END) AS afterOrder,
+    COUNT(CASE WHEN dl.del_status = 3 THEN 1 END) AS Delivering
 	FROM Delivery as d
 	inner join Delivery_list dl on d.ref = dl.del_ref
 	where d.branch_name = #{branchName}

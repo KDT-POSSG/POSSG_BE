@@ -89,7 +89,7 @@ public class TokenController {
 		        HttpHeaders headers = new HttpHeaders();
 		        headers.add("accessToken", newAccessToken);
 
-		        return ResponseEntity.ok().headers(headers).body("YES");
+		        return ResponseEntity.ok().headers(headers).body("REFRESH_YES");
 		    } 	    	
 		    	System.out.println("refresh fail");
 		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();		    

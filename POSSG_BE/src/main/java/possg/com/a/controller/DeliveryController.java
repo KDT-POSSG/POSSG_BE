@@ -269,9 +269,9 @@ public class DeliveryController {
 		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
 		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
 		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
-		            deliveryMap.put("status1", countStatus.getStatus1());
-		            deliveryMap.put("status2", countStatus.getStatus2());
-		            deliveryMap.put("status3", countStatus.getStatus3());
+		            deliveryMap.put("before", countStatus.getBeforeOrder());
+		            deliveryMap.put("after", countStatus.getAfterOrder());
+		            deliveryMap.put("delivering", countStatus.getDelivering());
 		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 		            Set<Integer> addedProductSeqs = new HashSet<>(); 
 

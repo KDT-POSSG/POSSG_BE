@@ -2,48 +2,49 @@ package possg.com.a.dto;
 
 public class DeliveryCount {
 
-	private int status1;
-	private int status2;
-	private int status3;
+	private int beforeOrder;
+	private int afterOrder;
+	private int Delivering;
 	
 	
 	public DeliveryCount() {
 	}
 
-	public DeliveryCount(int status1, int status2, int status3) {
+	public DeliveryCount(int beforeOrder, int afterOrder, int delivering) {
 		super();
-		this.status1 = status1;
-		this.status2 = status2;
-		this.status3 = status3;
+		this.beforeOrder = beforeOrder;
+		this.afterOrder = afterOrder;
+		Delivering = delivering;
 	}
 
-	public int getStatus1() {
-		return status1;
+	public int getBeforeOrder() {
+		return beforeOrder;
 	}
 
-	public void setStatus1(int status1) {
-		this.status1 = status1;
+	public void setBeforeOrder(int beforeOrder) {
+		this.beforeOrder = beforeOrder;
 	}
 
-	public int getStatus2() {
-		return status2;
+	public int getAfterOrder() {
+		return afterOrder;
 	}
 
-	public void setStatus2(int status2) {
-		this.status2 = status2;
+	public void setAfterOrder(int afterOrder) {
+		this.afterOrder = afterOrder;
 	}
 
-	public int getStatus3() {
-		return status3;
+	public int getDelivering() {
+		return Delivering;
 	}
 
-	public void setStatus3(int status3) {
-		this.status3 = status3;
+	public void setDelivering(int delivering) {
+		Delivering = delivering;
 	}
 
 	@Override
 	public String toString() {
-		return "DeliveryCount [status1=" + status1 + ", status2=" + status2 + ", status3=" + status3 + "]";
+		return "DeliveryCount [beforeOrder=" + beforeOrder + ", afterOrder=" + afterOrder + ", Delivering=" + Delivering
+				+ "]";
 	}
 		
 }
