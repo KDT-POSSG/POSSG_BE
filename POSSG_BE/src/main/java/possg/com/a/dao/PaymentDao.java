@@ -17,4 +17,5 @@ public interface PaymentDao {
 	List<PaymentParam> paymentlist(int convSeq);
 	PaymentParam paymentOneList(String receiptId);
 	int getallpayment(int convSeq);
+	List<PaymentParam> paymentNumList(String receiptId);
 }

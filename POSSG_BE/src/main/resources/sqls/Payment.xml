@@ -11,14 +11,14 @@
         )
         VALUES (
             #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, 
-            #{price}, #{purchasedAt}, #{receiptUrl}, #{cardNum}, #{cardCompany}, "결제완료"
+            #{price}, #{purchasedAt}, #{receiptUrl}, #{cardNum}, #{cardCompany}, "결제 완료"
         )
     </insert>
     
     <!-- 결제 취소 -->
     <update id="cancelpayment" parameterType="java.lang.String">
     	UPDATE Payment
-    	SET del = "결제취소"
+    	SET del = "결제 취소"
     	where receipt_id = #{receiptId}
     </update>
     
@@ -42,6 +42,29 @@
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
     	WHERE p.receipt_id = #{receiptId} 
+    </select>
+    
+    <!-- 단일 결제 영수증 번호 조회 -->
+    <select id="paymentNumList" parameterType="java.lang.String" resultType="possg.com.a.dto.PaymentParam">
+    	SELECT
+    		cu.customer_seq AS customerSeq,
+    		cu.customer_name AS customerName,
+    		c.branch_name AS branchName,
+    		c.representative_name AS representativeName,
+    		p.receipt_id AS receiptId,
+    		p.pg AS pg,
+    		p.method AS method,
+    		p.price AS price,
+    		p.purchased_at AS purchasedAt,
+    		p.card_company AS cardCompany,
+    		p.card_num AS cardNum,
+    		p.del AS del,
+    		p.receipt_url AS receiptUrl
+    	FROM Payment p
+    	JOIN Convenience c ON p.conv_seq = c.conv_seq
+    	JOIN Customer cu ON cu.customer_seq = p.user_seq
+    	WHERE p.receipt_id LIKE CONCAT('%', #{receiptId}, '%')
+    	ORDER BY p.purchased_at DESC;
     </select>
     
     <!-- 전체 결제 목록 조회 -->
@@ -73,4 +96,5 @@
 		FROM Payment
 		where conv_seq = #{convSeq}
 	</select>
+	
 </mapper>
