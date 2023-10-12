@@ -25,6 +25,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.dto.DeliveryDto;
 import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
@@ -236,10 +237,11 @@ public class DeliveryController {
 		        
 		        // 모든 데이터 추출
 		        List<DeliveryJoinDto> dto = service.convenienceDeliveryList(param);
+		        DeliveryCount countStatus = service.allDeliveryCount(param);
 		        Set<Integer> uniqueProductSeqs = new HashSet<>();
 		        List<DeliveryJoinDto> uniqueDtos = new ArrayList<>();
 		        System.out.println(dto);
-
+		        System.out.println(countStatus);
 		        for (DeliveryJoinDto dtos : dto) {
 		            int productSeq = dtos.getProductSeq();
 
@@ -267,6 +269,9 @@ public class DeliveryController {
 		            deliveryMap.put("delTotalPrice", deliveryJoinDto.getDelTotalPrice());
 		            deliveryMap.put("delRemark", deliveryJoinDto.getDelRemark());
 		            deliveryMap.put("delStatus", deliveryJoinDto.getDelStatus());
+		            deliveryMap.put("before", countStatus.getBeforeOrder());
+		            deliveryMap.put("after", countStatus.getAfterOrder());
+		            deliveryMap.put("delivering", countStatus.getDelivering());
 		            List<Map<String, Object>> deliveryDetails = new ArrayList<>();
 		            Set<Integer> addedProductSeqs = new HashSet<>(); 
 

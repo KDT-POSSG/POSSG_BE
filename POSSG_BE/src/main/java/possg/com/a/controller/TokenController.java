@@ -1,6 +1,7 @@
 package possg.com.a.controller;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,13 +63,13 @@ public class TokenController {
 		            userId = e.getClaims().get("userId", String.class);
 		        } catch (Exception e) {
 		            e.printStackTrace();
-		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		        }
 		        		        
 		        // 유저가 아님 
 		        if(userId == null) {
 		        	System.out.println("넌 유저가 아니다");
-		        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		        }	        	        	        	        
 
 		        ConvenienceDto userDto = convService.mypage(userId);
@@ -79,7 +80,7 @@ public class TokenController {
 		        // 로그인 아이디랑 일치하는 토큰이 없는거
 		        if(userToken == null) {
 		        	System.out.println("유효한 refresh토큰이 없습니다.");
-		        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		        }
 		        	        
 		        // 새로운 Access Token 발급
@@ -88,16 +89,22 @@ public class TokenController {
 		        HttpHeaders headers = new HttpHeaders();
 		        headers.add("accessToken", newAccessToken);
 
-		        return ResponseEntity.ok().headers(headers).body("YES");
+		        return ResponseEntity.ok().headers(headers).body("REFRESH_YES");
 		    } 	    	
 		    	System.out.println("refresh fail");
-		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();		    
+		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();		    
 		}
 		
 		@GetMapping("errorRedirect")
 		public ResponseEntity<?> errorRedirect(HttpServletRequest req, HttpServletResponse res) throws IOException {
 			System.out.println("tokenController errorRedirect " + new Date());
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		@RequestMapping(value = "/afterLogout", method = RequestMethod.GET)
+		public String afterLogout() {
+
+		    return "redirect:/login";
 		}
 	
 	
