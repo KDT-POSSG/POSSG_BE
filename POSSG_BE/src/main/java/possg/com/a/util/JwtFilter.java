@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -53,6 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
 			logger.info("authorization이 없거나 잘못보냈습니다.");
 			filterChain.doFilter(request, response);
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
 		}
 		
@@ -84,12 +86,14 @@ public class JwtFilter extends OncePerRequestFilter {
 		    } else {
 		    	System.out.println("accessToken이 만료되었습니다"); // 401
 		    	isError = true;		        
-		    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		    	return;
+		    	RequestDispatcher dispatcher = request.getRequestDispatcher("/tokenController/refresh");
+		    	dispatcher.forward(request, response);
 		    }
 		    
 	    } else { // access 토큰이 없다면
-	    	System.out.println("access토큰이 없습니다."); // 
+	    	System.out.println("access토큰이 없습니다.");
+	    	
+	    	response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
 	    }
 	    
