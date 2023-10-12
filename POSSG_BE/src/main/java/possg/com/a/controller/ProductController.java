@@ -123,7 +123,7 @@ public class ProductController {
 	// 새로운 상품을 추가
 	// 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
 	// conv_seq, category_id, product_name,product_roman_name, price, price_origin, price_discount, 
-	// stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url
+	// stock_quantity, expiration_date, expiration_flag, discount_rate, promotion_info, barcode, img_url
 	@PostMapping("addProduct")
 	public String addProduct(@RequestBody ProductDto dto) {
 		System.out.println("ProductController addProduct " + new Date());
@@ -253,6 +253,7 @@ public class ProductController {
                 detail.put("product_name", nameDto.getProductName());
                 detail.put("stock", nameDto.getStockQuantity());
                 detail.put("expiration_date", nameDto.getExpirationDate());
+                detail.put("expiration_flag", nameDto.getExpirationFlag());
                 detail.put("price", nameDto.getPrice());
                 detail.put("category", nameDto.getCategoryId());
                 detail.put("promotion_info", nameDto.getPromotionInfo());
@@ -276,13 +277,7 @@ public class ProductController {
  		if((count % param.getPageSize()) > 0) {
  			pageProduct = pageProduct + 1;
  		}
- 		/*
- 		Map<String, Object> map = new HashMap<String, Object>();
- 		map.put("convList", resultList);
- 		map.put("pageProduct", pageProduct);
- 		//map.put("pageNumber", param.getPageNumber());
- 		map.put("cnt", count); // react 중 pagination 사용시 활용
- 		*/
+
  		Map<String, Object> map = new HashMap<String, Object>();
  		map.put("ProductList", resultList);
  		map.put("pageProduct", pageProduct);
