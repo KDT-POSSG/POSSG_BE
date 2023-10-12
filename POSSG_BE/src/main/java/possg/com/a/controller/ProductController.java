@@ -554,12 +554,29 @@ public class ProductController {
 		    CallProductConvOrderListDto tempDto = new CallProductConvOrderListDto(
 	    				convDto.getConvSeq(), convDto.getCallRef(), totalProduct, totalPrice);
 			int countOrder = service.updateCallToOrderList(tempDto);
-			if(countOrder <= 0) {
+			if(countOrder == 0) {
 				return "NO";
 			}
 		}
 		return "YES";
 	}
+	
+	// input: int expirationFlag, String productSeq
+	@PostMapping("updateProductExpirationFlag")
+	public String updateProductExpirationFlag(List<ProductDto> dtoList) {
+		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
+		
+		for(ProductDto tempDto : dtoList) {
+			int count = service.updateProductExpirationFlag(dtoList);
+			if(count == 0) {
+				System.out.println("업데이트 실패");
+				return "NO";
+			}
+		}
+		System.out.println("업데이트 성공");
+		return "YES";
+	}
+	
 	
 	/* 고객 발주 */
 	
@@ -754,10 +771,10 @@ public class ProductController {
 	}
 	
 	@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
-	@PostMapping("updateExpirationDateFlag")
+	@PostMapping("updateExpirationFlagAuto")
 	public String updateExpirationDateFlag() {
 		System.out.println("ProductController updateExpirationDateFlag() " + new Date());
-		int count = service.updateExpirationDateFlag();
+		int count = service.updateExpirationFlagAuto();
 		if (count > 0) {
 			return "YES";
 		}
