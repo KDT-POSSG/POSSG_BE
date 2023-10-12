@@ -96,6 +96,7 @@ CREATE TABLE Product (
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
+	expiration_flag INT,												-- 유통기한 만료 플래그
 	discount_rate DECIMAL(5, 2),										-- 할인율
 	promotion_info INT,													-- 할인 정보 (1: 1+1, 2: 2+1, 3: 세일...)
 	barcode	VARCHAR(255) not null,										-- 바코드 번호

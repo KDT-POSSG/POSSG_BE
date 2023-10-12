@@ -385,6 +385,14 @@ resultType="possg.com.a.dto.CallProductConvOrderListDto">
 resultType="possg.com.a.dto.ProductDto">
 	select * from Product
 </select>
+
+<!-- 유통기한 지난 상품 업데이트 -->
+<update id="updateExpirationDateFlag">
+	update Product
+    set expiration_flag = 1
+    where expiration_flag = 0 and UNIX_TIMESTAMP(expiration_date) &lt; UNIX_TIMESTAMP(NOW())
+</update>
+
 <!-- 상품 원가 할당 -->
 <update id="updateProductOriginPrice" parameterType="possg.com.a.dto.ProductDto">
 	update Product
