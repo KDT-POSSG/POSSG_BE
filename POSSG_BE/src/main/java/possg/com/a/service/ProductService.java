@@ -166,7 +166,7 @@ public class ProductService {
 		return dao.updateExpirationFlagAuto();
 	}
 	
-	public int updateProductExpirationFlag(List<ProductDto> dtoList) {
-		return dao.updateProductExpirationFlag(dtoList);
+	public int updateProductExpirationFlag(ProductDto dto) {
+		return dao.updateProductExpirationFlag(dto);
 	}
 }

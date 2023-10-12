@@ -71,5 +71,5 @@ public interface ProductDao {
 	int getOrderListTotalNumber(CallProductConvParam param);
 	
 	int updateExpirationFlagAuto();
-	int updateProductExpirationFlag(List<ProductDto> dtoList);
+	int updateProductExpirationFlag(ProductDto dto);
 }

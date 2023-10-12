@@ -567,7 +567,7 @@ public class ProductController {
 		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
 		
 		for(ProductDto tempDto : dtoList) {
-			int count = service.updateProductExpirationFlag(dtoList);
+			int count = service.updateProductExpirationFlag(tempDto);
 			if(count == 0) {
 				System.out.println("업데이트 실패");
 				return "NO";
