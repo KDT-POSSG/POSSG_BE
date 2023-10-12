@@ -69,4 +69,6 @@ public interface ProductDao {
 	int updateProductOriginPrice(ProductDto dto);
 	
 	int getOrderListTotalNumber(CallProductConvParam param);
+	
+	int updateExpirationDateFlag();
 }

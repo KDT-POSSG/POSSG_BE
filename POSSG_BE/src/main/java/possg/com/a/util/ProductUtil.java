@@ -68,6 +68,7 @@ public class ProductUtil {
                     int price_discount = Integer.parseInt(priceDiscountStr);
                     int stock_quantity = random.nextInt(20); // max 20
                     String expiration_date = DateCalc();	// max 2025년 3월 2일
+                    int expiration_flag = 0;
                     double discount_rate = DiscountRateCalc(price, price_discount);
                     // 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
                     int promotion_info =PromotionInfoCheck(item.select(".iTemTit .floatR").text()); // 1;  
@@ -90,7 +91,7 @@ public class ProductUtil {
                     System.out.println("----------------");      
                     
                     ProductDto dto = new ProductDto(0, conv_seq, category_id, product_name, product_roman_name, price, price_origin, price_discount,
-							stock_quantity, expiration_date, discount_rate,
+							stock_quantity, expiration_date, expiration_flag, discount_rate,
 							promotion_info, barcode, img_url);
             		
                     // 동일한 제목이 있으면 해당 제목 return

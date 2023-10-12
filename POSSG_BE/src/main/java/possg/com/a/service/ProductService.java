@@ -161,4 +161,8 @@ public class ProductService {
 	public int getOrderListTotalNumber(CallProductConvParam param) {
 		return dao.getOrderListTotalNumber(param);
 	}
+	
+	public int updateExpirationDateFlag() {
+		return dao.updateExpirationDateFlag();
+	}
 }
