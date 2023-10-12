@@ -166,8 +166,6 @@ public class TokenCreate {
 	  
 	 
 	  public boolean isExpired(String token) {
-//		    return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token)
-//		            .getBody().getExpiration().before(new Date());	// 유효한 경우 false, 만료 true
 			try {
 				Jwts.parserBuilder().setSigningKey(securityKey).build().parseClaimsJws(token)
 	            .getBody().getExpiration().before(new Date());

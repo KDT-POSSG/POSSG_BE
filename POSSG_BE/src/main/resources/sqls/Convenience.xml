@@ -15,7 +15,7 @@
 	values(#{userId}, #{pwd}, #{representativeName}, #{branchName}, #{phoneNumber}, now(), 1, #{convKey}) 
 </insert>
 
-<update id="updateCodeStatus" parameterType="possg.com.a.dto.AccountNumDto">
+<update id="updateCodeStatus" parameterType="possg.com.a.dto.ConvenienceDto">
     UPDATE Account_num
 	SET code_status = 1
 	WHERE account_code = #{accountCode};
