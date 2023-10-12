@@ -63,8 +63,9 @@ public class ProductController {
 	@GetMapping("healthcheck")
 	public String healthcheck() {
 		System.out.println("ProductController healthcheck " + new Date());
-		
-		return "Hello";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String formattedDate = sdf.format(new Date());
+		return formattedDate;
 	}
 	
 	public String responseMessage;
@@ -163,6 +164,47 @@ public class ProductController {
 		return resultDto;
 		
 	}
+
+	// input: int amount, String productName, int convSeq, String expirationDate
+	@PostMapping("buyProduct")
+	public String buyProduct(@RequestBody ProductDto dto) {
+		System.out.println(dto);
+		System.out.println("ProductController buyProduct() " + new Date());
+		List<ProductDto> tempDto = service.getProductSeqAndTotalStock(dto);
+		if(tempDto.isEmpty()) {
+			System.out.println("상품이 없습니다." + tempDto.toString());
+			return "NO";
+		}
+
+		if(tempDto.get(0).getTotalStock() < dto.getAmount()) {
+			System.out.println("재고가 부족합니다." + tempDto.get(0).getTotalStock());
+			return "NO";
+		}
+		
+		int stock_calc = dto.getAmount(); 
+		for(int i=0; i < tempDto.size(); i++) {
+			stock_calc = tempDto.get(i).getStockQuantity() - Math.abs(stock_calc);
+			if(stock_calc >= 0) {
+				tempDto.get(i).setStockQuantity(stock_calc);
+				int count_big = service.updateProductStock(tempDto.get(i));
+				if(count_big>0) {
+					System.out.println("update 성공");
+					/*
+					int count_del = service.deleteProductRegiInfo(dto);
+					if(count_del > 0) {
+						System.out.println("delete 성공");
+					}
+					*/
+					return "YES";
+				}
+			}
+		}
+		if(tempDto.get(0).getTotalStock() >= dto.getAmount()) {
+			System.out.println("전산오류 상품입니다. 해당 상품을 카운터에서 수거하고, 다른 상품을 가져와주세요");
+		}
+		return "NO";
+	}
+	
 	
 	/* #### 재고 관리 및 발주 #### */
 	/* 재고 관리 목록 */
@@ -409,7 +451,7 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	// NO
+	
 	// 발주 대기 상품 리스트 업데이트
 	// input: convSeq, productName, amount, price, priceOrigin, callRef
 	@PostMapping("updateCallProductConv")
@@ -477,14 +519,13 @@ public class ProductController {
 		}
 		return responseMessage="NO";
 	}
-	
-	//NO
+
 	// 발주 대기 상품 삭제
-	// input: String callRef, String productName, int convSeq
+	// input: String callRef, List<String> nameList, int convSeq
 	// 상품 삭제 시 주문 목록 업데이트 기능 추가
 	@PostMapping("deleteCallProductConv")
 	public String deleteCallProductConv(@RequestBody CallProductConvDto convDto) {
-		System.out.println("ProductController delteCallProduct() " + new Date());
+		System.out.println("ProductController deleteCallProduct() " + new Date());
 		if (convDto.getNameList().isEmpty()) {
 			System.out.println("NameList가 없음" + convDto.toString());
 			return "NO";
