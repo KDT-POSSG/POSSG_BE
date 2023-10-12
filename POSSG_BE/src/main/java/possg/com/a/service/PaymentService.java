@@ -36,4 +36,8 @@ public class PaymentService {
 	public int getallpayment(int convSeq) {
 		return dao.getallpayment(convSeq);
 	};
+	
+	public List<PaymentParam> paymentNumList(String receiptId) {
+		return dao.paymentNumList(receiptId);
+	};
 }

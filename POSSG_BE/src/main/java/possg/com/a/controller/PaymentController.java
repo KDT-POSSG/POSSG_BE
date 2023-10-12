@@ -138,5 +138,23 @@ public class PaymentController {
 		return map;
 	};
 	
+	// 단일 영수증 번호 결제 정보
+	@GetMapping("paymentNumList")
+	public Map<String, Object> paymentNumList(@RequestParam String receiptId){
+		System.out.println("PaymentController paymentNumList " + new Date());
+		
+		List<PaymentParam> list = service.paymentNumList(receiptId);
+		
+		int count = list.size();
+		//System.out.println(count);
+		
+		// 결제정보, 상세목록정보
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cnt", count);
+		map.put("list", list);
+		
+		return map;
+	};
+	
 	
 }
