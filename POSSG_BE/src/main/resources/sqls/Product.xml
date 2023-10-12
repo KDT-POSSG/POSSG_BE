@@ -120,9 +120,9 @@
 <!-- 새로운 상품을 추가 -->
 <insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
 	insert into Product(conv_seq, category_id, product_name, product_roman_name, price, price_origin, price_discount, 
-	stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url)
+	stock_quantity, expiration_date, expiration_flag, discount_rate, promotion_info, barcode, img_url)
 	values(#{convSeq}, #{categoryId}, #{productName}, #{productRomanName}, #{price}, #{priceOrigin}, #{priceDiscount}, 
-			#{stockQuantity}, #{expirationDate}, #{discountRate}, 
+			#{stockQuantity}, #{expirationDate}, #{expirationFlag}, #{discountRate}, 
 			#{promotionInfo}, #{barcode}, #{imgUrl})
 </insert>
 

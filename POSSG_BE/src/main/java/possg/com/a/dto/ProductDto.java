@@ -12,7 +12,7 @@ public class ProductDto {
     private int priceDiscount;
     private int stockQuantity;
     private String expirationDate;
-    private int expirationFlag;
+    private int expirationFlag=0;
     private double discountRate;
     private int promotionInfo;
     private String barcode;

@@ -758,7 +758,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 크롤링 기능
+	@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
 	@PostMapping("updateExpirationDateFlag")
 	public String updateExpirationDateFlag() {
 		System.out.println("ProductController updateExpirationDateFlag() " + new Date());
