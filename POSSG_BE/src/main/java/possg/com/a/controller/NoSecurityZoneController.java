@@ -88,10 +88,15 @@ public class NoSecurityZoneController {
 		System.out.println("ConvenienceController idcheck " + new Date());
 		
 		System.out.println(userId);
-		int count = service.idcheck(userId);
-		System.out.println(count);
-		if (count == 0) {
-			return "YES";
+		
+		if(userId != null) {					
+			int count = service.idcheck(userId);
+			
+			System.out.println(count);
+			
+			if (count == 0) {
+				return "YES";
+			}
 		}
 
 		return "NO";
@@ -176,20 +181,18 @@ public class NoSecurityZoneController {
 	 
 	 // 아이디 찾기#
 	@PostMapping("findId")
-	public ResponseEntity<?> findId(@RequestParam(value="representativeName", required=false) String representativeName,
-	                                @RequestParam(value="phoneNumber", required=false) String phoneNumber) {
-	 
+	public ResponseEntity<?> findId(@RequestBody ConvenienceDto dto) {	 
 	 System.out.println("ConvenienceController findId() " + new Date());
 	    Map<String, String> response = new HashMap<>();
 	    
 	    // 폰번호랑 이메일 둘 다 안적으면 안됨
-	    if (representativeName == null || phoneNumber == null) {
+	    if (dto.getRepresentativeName() == null || dto.getPhoneNumber() == null) {
 	        response.put("errorMessage", "이메일 주소와 전화번호 둘 다 제공해주세요.");
 	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	    }
 
 	    // 폰번호랑 이메일 둘다 있어야 찾아짐
-	    ConvenienceDto user = service.findUserByAddressAndPhoneNumber(representativeName, phoneNumber);
+	    ConvenienceDto user = service.findUserByAddressAndPhoneNumber(dto);
 	    
 	    if (user != null) {
 	        response.put("user_id", user.getUserId());
@@ -203,15 +206,15 @@ public class NoSecurityZoneController {
 	// 본사 인증키 확인#
 	 @PostMapping("keyCheck")
 	 public String keycheck(String convKey) {
-		 System.out.println("ConvenienceController keycheck() " + new Date());	 
-		 
-		 System.out.println(convKey);
+		 System.out.println("ConvenienceController keycheck() " + new Date());	 	 
 		 		 
-		 int count = service.keycheck(convKey);
-		 System.out.println(count);
-		 if(count != 0) {
-			 return "YES";
-		 }	 
+		 if(convKey != null) {			 		
+			 int count = service.keycheck(convKey);
+			 System.out.println(count);
+			 if(count != 0) {
+				 return "YES";
+			 }	 
+		 }
 		 return "NO";
 	 }
 	 
@@ -258,7 +261,7 @@ public class NoSecurityZoneController {
 
 	 // sms 확인하기#
 	 @PostMapping("Authentication")
-	 public String Authentication(@RequestParam int CodeNumber) {		 
+	 public String Authentication(int CodeNumber) {		 
 		 System.out.println("ConvenienceController Authentication() " + new Date());
 		 
 		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
@@ -280,10 +283,8 @@ public class NoSecurityZoneController {
 		  
 		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
 			 				 
-			 service.deleteSms(CodeNumber);		 
-			 
-				 return "YES";
-			 
+			 service.deleteSms(CodeNumber);		 		 
+				 return "YES";		 
 		 }	
 		 return "NO";
 	 }

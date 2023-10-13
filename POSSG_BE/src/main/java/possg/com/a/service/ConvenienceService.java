@@ -56,8 +56,8 @@ public class ConvenienceService {
 
 	
 	//아이디찾기
-	public ConvenienceDto findUserByAddressAndPhoneNumber(String representativeName, String phoneNumber) {
-	    return dao.findUserByAddressAndPhoneNumber(representativeName, phoneNumber);
+	public ConvenienceDto findUserByAddressAndPhoneNumber(ConvenienceDto dto) {
+	    return dao.findUserByAddressAndPhoneNumber(dto);
 	}
 
 	

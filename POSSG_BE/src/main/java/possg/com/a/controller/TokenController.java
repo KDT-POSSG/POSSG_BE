@@ -72,7 +72,7 @@ public class TokenController {
 		        	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		        }	        	        	        	        
 
-		        ConvenienceDto userDto = convService.mypage(userId);
+		        ConvenienceDto userDto = convService.changePassword(userId);
 		        List<TokenDto> userToken = convService.selectToken(refreshToken);
 		        
 		        System.out.println(userToken);
