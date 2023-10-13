@@ -22,7 +22,7 @@ public interface ConvenienceDao {
 	ConvenienceDto login(ConvenienceDto dto);
 	
 	// 아이디 찾기	
-	ConvenienceDto findUserByAddressAndPhoneNumber(String representativeName, String phoneNumber);
+	ConvenienceDto findUserByAddressAndPhoneNumber(ConvenienceDto dto);
 	
 	// 패스워드 업데이트
 	void findPassword(ConvenienceDto dto);

@@ -29,7 +29,7 @@
 </select>
 	
 <!-- 아이디 찾기  -->	
-<select id="findUserByAddressAndPhoneNumber" parameterType="String" resultType="possg.com.a.dto.ConvenienceDto">
+<select id="findUserByAddressAndPhoneNumber" parameterType="possg.com.a.dto.ConvenienceDto" resultType="possg.com.a.dto.ConvenienceDto">
      SELECT * FROM Convenience WHERE representative_name = #{representativeName} AND phone_number = #{phoneNumber}
 </select>
     
