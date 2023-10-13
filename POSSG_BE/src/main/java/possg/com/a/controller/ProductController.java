@@ -254,7 +254,8 @@ public class ProductController {
                 detail.put("stock", nameDto.getStockQuantity());
                 detail.put("expiration_date", nameDto.getExpirationDate());
                 detail.put("expiration_flag", nameDto.getExpirationFlag());
-                detail.put("price", nameDto.getPrice());
+                detail.put("price", nameDto.getPriceDiscount());
+                detail.put("price_Origin", nameDto.getPriceOrigin());
                 detail.put("category", nameDto.getCategoryId());
                 detail.put("promotion_info", nameDto.getPromotionInfo());
                 detail.put("discount_rate", nameDto.getDiscountRate());
@@ -293,8 +294,9 @@ public class ProductController {
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
 		Map<String, Object> map = new HashMap<String, Object>();
-
+		System.out.println(param);
 		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
+		
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
 		if (dtoList.isEmpty()) {
 			System.out.println("발주 대기 상품 없음" + dtoList);

@@ -42,13 +42,13 @@
         </if>
 		<choose>
 			<when test="minPrice >= 0 and maxPrice > 0">
-				and price between #{minPrice} and #{maxPrice}
+				and price_discount between #{minPrice} and #{maxPrice}
 			</when>
 			<when test="minPrice > maxPrice">
 				and 1=0
 			</when>
 			<when test="minPrice >= 0 and maxPrice == 0">
-	        and price >= #{minPrice}
+	        and price_discount >= #{minPrice}
 	   		</when>
 			<otherwise>
 			</otherwise>
@@ -65,10 +65,24 @@
 			expiration_date desc
 		</when>
 		<when test="sortOrder == 'lowestPrice'">
-			price_discount asc
+	        <choose>
+	        	<when test="stockListCheck == 1">
+	        		price_origin asc
+	        	</when>
+	        	<otherwise>
+	        		price_discount asc
+	        	</otherwise>
+	        </choose>
 		</when>
 		<when test="sortOrder == 'highestPrice'">
-			price_discount desc
+			<choose>
+	        	<when test="stockListCheck == 1">
+	        		price_origin desc
+	        	</when>
+	        	<otherwise>
+	        		price_discount desc
+	        	</otherwise>
+	        </choose>
 		</when>
 		<when test="sortOrder == 'discountRate'">
 			discount_rate desc
