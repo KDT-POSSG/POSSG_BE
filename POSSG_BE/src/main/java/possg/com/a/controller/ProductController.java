@@ -117,6 +117,7 @@ public class ProductController {
 		map.put("ProductList", list);
 		map.put("pageProduct", pageProduct);
 		map.put("cnt", count); // react 중 pagination 사용시 활용
+		System.out.println(map);
 		return map;
 	}
 	
@@ -232,7 +233,7 @@ public class ProductController {
         // 모든 상품 정보를 순회
 	    for (ProductDto dto : list) {
 	    	
-	    	List<ProductDto> nameDtoList = service.findProductName(dto);
+	    	List<ProductDto> nameDtoList = service.findStockName(dto);
 	    	
 	    	productMap = new LinkedHashMap<>();
             productDetails = new ArrayList<>();

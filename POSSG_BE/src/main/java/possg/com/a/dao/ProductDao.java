@@ -25,6 +25,7 @@ public interface ProductDao {
 	int getProductTotalNumber(ProductParam param);
 	List<ProductDto> getProductSeqAndTotalStock(ProductDto dto);
 	int updateProductStock(ProductDto dto);
+	List<ProductDto> findStockName(ProductDto dto);
 	int deleteProduct(ProductDto dto);
 	int deleteProductRegiInfo(ProductDto dto);
 	

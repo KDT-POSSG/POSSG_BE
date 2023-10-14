@@ -104,10 +104,23 @@
 </select>
 
 <!-- 주어진 productName에 해당하는 상품 정보 획득 -->
+
 <select id="findProductName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
     select * 
     from Product 
     where product_name = #{productName} and conv_seq = #{convSeq} and expiration_flag = 0
+</select>
+
+<select id="findStockName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+    select p.* 
+    from Product p
+    inner join (
+        select product_name, COUNT(*) as cnt, SUM(stock_quantity) as total_stock
+        from Product
+        group by product_name
+    ) sub
+    on p.product_name = sub.product_name 
+    where p.product_name = #{productName} and (sub.cnt = 1 or (sub.cnt > 1 and p.stock_quantity > 0)) and p.conv_seq = #{convSeq} and p.expiration_flag = 0
 </select>
 
 <!-- 주어진 productName에 해당하는 상품의 총 재고량 획득 -->
