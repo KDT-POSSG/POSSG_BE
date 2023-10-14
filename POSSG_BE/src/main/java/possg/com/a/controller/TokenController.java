@@ -101,7 +101,7 @@ public class TokenController {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		
-		@RequestMapping(value = "/afterLogout", method = RequestMethod.GET)
+		@RequestMapping(value = "/afterLogout", method = { RequestMethod.GET ,RequestMethod.POST })
 		public String afterLogout() {
 
 		    return "redirect:/login";
