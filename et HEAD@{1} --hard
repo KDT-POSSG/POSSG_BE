@@ -1,0 +1,56 @@
+[33mcba1e00[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/refactoring[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/exceptionhandling[m[33m)[m HEAD@{0}: checkout: moving from feature/exceptionhandling to feature/refactoring
+[33mcba1e00[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/refactoring[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/exceptionhandling[m[33m)[m HEAD@{1}: checkout: moving from feature/exceptionhandling to feature/exceptionhandling
+[33mcba1e00[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/refactoring[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/exceptionhandling[m[33m)[m HEAD@{2}: checkout: moving from feature/refactoring to feature/exceptionhandling
+[33mcba1e00[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/refactoring[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/exceptionhandling[m[33m)[m HEAD@{3}: reset: moving to HEAD
+[33mcba1e00[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/refactoring[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeature/exceptionhandling[m[33m)[m HEAD@{4}: pull origin main: Fast-forward
+[33mc0fabae[m[33m ([m[1;31morigin/feature/refactoring[m[33m)[m HEAD@{5}: commit: [add] exception handling and code refectoring
+[33m46f0c38[m HEAD@{6}: commit: [fix] delivery refectoring
+[33mf3fe4cb[m HEAD@{7}: commit: [fix] delivery refectoring
+[33m2f01ac6[m HEAD@{8}: commit: [fix] delivery refectoring
+[33m1caa5bd[m HEAD@{9}: commit: [fix] delivery refectoring
+[33m80741ca[m HEAD@{10}: commit: [fix] delivery refectoring
+[33mf4607e2[m HEAD@{11}: commit: [fix] delivery refectoring
+[33mec2d3a5[m HEAD@{12}: commit: [Fix] delivery refectoring
+[33md1b69bb[m HEAD@{13}: commit: [Fix] delivery refectoring
+[33m64aec88[m HEAD@{14}: commit: [Fix] delivery refectoring
+[33m36df6a3[m HEAD@{15}: commit: [Fix] delivery refectoring
+[33m4d78645[m HEAD@{16}: commit: [Fix] delivery refectoring
+[33m613f446[m HEAD@{17}: commit: [Fix] delivery refectoring
+[33m55c88b0[m HEAD@{18}: pull origin main: Merge made by the 'ort' strategy.
+[33m0675b6a[m HEAD@{19}: commit: [Fix] cost refectoring
+[33m1997e11[m HEAD@{20}: commit: [Fix] cost refectoring
+[33mca8328c[m HEAD@{21}: commit: [Fix] cost refectoring
+[33m5599c9c[m HEAD@{22}: commit: [Fix] delivery refectoring
+[33mc8e9054[m HEAD@{23}: commit: [Fix] delivery refectoring
+[33mac25c09[m HEAD@{24}: commit: [Fix] customer error fixed
+[33mcaf319a[m HEAD@{25}: commit: [Fix] customer error fixed
+[33m092f898[m HEAD@{26}: commit: [Fix] customer error fixed
+[33m7ba96cd[m HEAD@{27}: commit: [Fix] customer error fixed
+[33m7a359b6[m HEAD@{28}: commit: [Fix] customer error fixed
+[33m5b7b15a[m HEAD@{29}: commit: [Fix] customer error fixed
+[33m2b5908f[m HEAD@{30}: commit: [Fix] customer error fixed
+[33m657f733[m HEAD@{31}: commit: [Fix] customer error fixed
+[33m0ac8b44[m HEAD@{32}: commit: [Fix] customer error fixed
+[33m89ca873[m HEAD@{33}: commit: [Fix] customer error fixed
+[33m0dd09a0[m HEAD@{34}: commit: [Fix] customer error fixed
+[33m3071dfa[m HEAD@{35}: commit: [Fix] customer error fixed
+[33m5c125cd[m HEAD@{36}: commit: [Fix] customer error fixed
+[33m55bcd04[m HEAD@{37}: commit: [Fix] customer error fixed
+[33m2c03481[m[33m ([m[1;31morigin/feature/cost_func[m[33m)[m HEAD@{38}: commit: [Fix] delivery error fixed
+[33mbdab6d0[m HEAD@{39}: commit: [Fix] delivery error fixed
+[33m15fb0b5[m HEAD@{40}: pull origin main: Fast-forward
+[33m4e3fbd0[m HEAD@{41}: checkout: moving from feature/cost_func to feature/refactoring
+[33m9bc00ca[m[33m ([m[1;32mfeature/cost_func[m[33m)[m HEAD@{42}: commit: [Fix] delivery error fixed
+[33m4dc8dbf[m HEAD@{43}: commit: [Fix] delivery error fixed
+[33md2735e1[m HEAD@{44}: commit: [Fix] delivery error fixed
+[33m1408e01[m HEAD@{45}: commit: [Fix] delivery error fixed
+[33mc6b5ba7[m HEAD@{46}: commit: [Fix] delivery error fixed
+[33ma7ac47e[m HEAD@{47}: commit: [Fix] delivery error fixed
+[33m697e0bd[m HEAD@{48}: commit: [Fix] delivery error fixed
+[33m8a19485[m HEAD@{49}: commit: [Add] add bestSalesProduct
+[33me3fdf80[m HEAD@{50}: pull origin main: Fast-forward
+[33md6d428c[m HEAD@{51}: commit: [Fix] fix func hourlySales
+[33m4ca86cf[m HEAD@{52}: commit: [Add] add func hourlySales
+[33m4814141[m HEAD@{53}: commit: [Add] profitAndLoss brandSales
+[33meac7823[m[33m ([m[1;32mmain[m[33m)[m HEAD@{54}: checkout: moving from main to feature/cost_func
+[33meac7823[m[33m ([m[1;32mmain[m[33m)[m HEAD@{55}: clone: from https://github.com/KDT-POSSG/POSSG_BE.git
