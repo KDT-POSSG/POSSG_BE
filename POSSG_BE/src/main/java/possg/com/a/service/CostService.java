@@ -10,6 +10,7 @@ import possg.com.a.dao.CostDao;
 import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.dto.ProductDto;
 
 @Service
@@ -58,4 +59,6 @@ public class CostService {
 	public List<CostParam> bestPaymentSalesProduct(CostParam param) {
 		return dao.bestPaymentSalesProduct(param);
 	}
+	
+
 }
