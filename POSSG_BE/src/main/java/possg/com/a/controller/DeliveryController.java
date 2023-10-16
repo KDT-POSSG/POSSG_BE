@@ -31,6 +31,7 @@ import possg.com.a.dto.DeliveryJoinDto;
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
 import possg.com.a.dto.ProductDto;
+import possg.com.a.service.ConvenienceService;
 import possg.com.a.service.DeliveryService;
 import possg.com.a.service.ProductService;
 import possg.com.a.util.TokenCreate;
@@ -50,6 +51,9 @@ public class DeliveryController {
 	
 	@Autowired
 	ProductService productService;	
+	
+	@Autowired
+	ConvenienceService convenienceService;
 	
 	// 배달 장바구니에 추가
 	@PostMapping("callAddDelivery")
@@ -231,12 +235,11 @@ public class DeliveryController {
 
 		        // 지점명 추출
 		        String branchName = claim.get("branchName", String.class);
-		        
+		        String userId = claim.get("userId", String.class);
 		        param.setBranchName(branchName);
 		        
-		        System.out.println(param);
-		        
 		        // 모든 데이터 추출
+		        ConvenienceDto conv = convenienceService.changePassword(userId);
 		        List<DeliveryJoinDto> dto = service.convenienceDeliveryList(param);
 		        DeliveryCount countStatus = service.allDeliveryCount(param);
 		        Set<String> uniqueProductSeqs = new HashSet<>();
@@ -325,6 +328,7 @@ public class DeliveryController {
 				map.put("before", countStatus.getBeforeOrder());
 	            map.put("after", countStatus.getAfterOrder());
 	            map.put("delivering", countStatus.getDelivering());
+	            map.put("location", conv.getConvLocation());
 				
 		        // 결과 반환
 		        if (!uniqueGroupedData.isEmpty()) {
@@ -336,11 +340,12 @@ public class DeliveryController {
 		        	emptyMap.put("before", countStatus.getBeforeOrder());
 		        	emptyMap.put("after", countStatus.getAfterOrder());
 		        	emptyMap.put("delivering", countStatus.getDelivering());
-		        	
+		        	emptyMap.put("location", conv.getConvLocation());
 		            return emptyMap;
 		        }
 		    }
-		    return null;
+		    Map<String, Object> errorMap = new HashMap<String, Object>();
+		    return errorMap;
 		}
 		
 		@PostMapping("statusUpdate")
@@ -452,6 +457,13 @@ public class DeliveryController {
 			}
 			return "NO";
 		}
+		
+		@PostMapping("exceoptionTest")
+		public void exceoptionTest (){		   
+		        String str = null;
+		        int length = str.length();  // 여기서 NullPointerException이 발생합니다.	        		    
+		}
+
 
 		
 		//---------------------------------------------------함수------------------------------------------------------

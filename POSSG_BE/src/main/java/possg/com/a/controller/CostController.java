@@ -92,6 +92,7 @@ public class CostController {
 	@PostMapping("updateCost")
 	public String updateCost(@RequestBody CostChangeTypeDto dto, @RequestHeader("accessToken") String tokenHeader) {
 		System.out.println("CostController updateCost " + new Date());
+		System.out.println(dto);
 		
 		Claims claim = tokenParser(tokenHeader);
 		if(dto !=null) {			
