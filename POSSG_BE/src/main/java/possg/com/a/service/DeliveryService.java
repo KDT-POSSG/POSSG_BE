@@ -16,6 +16,7 @@ import possg.com.a.dto.DeliveryJoinDto;
 
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
+import possg.com.a.dto.ProductDto;
 
 @Service
 @Transactional
@@ -82,6 +83,10 @@ public class DeliveryService {
 	
 	public DeliveryCount allDeliveryCount(DeliveryParam param) {
 		return dao.allDeliveryCount(param);
+	}
+	
+	public List<ProductDto> findProduct(ProductDto dto) {
+		return dao.findProduct(dto);
 	}
 
 }

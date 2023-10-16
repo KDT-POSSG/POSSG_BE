@@ -26,6 +26,7 @@ import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.CostChangeTypeDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.service.CostService;
 import possg.com.a.util.TokenCreate;
 
@@ -294,7 +295,7 @@ public class CostController {
 
 	// 년별 월별 일별 매출
 	@GetMapping("selectSales")
-	public int selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
+	public Map<String, Object> selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
 		System.out.println("CostController selectSales " + new Date());
 		
 		Claims claim = tokenParser(accessToken);
@@ -306,13 +307,33 @@ public class CostController {
 			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
 	        LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
 	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-	        String formattedDate = localDate.format(outputFormatter);	        
-		  
+	        String formattedDate = localDate.format(outputFormatter);
+	        int formattedYear = Integer.parseInt(formattedDate.substring(0, 4));
+	        int formattedMonth = Integer.parseInt(formattedDate.substring(4, 6));
+	        int formatted = Integer.parseInt(formattedDate.substring(0, 6));
+	        
+	        String previousMonth;
+	        if(formattedDate.substring(4, 6) == "01") {
+	        	String year =Integer.toString(formattedYear - 1);       	
+	        	
+	        	previousMonth = year + "12"; 
+	        }else {
+	        	previousMonth = Integer.toString(formatted - 1);
+	        }
+	        
+	        
+	        
+	        param.setCostYear(formattedYear);
+			param.setCostMonth(formattedMonth);
 			param.setConvSeq(convSeq);
 			param.setBranchName(branchName);
 			
+			
+			List<CostDto> lossList = service.selectCostList(param);
+			List<Integer> orderPrice = service.selectOrderPrice(param);		
 			List<CostParam> payment = service.getPaymentPrice(param);	
 			List<CostParam> list = service.getDeliveryPrice(param);
+			CostDto loss = service.selectCost(param);
 			
 			for(int i = 0; i< payment.size(); i++) {
 				String ref = payment.get(i).getRef();
@@ -321,46 +342,104 @@ public class CostController {
 		        payment.get(i).setRef(convertedRef);
 			}
 			
-			// 일별
-			if(param.getChoice() == 0) {
-				int totalPrice = 0;
-				
-				for (CostParam item : payment) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
-				        totalPrice = totalPrice + item.getPaymentPrice();
-				    }
-				}	
-				for (CostParam item : list) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
-				    	totalPrice = totalPrice + item.getPrice();
-				    }
-				}
-				return totalPrice;
+			Map<String, Object> map = new HashMap<>();
+			int totalLoss = 0;
+			int totalPrice = 0;		
+			int totalOrderPrice = 0;			
+			int totalCount = 0;
+			int refundPrice = 0;
+			int refundCount = 0;
+			int notDiscount = 0;
+			int discountCount = 0;
+			int previousPrice = 0;
+			
+			for(int item : orderPrice) {
+				totalOrderPrice = totalOrderPrice + item;
 			}
+			System.out.println(loss.getTotalLaborCost());
+			
+			
+			
 			// 월별
 			if(param.getChoice() == 1) {
-				int totalPrice = 0;
-				for (CostParam item : payment) {
+				
+				
+				//매출 건수 
+				for(CostParam item : payment) {
 				    String ref = item.getRef();
-				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
+				    String del = "결제완료";	
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getDel().equals(del)){		       
 				        totalPrice = totalPrice + item.getPaymentPrice();
+				        notDiscount = notDiscount + item.getNotDiscount();
+				        totalCount = totalCount + 1;				        
+				        //할인 갯수
+				        if(item.getPrice() != item.getNotDiscount()) {
+				        	discountCount = discountCount + 1; 
+				        }
 				    }
-				}	
-				for (CostParam item : list) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
-				    	totalPrice = totalPrice + item.getPrice();
+				    //전달 매출
+				    if(previousMonth.equals(ref.substring(0, 6)) && item.getDel().equals(del)) {
+				    	previousPrice = previousPrice + item.getPrice();
 				    }
-				   
+				    //환불 매출 건수
+				    if(ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && !item.getDel().equals(del)) {
+					   refundPrice = refundPrice + item.getPaymentPrice();
+					   refundCount = refundCount + 1;
+				    }
 				}
-				return totalPrice;
+				
+				for(CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getStatus() != -1) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    	notDiscount = notDiscount + item.getNotDiscount();
+				    	totalCount = totalCount + 1;
+				    	//할인 갯수
+				    	if(item.getPrice() != item.getNotDiscount()) {
+				    		discountCount = discountCount + 1;
+				    	}
+				    }
+				    //전달 매출
+				    if(previousMonth.equals(ref.substring(0, 6)) && item.getStatus() != -1) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    // 환불 매출 건수
+				    if(ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getStatus() == -1) {
+						   refundPrice = refundPrice + item.getPaymentPrice();
+						   refundCount = refundCount + 1;
+				    }
+				}
+				
+				//지출
+				if(loss != null) {				
+					totalLoss = loss.getTotalLaborCost() + loss.getElectricityBill() + loss.getGasBill() + loss.getRent() 
+		        	+ loss.getSecurityMaintenanceFee() + loss.getTotalLaborCost() + loss.getWaterBill() + totalOrderPrice;
+				}
+				
+				System.out.println(totalOrderPrice);
+				System.out.println(totalLoss);
+		        
+		        notDiscount = notDiscount - totalPrice; 
+		        //매출 상승률
+		        double increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+		        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
+				
+				
+				map.put("totalPrice", totalPrice);
+				map.put("totalLoss", totalLoss);
+				map.put("totalCount", totalCount);
+				map.put("refundPrice", refundPrice);
+				map.put("refundCount",refundCount);
+				map.put("discountPrice", notDiscount);
+				map.put("discountCount", discountCount);
+				map.put("increaseRate", increaseRate);
+				map.put("previousPrice", previousPrice);
+								
+				return map;
 			}
 			
 			//년별			
 			if(param.getChoice() == 2) {
-				int totalPrice = 0;
 				for (CostParam item : payment) {
 				    String ref = item.getRef();
 				    System.out.println(ref);
@@ -373,14 +452,22 @@ public class CostController {
 				    String ref = item.getRef();
 				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
 				    	totalPrice = totalPrice + item.getPrice();
-				    }
-				   
+				    }		   
 				}
-				return totalPrice;
+				
+				for(CostDto item : lossList) {
+		        	
+		        	totalLoss = totalLoss + item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+		        	+ item.getSecurityMaintenanceFee() + item.getWaterBill() + item.getTotalLaborCost();
+		        }
+		        totalLoss = totalLoss + totalOrderPrice;
+				
+				return map;
 			}
 		}
+		Map<String, Object> emptyMap = new HashMap<>();
 
-		return 0;
+		return emptyMap;
 	}
 	
 	// 브랜드별 매출

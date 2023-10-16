@@ -164,14 +164,13 @@ public class NoSecurityZoneController {
 	 
 	 
 	 System.out.println(conv);
-	 int count = service.adduser(conv);
-	 
+	 int count = service.adduser(conv);	 
 	 if(count == 0) {
 		 return "NO";
 	 }	 
 	 if(count != 0){  
 		 int count1 = service.updateCodeStatus(conv);
-		 if(count1 != 0) {
+		 if(count1 == 0) {
 			 return "NO";
 		 }		 
 		 return "YES"; 

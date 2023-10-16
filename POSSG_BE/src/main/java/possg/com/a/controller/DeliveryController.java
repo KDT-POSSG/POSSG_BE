@@ -79,7 +79,7 @@ public class DeliveryController {
 		delivery.setUserId(customerSeq);
 		
 		List<DeliveryDto> deli = service.selectDelivery(delivery);
-		List<ProductDto> prodto = productService.findProductName(product);
+		List<ProductDto> prodto = service.findProduct(product);
 		System.out.println(prodto);
 		dto.setPrice(dto.getQuantity() * prodto.get(0).getPrice());
 		dto.setUserId(customerSeq);
@@ -161,9 +161,12 @@ public class DeliveryController {
 		List<DeliveryDto> deli = service.selectDelivery(delivery);
 		int price = 0;
 		int quantity = 0;
+		int notDiscount = 0;
 		for(DeliveryDto forDto :deli) {
 			price = price + forDto.getPrice();
-			quantity = quantity + forDto.getQuantity();		
+			quantity = quantity + forDto.getQuantity();
+			notDiscount = notDiscount + forDto.getNotDiscount();
+			System.out.println(notDiscount);
 		}		
 		 // 현재 날짜와 시간 얻기
         LocalDateTime currentDateTime = LocalDateTime.now();        
@@ -176,6 +179,8 @@ public class DeliveryController {
         dto.setUserId(delivery.getUserId());
         dto.setDelTotalPrice(price);
 		dto.setDelTotalNumber(quantity);
+		dto.setNotDiscount(notDiscount);
+		System.out.println(notDiscount);
 		dto.setDelRef(formattedDateTime);
 		dto.setBranchName(deli.get(0).getBranchName());
 		System.out.println(deli.get(0).getBranchName());
