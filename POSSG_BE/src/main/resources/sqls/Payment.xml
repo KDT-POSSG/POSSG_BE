@@ -10,7 +10,7 @@
             price, purchased_at, receipt_url, card_num, card_company, del
         )
         VALUES (
-            #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, #{originalPrice}
+            #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, #{originalPrice},
             #{price}, #{purchasedAt}, #{receiptUrl}, #{cardNum}, #{cardCompany}, "결제 완료"
         )
     </insert>
