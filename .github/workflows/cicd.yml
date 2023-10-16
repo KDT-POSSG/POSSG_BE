@@ -66,5 +66,5 @@ jobs:
               -e NAVERDEV_PW=${{ secrets.NAVERDEV_PW }} \
               -e NAVERCLOUD_ID=${{ secrets.NAVERCLOUD_ID }} \
               -e NAVERCLOUD_PW=${{ secrets.NAVERCLOUD_PW }} \
-              --link mysql:db \
+              --link po33g-kdt2:db \
               ${{ secrets.DOCKERHUB_USERNAME }}/possg-be:latest

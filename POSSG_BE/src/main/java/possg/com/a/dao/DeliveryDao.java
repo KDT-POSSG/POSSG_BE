@@ -14,6 +14,7 @@ import possg.com.a.dto.DeliveryJoinDto;
 
 import possg.com.a.dto.DeliveryListDto;
 import possg.com.a.dto.DeliveryParam;
+import possg.com.a.dto.ProductDto;
 
 @Mapper
 @Repository
@@ -49,6 +50,8 @@ public interface DeliveryDao {
 	int refuseDelivery(String ref);
 	
 	DeliveryCount allDeliveryCount(DeliveryParam param);
+	
+	List<ProductDto> findProduct(ProductDto dto);
 	
 	// List<DeliveryDto> getAllDeliveryOrderList();
 	// List<DeliveryDto> getRefDeliveryOrderList(String delRef);

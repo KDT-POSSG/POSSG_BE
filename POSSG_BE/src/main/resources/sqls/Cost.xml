@@ -45,16 +45,18 @@
 	ref,
 	price,
 	product_name,
-	quantity as count
+	quantity as count,
+	order_status,
+	not_discount	
 	from Delivery
-	where branch_name = #{branchName} and order_status != 0 and order_status != -1
+	where branch_name = #{branchName} and order_status != 0
 </select>
 
 <select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
-	select i.qty as count, i.price as paymentPrice, i.item_name as productName, p.purchased_at as ref
+	select i.qty as count, i.price as paymentPrice, i.item_name as productName, p.purchased_at as ref, p.del, p.original_price as notDiscount
 	from Payment as p
 	inner join Items i on i.receipt_id = p.receipt_id
-	where p.conv_seq = #{convSeq} AND p.del != '결제취소'
+	where p.conv_seq = #{convSeq}
 </select>
 
 <select id="bestDeliverySalesProduct" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
@@ -87,6 +89,5 @@
 	 </if>
 	</if>
 </select>
-
 
 </mapper>

@@ -270,15 +270,18 @@ public class ConvenienceController {
 			   if(userDto != null) {
 				   
 				   String userId = tokenParser(accessToken);
+				   System.out.println(userDto);
 				   
 				   ConvenienceDto user = service.changePassword(userId);
-   
-				   String hashUser = sha256(user.getNewPwd());
-				   		
-				   if(userDto.getPwd() != hashUser && userDto.getPwd() == userDto.getNewPwd()) {
-					   return "NO";
-				   }
+				   System.out.println(user.getPwd());
+				   String hashNewUser = sha256(userDto.getNewPwd());
+				   String hashUser = sha256(userDto.getPwd());	
+				   System.out.println(hashNewUser);
+				   System.out.println(hashUser);
 				   
+				   if(!hashUser.equals(user.getPwd()) || hashNewUser.equals(user.getPwd())) {
+					   return "NO";
+				   }			   
 
 				   userDto.setPwd(userDto.getNewPwd());
 				   userDto.setUserId(userId);

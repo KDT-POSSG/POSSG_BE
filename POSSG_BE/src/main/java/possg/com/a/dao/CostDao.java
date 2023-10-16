@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.dto.ProductDto;
 
 @Mapper
@@ -33,5 +34,6 @@ public interface CostDao {
 	List<CostParam> bestDeliverySalesProduct(CostParam param);
 	
 	List<CostParam> bestPaymentSalesProduct(CostParam param);
+	
 
 }
