@@ -7,6 +7,7 @@ public class PaymentDto {
     private String pg; // 결제사
     private String method; // 결제 방법 (카카오페이, 네이버페이, 실물카드, 깊티 ...)
     private String discountInfo; // 할인 정보
+    private int originalPrice; // 할인 전 가격
     private int price; // 가격
     private String purchasedAt; // 결제시간
     private String receiptUrl; // 결제 영수증 URL
@@ -17,8 +18,10 @@ public class PaymentDto {
     public PaymentDto() {
 	}
 
+	
 	public PaymentDto(String receiptId, int userSeq, int convSeq, String pg, String method, String discountInfo,
-			int price, String purchasedAt, String receiptUrl, String cardNum, String cardCompany, String del) {
+			int originalPrice, int price, String purchasedAt, String receiptUrl, String cardNum, String cardCompany,
+			String del) {
 		super();
 		this.receiptId = receiptId;
 		this.userSeq = userSeq;
@@ -26,6 +29,7 @@ public class PaymentDto {
 		this.pg = pg;
 		this.method = method;
 		this.discountInfo = discountInfo;
+		this.originalPrice = originalPrice;
 		this.price = price;
 		this.purchasedAt = purchasedAt;
 		this.receiptUrl = receiptUrl;
@@ -33,7 +37,6 @@ public class PaymentDto {
 		this.cardCompany = cardCompany;
 		this.del = del;
 	}
-
 
 
 	public String getReceiptId() {
@@ -118,13 +121,25 @@ public class PaymentDto {
 	public void setDel(String del) {
 		this.del = del;
 	}
+	
+	
+
+	public int getOriginalPrice() {
+		return originalPrice;
+	}
+
+
+	public void setOriginalPrice(int originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
 
 	@Override
 	public String toString() {
 		return "PaymentDto [receiptId=" + receiptId + ", userSeq=" + userSeq + ", convSeq=" + convSeq + ", pg=" + pg
-				+ ", method=" + method + ", discountInfo=" + discountInfo + ", price=" + price + ", purchasedAt="
-				+ purchasedAt + ", receiptUrl=" + receiptUrl + ", cardNum=" + cardNum + ", cardCompany=" + cardCompany
-				+ ", del=" + del + "]";
+				+ ", method=" + method + ", discountInfo=" + discountInfo + ", originalPrice=" + originalPrice
+				+ ", price=" + price + ", purchasedAt=" + purchasedAt + ", receiptUrl=" + receiptUrl + ", cardNum="
+				+ cardNum + ", cardCompany=" + cardCompany + ", del=" + del + "]";
 	}
 	
 }

@@ -6,11 +6,11 @@
 	<!-- 결제 정보 추가 -->
     <insert id="addpayment" parameterType="possg.com.a.dto.PaymentDto">
         INSERT INTO Payment (
-            receipt_id, user_seq, conv_seq, pg, method, discount_info, 
+            receipt_id, user_seq, conv_seq, pg, method, discount_info, original_price
             price, purchased_at, receipt_url, card_num, card_company, del
         )
         VALUES (
-            #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, 
+            #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, #{originalPrice}
             #{price}, #{purchasedAt}, #{receiptUrl}, #{cardNum}, #{cardCompany}, "결제 완료"
         )
     </insert>
