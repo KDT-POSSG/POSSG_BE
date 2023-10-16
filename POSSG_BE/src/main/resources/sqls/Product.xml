@@ -111,12 +111,14 @@
     where product_name = #{productName} and conv_seq = #{convSeq} and expiration_flag = 0
 </select>
 
+<!-- conv_seq 별로 검색하는 부분 추가 -->
 <select id="findStockName" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
     select p.* 
     from Product p
     inner join (
         select product_name, COUNT(*) as cnt, SUM(stock_quantity) as total_stock
         from Product
+        where conv_seq = #{convSeq} and expiration_flag = 0
         group by product_name
     ) sub
     on p.product_name = sub.product_name 
@@ -426,7 +428,7 @@ resultType="possg.com.a.dto.ProductDto">
 <update id="updateExpirationFlagAuto">
 	update Product
     set expiration_flag = 1
-    where expiration_flag = 0 and UNIX_TIMESTAMP(expiration_date) &lt; UNIX_TIMESTAMP(NOW())
+    where expiration_flag = 0 and expiration_date &lt; DATE_ADD(NOW(), INTERVAL 2+9 HOUR);
 </update>
 
 <!-- 상품 원가 할당 -->

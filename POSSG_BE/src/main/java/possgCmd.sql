@@ -1,7 +1,7 @@
 -- SET foreign_key_checks = 0;
 -- SET foreign_key_checks = 1;
 
-/*
+
 drop table call_product_conv;
 drop table call_product_customer;
 drop table call_product_conv_order_list;
@@ -14,8 +14,12 @@ select * from Category;
 -- 1: 행사X, 2: 세일, 3: 덤증정, 4: 1+1, 5: 2+1, 6: 1+2, 7: 2+2
 INSERT INTO Category (category_name) VALUES ('행사없음'), ('세일'), ('덤증정'), ('1 + 1'), ('2 + 1'), ('1 + 2'), ('2 + 2');
 
-
+select * from Convenience;
 select * from Product;
+
+ALTER TABLE Product CHANG priceOrigin price_origin int;
+ALTER TABLE Product drop price_origin;
+ALTER TABLE Product ADD price_origin int after price;
 
 INSERT INTO Product (category_id, product_name, price, price_discount, stock_quantity, expiration_date, discount_rate, promotion_info, barcode, img_url) VALUES (1, '농심)새우탕큰사발', 1400, 1400, 4, '2023-10-02 21:00:00', 0, 3, 0000000000000, null) ;
 
@@ -39,15 +43,15 @@ INSERT INTO call_product_conv (call_seq, user_id, product_seq, amount, rp_name
 								, b_name, price, call_date, product_name, call_ref, call_status) 
 VALUES (1, 'ghfrlfehd', 1, 5, '홍길동', '수영구 이마트', 34500, '2023-09-05', '삼립)로스트치킨하바네로210g' , '202309051811', 1);
 
-INSERT INTO call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number
+INSERT INTO Call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number
 								, call_total_price, call_remark) 
-VALUES (0, '-1', '2000-01-01', 0, 0, 0, 'temp');
+VALUES (0, '0', '2000-01-01', 0, 0, 0, 'temp');
 
-select * from call_product_conv;
+select * from Call_product_conv;
 
-select * from call_product_conv_order_list;
+select * from Call_product_conv_order_list;
 
-delete from call_product_conv_order_list where call_ref=-1;
+delete from Call_product_conv_order_list where call_ref=-1;
 
 
 ALTER TABLE Product drop branch_name;
@@ -129,4 +133,3 @@ set price_origin = 4830 where call_seq = 29;
 
 update Call_product_conv 
 set call_status = 3 where call_seq = 29; 
-*/
