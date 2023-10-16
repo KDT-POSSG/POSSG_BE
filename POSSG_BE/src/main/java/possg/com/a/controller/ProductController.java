@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import net.crizin.KoreanCharacter;
 import net.crizin.KoreanRomanizer;
@@ -51,6 +54,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@SpringBootApplication
+@EnableScheduling
 @RestController
 public class ProductController {
 
@@ -59,6 +64,11 @@ public class ProductController {
 	
 	@Autowired
 	TranslationController controller;
+	
+	@PostConstruct
+    public void init() {
+        updateExpirationDateFlagAuto();  // 서버 시작 시 한 번 실행
+    }
 	
 	@GetMapping("healthcheck")
 	public String healthcheck() {
@@ -117,6 +127,7 @@ public class ProductController {
 		map.put("ProductList", list);
 		map.put("pageProduct", pageProduct);
 		map.put("cnt", count); // react 중 pagination 사용시 활용
+		System.out.println(map);
 		return map;
 	}
 	
@@ -211,8 +222,16 @@ public class ProductController {
 	@GetMapping("getAllProductStock")
 	public Map<String, Object> getAllProductStock(ProductParam param){
 		System.out.println("ProductController getAllProductStock() " + new Date());
+		System.out.println("params= " + param);
+		Map<String, Object> map = new HashMap<String, Object>();
 		// DB에서 상품 정보를 가져옴
-		List<ProductDto> list = service.productList(param); 
+		List<ProductDto> list = service.productList(param);
+		
+		if (list.isEmpty()) {
+			System.out.println("빈 배열");
+			map.put("empty", "빈 배열");
+			return map;
+		}
 		
 		// 최종 결과를 저장할 리스트
         List<Map<String, Object>> resultList = new ArrayList<>();
@@ -231,8 +250,8 @@ public class ProductController {
         */
         // 모든 상품 정보를 순회
 	    for (ProductDto dto : list) {
-	    	
-	    	List<ProductDto> nameDtoList = service.findProductName(dto);
+	    	System.out.println("in list= " + list);
+	    	List<ProductDto> nameDtoList = service.findStockName(dto);
 	    	
 	    	productMap = new LinkedHashMap<>();
             productDetails = new ArrayList<>();
@@ -254,7 +273,8 @@ public class ProductController {
                 detail.put("stock", nameDto.getStockQuantity());
                 detail.put("expiration_date", nameDto.getExpirationDate());
                 detail.put("expiration_flag", nameDto.getExpirationFlag());
-                detail.put("price", nameDto.getPrice());
+                detail.put("price", nameDto.getPriceDiscount());
+                detail.put("price_origin", nameDto.getPriceOrigin());
                 detail.put("category", nameDto.getCategoryId());
                 detail.put("promotion_info", nameDto.getPromotionInfo());
                 detail.put("discount_rate", nameDto.getDiscountRate());
@@ -278,7 +298,7 @@ public class ProductController {
  			pageProduct = pageProduct + 1;
  		}
 
- 		Map<String, Object> map = new HashMap<String, Object>();
+ 		
  		map.put("ProductList", resultList);
  		map.put("pageProduct", pageProduct);
  		map.put("cnt", count);
@@ -293,8 +313,9 @@ public class ProductController {
 	public Map<String,Object> getAllCallProductConvList(CallProductConvParam param) {
 		System.out.println("ProductController getAllCallProductConvList() " + new Date());
 		Map<String, Object> map = new HashMap<String, Object>();
-
+		System.out.println(param);
 		CallProductConvDto tempDto = new CallProductConvDto("0", param.getConvSeq());
+		
 		List<CallProductConvDto> dtoList = service.getRefCallProductConvList(tempDto);
 		if (dtoList.isEmpty()) {
 			System.out.println("발주 대기 상품 없음" + dtoList);
@@ -425,6 +446,8 @@ public class ProductController {
 			insertConvDto.setAmount(insertConvDto.getAmount() + productDto.getAmount());
 			insertConvDto.setPrice(productDto.getPrice());
 			insertConvDto.setPriceOrigin(productDto.getPriceOrigin());
+			
+			System.out.println("compare insertProductDto= " + insertConvDto);
 			int count = service.updateCallProductConv(insertConvDto);
 			if(count > 0) {
 				return responseMessage="YES";
@@ -435,7 +458,7 @@ public class ProductController {
 		insertProductDto.setCallDate(formattedDate);
 		insertProductDto.setAmount(productDto.getAmount());
 		
-		System.out.println(insertProductDto);
+		System.out.println("after setAmount= " + insertProductDto);
 		// 발주 상품 정보 설정
 		// product_seq, conv_seq, category_id, product_seq, amount, rp_name, b_name, price, price_origin, call_date, product_name, call_ref, call_status, img_url
 		// 발주 상품 정보를 데이터베이스에 추가
@@ -770,8 +793,20 @@ public class ProductController {
 		return "NO";
 	}
 	
+	// 유통기한 만료 할당 Auto
 	@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
-	@PostMapping("updateExpirationFlagAuto")
+	public String updateExpirationDateFlagAuto() {
+		System.out.println("ProductController updateExpirationDateFlagAuto() " + new Date());
+		int count = service.updateExpirationFlagAuto();
+		if (count > 0) {
+			return "YES";
+		}
+		
+		return "NO";
+	}
+	
+	// 유통기한 만료 할당
+	@PostMapping("updateExpirationFlag")
 	public String updateExpirationDateFlag() {
 		System.out.println("ProductController updateExpirationDateFlag() " + new Date());
 		int count = service.updateExpirationFlagAuto();
