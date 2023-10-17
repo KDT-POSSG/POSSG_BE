@@ -23,18 +23,18 @@
 <select id="selectCost" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
 	select *
 	from Cost	
-	where conv_seq = #{convSeq} and cost_year = #{costYear} and cost_month = #{costMonth}		
+	where conv_seq = #{convSeq} and cost_year = #{costYear} and (cost_month = #{costMonth} or cost_month = #{preMonth})		
 				
 </select>
 
 <select id="selectCostList" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
 	select *
 	from Cost	
-   	where conv_seq = #{convSeq} and cost_year = #{costYear}
+   	where conv_seq = #{convSeq} and (cost_year = #{costYear} or cost_year = #{preYear}) and (cost_month = #{costMonth} or cost_month = #{preMonth})	
 </select>
 
-<select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="Integer">
-	select call_total_price
+<select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select call_total_price as price, call_ref as ref
 	from Call_product_conv_order_list
 	where conv_seq = #{convSeq} and call_status != -1 and call_status != 0
 </select>
@@ -55,8 +55,14 @@
 <select id="getPaymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select i.qty as count, i.price as paymentPrice, i.item_name as productName, p.purchased_at as ref, p.del, p.original_price as notDiscount
 	from Payment as p
-	inner join Items i on i.receipt_id = p.receipt_id
+	join Items i on i.receipt_id = p.receipt_id
 	where p.conv_seq = #{convSeq}
+</select>
+
+<select id="paymentPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
+	select price, original_price as notDiscount, purchased_at as ref, del
+	from Payment
+	where conv_seq = #{convSeq}
 </select>
 
 <select id="bestDeliverySalesProduct" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
