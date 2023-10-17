@@ -38,6 +38,20 @@ public class PointController {
 		return "NO";
 	};
 	
+	@PostMapping("checkPoint")
+	public String checkPoint(@RequestParam String phoneNumber) {
+		System.out.println("PointController checkPoint " + new Date());
+		
+		// 이미 가입 되어있는지 체크
+		int check = service.checkPoint(phoneNumber);
+		System.out.println(check);
+		if(check > 0) {
+			return "ALREADY REGISTER";
+		}
+		
+		return "YES";
+	}
+	
 	@PostMapping("addPoint")
 	public String addPoint(@RequestBody PointParam param) {
 		System.out.println("PointController addPoint " + new Date());
