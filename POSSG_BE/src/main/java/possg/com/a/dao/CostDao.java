@@ -29,11 +29,11 @@ public interface CostDao {
 	
 	List<CostDto> selectCostList(CostParam param);
 	
-	List<Integer> selectOrderPrice(CostParam param);
+	List<CostParam> selectOrderPrice(CostParam param);
 	
 	List<CostParam> bestDeliverySalesProduct(CostParam param);
 	
 	List<CostParam> bestPaymentSalesProduct(CostParam param);
-	
+	List<CostParam> paymentPrice(CostParam param);
 
 }

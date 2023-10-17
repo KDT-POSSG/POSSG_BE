@@ -173,7 +173,7 @@
     COUNT(CASE WHEN del_status = 2 THEN 1 END) AS afterOrder,
     COUNT(CASE WHEN del_status = 3 THEN 1 END) AS Delivering
 	FROM Delivery_list
-	where branch_name = #{branchName}
+	where branch_name = #{branchName} and seq != 1
 </select>
 
 <!-- 배송진행 상태 업데이트 -->

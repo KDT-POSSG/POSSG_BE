@@ -48,7 +48,7 @@ public class CostService {
 		return dao.selectCostList(param);
 	}
 	
-	public List<Integer> selectOrderPrice(CostParam param) {
+	public List<CostParam> selectOrderPrice(CostParam param) {
 		return dao.selectOrderPrice(param);
 	}
 	
@@ -60,5 +60,8 @@ public class CostService {
 		return dao.bestPaymentSalesProduct(param);
 	}
 	
+	public List<CostParam> paymentPrice(CostParam param){
+		return dao.paymentPrice(param);
+	}
 
 }
