@@ -16,9 +16,8 @@ public class DeliveryDto {
     private double discountRate;
     private int promotionInfo;
     private int convSeq;
-   
-
-
+    private int notDiscount;
+  
     // 생성자
     public DeliveryDto() {}
 
@@ -26,7 +25,7 @@ public class DeliveryDto {
 
 	public DeliveryDto(int orderSeq, int userId, String productSeq, int orderStatus, int quantity, String productName,
 			String orderDate, String ref, String location, int price, String branchName, double discountRate,
-			int promotionInfo, int convSeq) {
+			int promotionInfo, int convSeq, int notDiscount) {
 		super();
 		this.orderSeq = orderSeq;
 		this.userId = userId;
@@ -42,9 +41,8 @@ public class DeliveryDto {
 		this.discountRate = discountRate;
 		this.promotionInfo = promotionInfo;
 		this.convSeq = convSeq;
+		this.notDiscount = notDiscount;
 	}
-
-
 
 	public int getOrderSeq() {
 		return orderSeq;
@@ -213,6 +211,15 @@ public class DeliveryDto {
 	}
 
 
+	public int getNotDiscount() {
+		return notDiscount;
+	}
+
+
+
+	public void setNotDiscount(int notDiscount) {
+		this.notDiscount = notDiscount;
+	}
 
 	@Override
 	public String toString() {
@@ -220,7 +227,7 @@ public class DeliveryDto {
 				+ ", orderStatus=" + orderStatus + ", quantity=" + quantity + ", productName=" + productName
 				+ ", orderDate=" + orderDate + ", ref=" + ref + ", location=" + location + ", price=" + price
 				+ ", branchName=" + branchName + ", discountRate=" + discountRate + ", promotionInfo=" + promotionInfo
-				+ ", convSeq=" + convSeq + "]";
+				+ ", convSeq=" + convSeq + ", notDiscount=" + notDiscount + "]";
 	}
 	
 }

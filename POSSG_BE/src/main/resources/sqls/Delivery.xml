@@ -6,35 +6,34 @@
 <!-- 배달 회원 기능 -->
 <!-- 장바구니에 넣기 -->
 <insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-    insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price, branch_name)
+    insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price, branch_name, not_discount)
     values(
         (select customer_seq from Customer where customer_seq = #{userId}),
-        (select product_seq from Product where product_name = #{productName}),
+        (select product_seq from Product where product_name = #{productName} and conv_seq = #{convSeq}),
         0, #{quantity}, 
-        (select product_name from Product where product_name = #{productName}), 
+        (select product_name from Product where product_name = #{productName} and conv_seq = #{convSeq}), 
         now(), 0, #{location},
         (
             select 
                 case 
-                    when #{quantity} >= 1 and (select promotion_info from Product where product_name = #{productName}) = 2 then 
-                        (select price_discount from Product where product_name = #{productName}) * #{quantity} <!-- (1개 이상일 때) -->
-                    when   #{quantity} >= 2 and (select promotion_info from Product where product_name = #{productName}) = 4 then
-                		(select price from Product where product_name = #{productName}) * (floor(#{quantity}/2) + #{quantity}%2) <!-- 1+1 -->
-                	when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName}) = 5 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/3)*2 + #{quantity}%3) <!-- 2+1 할인 -->
-                    when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName}) = 6 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/3) + #{quantity}%3*2) <!-- 1+2 할인 -->
-                    when #{quantity} >= 4 and (select promotion_info from Product where product_name = #{productName}) = 7 then 
-                        (select price from Product where product_name = #{productName}) * (floor(#{quantity}/4)*2 + #{quantity}%4*2) <!-- 2+2 할인 -->	              		
+                    when #{quantity} >= 1 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 2 then 
+                        (select price_discount from Product where product_name = #{productName} and conv_seq = #{convSeq}) * #{quantity} <!-- (1개 이상일 때) -->
+                    when   #{quantity} >= 2 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 4 then
+                		(select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/2) + #{quantity}%2) <!-- 1+1 -->
+                	when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 5 then 
+                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/3)*2 + #{quantity}%3) <!-- 2+1 할인 -->
+                    when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 6 then 
+                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/3) + #{quantity}%3*2) <!-- 1+2 할인 -->
+                    when #{quantity} >= 4 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 7 then 
+                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/4)*2 + #{quantity}%4*2) <!-- 2+2 할인 -->	              		
                     else
-                        (select price from Product where product_name = #{productName}) * #{quantity}
+                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * #{quantity}
                 end
         ), 
-        #{branchName}
+        #{branchName}, (#{quantity} * (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}))
     )
 </insert>
 
-<!-- 중복으로 장바구니에 담을 시 갯수랑 가격만 업데이트  할인도 적용시켜야함 완성 나중에 결제에 포인트 생기면 여기서 처리할수도 있음 그냥 price결괏값 - 포인트 -->
 <update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
 	update Delivery
 	set quantity = quantity + #{quantity},
@@ -54,7 +53,8 @@
             ELSE
                 (price + #{price})
         END
-        )
+        ), 
+        not_discount=(quantity * (select price from Product where product_name = #{productName}))
 	where product_name = #{productName} and order_status = 0 and ref = 0 and user_id = #{userId}
 </update>
 
@@ -82,8 +82,8 @@
 
 <!-- 배달주문 하기 -->
 <insert id="insertDeliveryList" parameterType="possg.com.a.dto.DeliveryListDto">
-	insert Delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name)
-	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark}, #{branchName})
+	insert Delivery_list(user_id, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name, not_discount)
+	values( #{userId}, #{delRef}, now(), 1, #{delTotalNumber}, #{delTotalPrice}, #{delRemark}, #{branchName}, #{notDiscount})
 </insert>
 
 <select id="selectCustomer" parameterType="Integer" resultType="possg.com.a.dto.CustomerDto">
@@ -173,7 +173,7 @@
     COUNT(CASE WHEN del_status = 2 THEN 1 END) AS afterOrder,
     COUNT(CASE WHEN del_status = 3 THEN 1 END) AS Delivering
 	FROM Delivery_list
-	where branch_name = #{branchName}
+	where branch_name = #{branchName} and seq != 1
 </select>
 
 <!-- 배송진행 상태 업데이트 -->
@@ -220,5 +220,11 @@
     p.del_status = -1
 	where p.del_ref = #{ref} and o.ref = #{ref} and o.order_status = 1
 </delete>
+
+<select id="findProduct" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+    select * 
+    from Product 
+    where product_name = #{productName} and conv_seq = #{convSeq}
+</select>
 
 </mapper>

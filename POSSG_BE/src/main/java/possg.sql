@@ -19,6 +19,7 @@ CREATE TABLE Convenience (
     longtitude double,							-- 경도
     FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
+select * from Convenience;
 
 -- 고객 테이블 --
 CREATE TABLE Customer (
@@ -83,16 +84,17 @@ CREATE TABLE Delivery (
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
 
 );
-
+ALTER TABLE Product CHANG priceOrigin price_origin int;
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
-	conv_seq INT not null,
+	conv_seq INT not null,												-- 편의점 고유번호
 	category_id	int, 													-- product_category 테이블에서 참조	
 	product_name VARCHAR(255) not null,									-- 상품명
-	product_roman_name VARCHAR(255),
-	product_translation_name VARCHAR(255),
+	product_roman_name VARCHAR(255),									-- 상품명 로마자
+	product_translation_name VARCHAR(255),								-- 상품명 번역
 	price INT not null,													-- 상품 가격
+	price_origin INT not null,											-- 상품 원가
 	price_discount INT,													-- 할인 후 상품 가격
 	stock_quantity INT not null,										-- 상품 재고
 	expiration_date	Timestamp,											-- 유통기한
@@ -245,7 +247,7 @@ CREATE TABLE PT(
 );
 
 -- 점주 발주 테이블 --
-CREATE TABLE call_product_Conv (
+CREATE TABLE Call_product_conv (
 	call_seq INT auto_increment primary key,					-- 편의점 발주 고유번호
 	conv_seq INT not null,										-- 편의점 고유번호 (주문자)
 	product_seq INT,											-- 상품 고유번호	
@@ -261,8 +263,12 @@ CREATE TABLE call_product_Conv (
 	img_url VARCHAR(255),										-- 상품 이미지
     foreign key(conv_seq) references Convenience(conv_seq),		-- 편의점 테이블에서 참조
     foreign key(product_seq) references Product(product_seq),	-- 상품 테이블에서 참조
-    foreign key(call_ref) references call_product_conv_order_list(call_ref)
+    foreign key(call_ref) references Call_product_conv_order_list(call_ref)
 );
+
+INSERT INTO Call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number
+								, call_total_price, call_remark) 
+VALUES (0, '-1', '2000-01-01', 0, 0, 0, 'temp');
 
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq

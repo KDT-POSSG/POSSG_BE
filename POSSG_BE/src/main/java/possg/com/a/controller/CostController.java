@@ -26,6 +26,7 @@ import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.CostChangeTypeDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
+import possg.com.a.dto.DeliveryCount;
 import possg.com.a.service.CostService;
 import possg.com.a.util.TokenCreate;
 
@@ -161,7 +162,7 @@ public class CostController {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("NO");
 	}
-
+/*
 	// 손익계산
 	@GetMapping("profitAndLoss")
 	public Map<String, Object> profitAndLoss(CostParam param,@RequestHeader("accessToken") String tokenHeader){
@@ -291,10 +292,10 @@ public class CostController {
 		
 		
 	}
-
+*/
 	// 년별 월별 일별 매출
 	@GetMapping("selectSales")
-	public int selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
+	public Map<String, Object> selectSales(CostParam param, @RequestHeader("accessToken") String accessToken) { //List<Map<String, Object>>
 		System.out.println("CostController selectSales " + new Date());
 		
 		Claims claim = tokenParser(accessToken);
@@ -306,13 +307,32 @@ public class CostController {
 			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
 	        LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
 	        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-	        String formattedDate = localDate.format(outputFormatter);	        
-		  
+	        String formattedDate = localDate.format(outputFormatter);
+	        int formattedYear = Integer.parseInt(formattedDate.substring(0, 4));
+	        int formattedMonth = Integer.parseInt(formattedDate.substring(4, 6));
+	        
+	        param.setCostYear(formattedYear);
+			param.setCostMonth(formattedMonth);
 			param.setConvSeq(convSeq);
 			param.setBranchName(branchName);
 			
-			List<CostParam> payment = service.getPaymentPrice(param);	
-			List<CostParam> list = service.getDeliveryPrice(param);
+			LocalDate previousDay = localDate.minusDays(1);
+			String eveDay = previousDay.format(outputFormatter);
+	        System.out.println(eveDay);
+	        LocalDate lastMonth = localDate.minusMonths(1);
+	        String previousMonth = lastMonth.format(outputFormatter);
+	        LocalDate lastYear = localDate.minusYears(1);
+	        String previousYear = lastYear.format(outputFormatter);
+
+	        
+	        param.setPreMonth(Integer.parseInt(previousMonth.substring(4, 6)));	        	        
+        	param.setPreYear(Integer.parseInt(previousYear.substring(0, 4)));	        	
+	      
+
+			List<CostDto> lossList = service.selectCostList(param);
+			List<CostParam> orderPrice = service.selectOrderPrice(param);		
+			List<CostParam> payment = service.paymentPrice(param);	
+			List<CostParam> list = service.getDeliveryPrice(param);		
 			
 			for(int i = 0; i< payment.size(); i++) {
 				String ref = payment.get(i).getRef();
@@ -321,66 +341,342 @@ public class CostController {
 		        payment.get(i).setRef(convertedRef);
 			}
 			
-			// 일별
+			Map<String, Object> map = new HashMap<>();
+			int totalLoss = 0;
+			int totalPrice = 0;				
+			int totalCount = 0;
+			int refundPrice = 0;
+			int refundCount = 0;
+			int notDiscount = 0;
+			int discountCount = 0;
+			int previousPrice = 0;
+			int previousLoss = 0;
+			
 			if(param.getChoice() == 0) {
-				int totalPrice = 0;
+				//발주지출
+				for(CostParam item : orderPrice) {				
+					if(item.getRef().substring(0, 8).equals(formattedDate)) {
+						totalLoss = totalLoss + item.getPrice();
+					}			
+					if(item.getRef().substring(0, 8).equals(eveDay)) {
+						previousLoss = previousLoss + item.getPrice();
+						System.out.println(previousLoss);
+					}			
+				}
+				//일별지출
+				for(CostParam item : payment) {
+				    String ref = item.getRef();
+				    String del = "결제 완료";	
+				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8)) && item.getDel().equals(del)){		       
+				        totalPrice = totalPrice + item.getPrice();
+				        notDiscount = notDiscount + item.getNotDiscount();
+				        totalCount = totalCount + 1;	
+				        System.out.println(totalPrice);
+				        //할인 갯수
+				        if(item.getPrice() != item.getNotDiscount()) {
+				        	discountCount = discountCount + 1; 
+				        }
+				    }
+				    //전일 매출
+				    if(eveDay.equals(ref.substring(0, 8)) && item.getDel().equals(del)) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    //환불 매출 건수
+				    if(ref.substring(0, 6).equals(eveDay) && !item.getDel().equals(del)) {
+					   refundPrice = refundPrice + item.getPrice();
+					   refundCount = refundCount + 1;
+				    }
+				}
 				
-				for (CostParam item : payment) {
+				for(CostParam item : list) {
 				    String ref = item.getRef();
-				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
-				        totalPrice = totalPrice + item.getPaymentPrice();
-				    }
-				}	
-				for (CostParam item : list) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8))) {		       
+				    if (ref.substring(0, 8).equals(formattedDate.substring(0, 8)) && item.getStatus() != -1) {		       
 				    	totalPrice = totalPrice + item.getPrice();
+				    	notDiscount = notDiscount + item.getNotDiscount();
+				    	totalCount = totalCount + 1;
+				    	System.out.println(totalPrice);
+				    	//할인 갯수
+				    	if(item.getPrice() != item.getNotDiscount()) {
+				    		discountCount = discountCount + 1;
+				    	}
 				    }
-				}
-				return totalPrice;
+				    //전일 매출
+				    if(eveDay.equals(ref.substring(0, 8)) && item.getStatus() != -1) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    // 환불 매출 건수
+				    if(ref.substring(0, 8).equals(formattedDate.substring(0, 8)) && item.getStatus() == -1) {
+						   refundPrice = refundPrice + item.getPrice();
+						   refundCount = refundCount + 1;
+				    }
+				}				
+				 notDiscount = notDiscount - totalPrice; 
+			        //매출 상승률
+			        double increaseRate = 0;
+			        if(previousPrice != 0) {
+			        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+				        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
+			        }
+			        
+			        double lossIncreaseRate = 0;
+			        if(previousLoss != 0) {
+			        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+			        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
+			        }
+	        
+			        int profit= totalPrice - totalLoss;
+			        int preProfit = previousPrice - previousLoss;
+			        
+			        map.put("totalPrice", totalPrice); // 총매출
+					map.put("totalLoss", totalLoss);   // 총지출
+					map.put("totalCount", totalCount); // 총판매갯수
+					map.put("refundPrice", refundPrice); // 환불가격
+					map.put("refundCount",refundCount);  // 환불갯수
+					map.put("discountPrice", notDiscount);// 할인가격
+					map.put("discountCount", discountCount);//할인갯수
+					map.put("increaseRate", increaseRate);  // 상승률
+					map.put("previousPrice", previousPrice);// 전일매출
+					map.put("previousLoss", previousLoss);  // 전일지출
+					map.put("profit", profit); // 손익
+					map.put("preProfit", preProfit); // 전달손익
+					
+					return map;				
 			}
+									
 			// 월별
-			if(param.getChoice() == 1) {
-				int totalPrice = 0;
-				for (CostParam item : payment) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
-				        totalPrice = totalPrice + item.getPaymentPrice();
-				    }
-				}	
-				for (CostParam item : list) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6))) {		       
-				    	totalPrice = totalPrice + item.getPrice();
-				    }
-				   
+			if(param.getChoice() == 1) {	
+				//발주지출
+				for(CostParam item : orderPrice) {				
+					if(item.getRef().substring(0, 6).equals(formattedDate)) {
+						totalLoss = totalLoss + item.getPrice();
+					}			
+					if(item.getRef().substring(0, 6).equals(previousMonth)) {
+						previousLoss = previousLoss + item.getPrice();
+						System.out.println(previousLoss);
+					}	
+					
+					
 				}
-				return totalPrice;
+				
+				//매출 건수 
+				for(CostParam item : payment) {
+				    String ref = item.getRef();
+				    String del = "결제 완료";	
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getDel().equals(del)){		       
+				        totalPrice = totalPrice + item.getPrice();
+				        notDiscount = notDiscount + item.getNotDiscount();
+				        totalCount = totalCount + 1;				        
+				        //할인 갯수
+				        if(item.getPrice() != item.getNotDiscount()) {
+				        	discountCount = discountCount + 1; 
+				        }
+				    }
+				    //전달 매출
+				    if(previousMonth.equals(ref.substring(0, 6)) && item.getDel().equals(del)) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    //환불 매출 건수
+				    if(ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && !item.getDel().equals(del)) {
+					   refundPrice = refundPrice + item.getPrice();
+					   refundCount = refundCount + 1;
+				    }
+				}
+				
+				for(CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getStatus() != -1) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    	notDiscount = notDiscount + item.getNotDiscount();
+				    	totalCount = totalCount + 1;
+				    	//할인 갯수
+				    	if(item.getPrice() != item.getNotDiscount()) {
+				    		discountCount = discountCount + 1;
+				    	}
+				    }
+				    //전달 매출
+				    if(previousMonth.equals(ref.substring(0, 6)) && item.getStatus() != -1) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    // 환불 매출 건수
+				    if(ref.substring(0, 6).equals(formattedDate.substring(0, 6)) && item.getStatus() == -1) {
+						   refundPrice = refundPrice + item.getPrice();
+						   refundCount = refundCount + 1;
+				    }
+				}
+				
+				//지출
+				
+				for(CostDto item : lossList) {					
+					if(item.getCostMonth() == formattedMonth && item.getCostYear() == formattedYear) {				
+						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;			
+					}
+					
+					//전달 지출
+					if(item.getCostMonth() == Integer.parseInt(previousMonth.substring(4, 6)) && item.getCostYear() == formattedYear) {
+						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
+					}
+				}
+  
+		        notDiscount = notDiscount - totalPrice; 
+		        //매출 상승률
+		        double increaseRate = 0;
+		        if(previousPrice != 0) {
+		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
+		        }
+		        
+		        double lossIncreaseRate = 0;
+		        if(previousLoss != 0) {
+		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
+		        }
+        
+		        int profit= totalPrice - totalLoss;
+		        int preProfit = previousPrice - previousLoss;
+		        
+		        // 손익 상승률
+		        double preIncreaseRate = 0;
+		        if(previousLoss != 0) {
+		        	preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
+		        	preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
+		        }		        	        			
+				map.put("totalPrice", totalPrice); // 총매출
+				map.put("totalLoss", totalLoss);   // 총지출
+				map.put("totalCount", totalCount); // 총판매갯수
+				map.put("refundPrice", refundPrice); // 환불가격
+				map.put("refundCount",refundCount);  // 환불갯수
+				map.put("discountPrice", notDiscount);// 할인가격
+				map.put("discountCount", discountCount);//할인갯수
+				map.put("increaseRate", increaseRate);  // 상승률
+				map.put("previousPrice", previousPrice);// 전달매출
+				map.put("previousLoss", previousLoss);  // 전달지출
+				map.put("lossIncreaseRate", lossIncreaseRate); //지출상승률
+				map.put("profit", profit); // 손익
+				map.put("preProfit", preProfit); // 전달손익
+				map.put("preIncreaseRate", preIncreaseRate); // 손익상승률
+								
+				return map;
 			}
 			
 			//년별			
 			if(param.getChoice() == 2) {
-				int totalPrice = 0;
-				for (CostParam item : payment) {
-				    String ref = item.getRef();
-				    System.out.println(ref);
-				    
-				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
-				        totalPrice = totalPrice + item.getPaymentPrice();
-				    }
-				}	
-				for (CostParam item : list) {
-				    String ref = item.getRef();
-				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4))) {		       
-				    	totalPrice = totalPrice + item.getPrice();
-				    }
-				   
+				//발주지출
+				for(CostParam item : orderPrice) {				
+					if(item.getRef().substring(0, 4).equals(formattedDate)) {
+						totalLoss = totalLoss + item.getPrice();
+					}			
+					if(item.getRef().substring(0, 4).equals(previousYear)) {
+						previousLoss = previousLoss + item.getPrice();
+						System.out.println(previousLoss);
+					}			
 				}
-				return totalPrice;
+				// 매장 매출
+				for(CostParam item : payment) {
+				    String ref = item.getRef();
+				    String del = "결제 완료";	
+				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && item.getDel().equals(del)){		       
+				        totalPrice = totalPrice + item.getPrice();
+				        notDiscount = notDiscount + item.getNotDiscount();
+				        totalCount = totalCount + 1;				        
+				        //할인 갯수
+				        if(item.getPrice() != item.getNotDiscount()) {
+				        	discountCount = discountCount + 1; 
+				        }
+				    }
+				    //전년 매출
+				    if(Integer.parseInt(previousYear.substring(0, 4)) == Integer.parseInt(ref.substring(0, 4)) && item.getDel().equals(del)) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    //환불 매출 건수
+				    if(ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && !item.getDel().equals(del)) {
+					   refundPrice = refundPrice + item.getPrice();
+					   refundCount = refundCount + 1;
+				    }
+				}
+				
+				for(CostParam item : list) {
+				    String ref = item.getRef();
+				    if (ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && item.getStatus() != -1) {		       
+				    	totalPrice = totalPrice + item.getPrice();
+				    	notDiscount = notDiscount + item.getNotDiscount();
+				    	totalCount = totalCount + 1;
+				    	//할인 갯수
+				    	if(item.getPrice() != item.getNotDiscount()) {
+				    		discountCount = discountCount + 1;
+				    	}
+				    }
+				    //전년 매출
+				    if(Integer.parseInt(previousYear.substring(0, 4)) == Integer.parseInt(ref.substring(0, 4)) && item.getStatus() != -1) {
+				    	previousPrice = previousPrice + item.getPrice();
+				    }
+				    // 환불 매출 건수
+				    if(ref.substring(0, 4).equals(formattedDate.substring(0, 4)) && item.getStatus() == -1) {
+						   refundPrice = refundPrice + item.getPrice();
+						   refundCount = refundCount + 1;
+				    }
+				}
+
+		        // 지출
+		        for(CostDto item : lossList) {
+		        	
+					if(item.getCostYear() == formattedYear) {				
+						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;			
+					}
+					
+					//전달 지출
+					if(item.getCostYear() == Integer.parseInt(previousMonth.substring(0, 4))) {
+						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
+					}
+				}
+						        
+		        notDiscount = notDiscount - totalPrice; 
+		        //매출 상승률
+		        double increaseRate = 0;
+		        if(previousPrice != 0) {
+		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
+		        }
+		        
+		        double lossIncreaseRate = 0;
+		        if(previousLoss != 0) {
+		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
+		        }
+        
+		        int profit= totalPrice - totalLoss;
+		        int preProfit = previousPrice - previousLoss;
+		        
+		        // 손익 상승률
+		        double preIncreaseRate = 0;
+		        if(previousLoss != 0) {
+		        	preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
+		        	preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
+		        }		        	        			
+				map.put("totalPrice", totalPrice); // 총매출
+				map.put("totalLoss", totalLoss);   // 총지출
+				map.put("totalCount", totalCount); // 총판매갯수
+				map.put("refundPrice", refundPrice); // 환불가격
+				map.put("refundCount",refundCount);  // 환불갯수
+				map.put("discountPrice", notDiscount);// 할인가격
+				map.put("discountCount", discountCount);//할인갯수
+				map.put("increaseRate", increaseRate);  // 상승률
+				map.put("previousPrice", previousPrice);// 전년매출
+				map.put("previousLoss", previousLoss);  // 전년지출
+				map.put("lossIncreaseRate", lossIncreaseRate); //지출상승률
+				map.put("profit", profit); // 손익
+				map.put("preProfit", preProfit); // 전년손익
+				map.put("preIncreaseRate", preIncreaseRate); // 손익상승률
+
+				return map;
 			}
 		}
+		Map<String, Object> emptyMap = new HashMap<>();
 
-		return 0;
+		return emptyMap;
 	}
 	
 	// 브랜드별 매출

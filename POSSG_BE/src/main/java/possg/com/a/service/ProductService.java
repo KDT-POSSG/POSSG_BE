@@ -46,6 +46,9 @@ public class ProductService {
 	public int updateProductStock(ProductDto dto) {
 		return dao.updateProductStock(dto);
 	}
+	public List<ProductDto> findStockName(ProductDto dto){
+		return dao.findStockName(dto);
+	}
 	public int deleteProduct(ProductDto dto) {
 		return dao.deleteProduct(dto);
 	}
