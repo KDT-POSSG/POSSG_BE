@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,15 +45,23 @@ public class DummyDataGenerator {
         	return price;
         }
     }
-
+	
+	@Value("${spring.datasource.hikari.username}")
+    private String dbusername;
+	
+	@Value("${spring.datasource.hikari.password}")
+    private String dbpassword;
+	
+	@Value("${spring.datasource.hikari.jdbc-url}")
+    private String dburl;
 	
 	@PostMapping("dummy")
 	public String generateDummyData() {
         Faker faker = new Faker(new Locale("ko", "KR"));
 
-        String url = "jdbc:mysql://54.180.60.149:3306/mydb?serverTimeZone=Asia/Seoul";
-        String user = "po33gKdtGroup1";
-        String password = "745po33g1";
+        String url = dburl;
+        String user = dbusername;
+        String password = dbpassword;
 
         List<Product> productList = new ArrayList<>();
         int records = 1000;
@@ -121,11 +130,10 @@ public class DummyDataGenerator {
 	
 	@PostMapping("dummyDeliveryList")
 	public String dummyDeliveryList() {
-		Faker faker = new Faker(new Locale("ko", "KR"));
 
-        String url = "jdbc:mysql://54.180.60.149:3306/mydb?serverTimeZone=Asia/Seoul";
-        String user = "po33gKdtGroup1";
-        String password = "745po33g1";
+        String url = dburl;
+        String user = dbusername;
+        String password = dbpassword;
 
         List<Delivery> productList = new ArrayList<>();
         int records = 1000;
@@ -163,8 +171,6 @@ public class DummyDataGenerator {
             	};
 
             	Random random = new Random();
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            DateTimeFormatter refFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             
             String insertSql = "INSERT INTO Delivery_list (seq, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name, "
             		+ " not_discount, user_id) "

@@ -96,4 +96,11 @@
 	</if>
 </select>
 
+<select id="cardOrCash" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.PaymentDto">
+	select *
+	from Payment
+	where conv_seq = #{convSeq} and del = '결제 완료' and purchased_at like CONCAT(#{date}, '%')
+	
+</select>
+
 </mapper>
