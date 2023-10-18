@@ -116,10 +116,12 @@ public class PointController {
 		int count = service.usePoint(param);
 		
 		if(count > 0) {
-			return "YES";
+			// 잔여 포인트도 return
+			PointDto remain = service.searchPoint(param);
+			return Integer.toString(remain.getTotalPoint());
 		}
 		
-		return "NO";
+		return "NOT USED";
 	};
 	
 	
