@@ -73,7 +73,7 @@ public class PointController {
 	
 	// 고객 포인트 조회
 	@GetMapping("searchPoint")
-	public int searchPoint(@RequestParam PointParam param) {
+	public int searchPoint(@RequestBody PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());
 		//System.out.println(param.toString());
 		
@@ -83,7 +83,7 @@ public class PointController {
 			return -1;
 		}
 		
-		// 전화번호 틀릴경우
+		// 비밀번호 틀릴경우
 		PointDto dto = service.searchPoint(param);
 		if (dto == null) {
 			return -2;
