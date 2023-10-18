@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -37,20 +38,37 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 			throws IOException, ServletException {
 		System.out.println("로그아웃이 진행됩니다.");
 		String authorizationHeader = request.getHeader("accessToken");
+		String refreshToken = request.getHeader("refreshToken");
 		String token = authorizationHeader.replace("Bearer", "").replace(" ", "");
-	
-		Claims claims =
-				Jwts.parserBuilder()
-				.setSigningKey(env.getProperty("custom.security.key")
-		).build().parseClaimsJws(token.trim()).getBody();
+		try {
+			Claims claims =
+					Jwts.parserBuilder()
+					.setSigningKey(env.getProperty("custom.security.key")
+			).build().parseClaimsJws(token.trim()).getBody();
+			
+			String userId = (String) claims.get("userId");
+			
+			service.logout(userId);
+			
+			request.getSession().invalidate();
+			
+			response.sendRedirect("/tokenController/afterLogout");
+		}
+		catch (ExpiredJwtException e) {
+			Claims claim =
+					Jwts.parserBuilder()
+					.setSigningKey(env.getProperty("custom.security.key")
+			).build().parseClaimsJws(refreshToken.trim()).getBody();
+			
+			String userId = (String) claim.get("userId");
+			
+			service.logout(userId);
+			
+			request.getSession().invalidate();
+			
+			response.sendRedirect("/tokenController/afterLogout");			
+		}		
 		
-		String userId = (String) claims.get("userId");
-		
-		service.logout(userId);
-		
-		request.getSession().invalidate();
-		
-		response.sendRedirect("/tokenController/afterLogout");
 	}
 
 }
