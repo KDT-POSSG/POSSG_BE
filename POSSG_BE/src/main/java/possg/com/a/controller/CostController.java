@@ -416,13 +416,13 @@ public class CostController {
 			        //매출 상승률
 			        double increaseRate = 0;
 			        if(previousPrice > 0) {
-			        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+			        	increaseRate = ((double)(totalPrice - previousPrice) / Math.abs(previousPrice)) * 100;
 				        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 			        }
 			        
 			        double lossIncreaseRate = 0;
 			        if(previousLoss > 0) {
-			        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+			        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / Math.abs(previousLoss)) * 100;
 			        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 			        }
 			        
@@ -521,14 +521,14 @@ public class CostController {
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률
 		        double increaseRate = 0;
-		        if(previousPrice > 0) {
-		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+		        if(previousPrice != 0) {
+		        	increaseRate = ((double)(totalPrice - previousPrice) /  Math.abs(previousPrice)) * 100;
 			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 		        }
 		        
 		        double lossIncreaseRate = 0;
-		        if(previousLoss > 0) {
-		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+		        if(previousLoss != 0) {
+		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) /  Math.abs(previousLoss)) * 100;
 		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 		        }
         
@@ -537,8 +537,8 @@ public class CostController {
 		        
 		        // 손익 상승률
 		        double preIncreaseRate = 0;
-		        if (preProfit > 0) {
-		            preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
+		        if (preProfit != 0) {
+		            preIncreaseRate = ((double)(profit - preProfit) /  Math.abs(preProfit)) * 100;
 		            preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
 		        }
 		        System.out.println(previousPrice);
@@ -636,13 +636,13 @@ public class CostController {
 		        //매출 상승률
 		        double increaseRate = 0;
 		        if(previousPrice > 0) {
-		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
+		        	increaseRate = ((double)(totalPrice - previousPrice) /  Math.abs(previousPrice)) * 100;
 			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 		        }
 		        
 		        double lossIncreaseRate = 0;
 		        if(previousLoss > 0) {
-		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
+		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) /  Math.abs(previousLoss)) * 100;
 		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 		        }
         
@@ -652,7 +652,7 @@ public class CostController {
 		        // 손익 상승률
 		        double preIncreaseRate = 0;
 		        if(previousLoss > 0) {
-		        	preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
+		        	preIncreaseRate = ((double)(profit - preProfit) / Math.abs(preProfit)) * 100;
 		        	preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
 		        }
 		        
