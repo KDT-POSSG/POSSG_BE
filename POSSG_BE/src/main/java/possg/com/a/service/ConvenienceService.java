@@ -117,5 +117,8 @@ public class ConvenienceService {
 		return dao.logout(userId);
 	}
 
+	public int autoTokenClean() {
+		return dao.autoTokenClean();
+	}
 
 }

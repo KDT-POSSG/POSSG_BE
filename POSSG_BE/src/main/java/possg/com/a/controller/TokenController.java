@@ -103,7 +103,7 @@ public class TokenController {
 		
 		@RequestMapping(value = "/afterLogout", method = { RequestMethod.GET ,RequestMethod.POST })
 		public String afterLogout() {
-
+			
 		    return "redirect:/login";
 		}
 	

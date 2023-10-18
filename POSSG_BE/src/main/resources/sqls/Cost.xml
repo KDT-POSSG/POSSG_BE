@@ -68,7 +68,7 @@
 <select id="bestDeliverySalesProduct" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select product_name, sum(quantity) as count, sum(price) as price
 	from Delivery
-	where branch_name = #{branchName}
+	where branch_name = #{branchName} and order_status != -1
 	group by product_name
 	<if test="choice != null">
 	 <if test="choice == 0">
@@ -84,7 +84,7 @@
 	select i.item_name as productName, sum(i.qty) as count, sum(i.price) as price
 	from Payment as p
 	inner join Items i on i.receipt_id = p.receipt_id
-	where conv_seq = #{convSeq}
+	where conv_seq = #{convSeq} and del = '결제 완료'
 	group by i.item_name
 	<if test="choice != null">
 	 <if test="choice == 0">
@@ -94,6 +94,13 @@
 	 	order by price desc;
 	 </if>
 	</if>
+</select>
+
+<select id="cardOrCash" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.PaymentDto">
+	select *
+	from Payment
+	where conv_seq = #{convSeq} and del = '결제 완료' and purchased_at like CONCAT(#{date}, '%')
+	
 </select>
 
 </mapper>

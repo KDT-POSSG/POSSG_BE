@@ -54,5 +54,7 @@ public interface ConvenienceDao {
 	int deleteSms(int smsNum);
 	
 	int logout(String userId);
+	
+	int autoTokenClean();
 
 }
