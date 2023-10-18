@@ -44,7 +44,7 @@ public class PointController {
 		
 		// 이미 가입 되어있는지 체크
 		int check = service.checkPoint(phoneNumber);
-		System.out.println(check);
+		//System.out.println(check);
 		if(check > 0) {
 			return "ALREADY REGISTER";
 		}
@@ -73,7 +73,7 @@ public class PointController {
 	
 	// 고객 포인트 조회
 	@GetMapping("searchPoint")
-	public int searchPoint(@RequestBody PointParam param) {
+	public int searchPoint(@RequestParam PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());
 		//System.out.println(param.toString());
 		
@@ -83,7 +83,7 @@ public class PointController {
 			return -1;
 		}
 		
-		// 비밀번호 틀릴경우
+		// 전화번호 틀릴경우
 		PointDto dto = service.searchPoint(param);
 		if (dto == null) {
 			return -2;
@@ -124,5 +124,18 @@ public class PointController {
 		return "NOT USED";
 	};
 	
+	@GetMapping("checkNumPoint")
+	public int checkNumPoint(String phoneNumber) {
+		System.out.println("PointController checkNumPoint " + new Date());
+		
+		// 이미 가입 되어있는지 체크
+		int check = service.checkPoint(phoneNumber);
+		if (check <= 0) {
+			return -1;
+		}
+		
+		int point = service.checkNumPoint(phoneNumber);
+		return point;
+	}
 	
 }

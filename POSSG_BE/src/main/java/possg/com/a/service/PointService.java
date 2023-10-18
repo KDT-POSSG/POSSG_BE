@@ -34,4 +34,8 @@ public class PointService {
 	public int usePoint(PointParam param) {
 		return dao.usePoint(param);
 	};
+	
+	public int checkNumPoint(String phoneNumber) {
+		return dao.checkNumPoint(phoneNumber);
+	};
 }
