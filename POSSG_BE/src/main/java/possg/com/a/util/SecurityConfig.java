@@ -66,7 +66,7 @@ public class SecurityConfig {
     	
     	http.authorizeHttpRequests(req ->
 			req				
-				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck", "/afterLogout/**").permitAll()
+				.requestMatchers("/NoSecurityZoneController/**", "/tokenController/**", "/healthcheck", "/afterLogout/**", "/dummy/**").permitAll()
 				.requestMatchers("/myPage/**").hasAuthority("ROLE_CONVENIENCE")
 				.anyRequest().authenticated()
 				//.requestMatchers("/**").permitAll()

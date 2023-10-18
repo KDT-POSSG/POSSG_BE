@@ -6,8 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -413,17 +415,17 @@ public class CostController {
 				 notDiscount = notDiscount - totalPrice; 
 			        //매출 상승률
 			        double increaseRate = 0;
-			        if(previousPrice != 0) {
+			        if(previousPrice > 0) {
 			        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
 				        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 			        }
 			        
 			        double lossIncreaseRate = 0;
-			        if(previousLoss != 0) {
+			        if(previousLoss > 0) {
 			        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
 			        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 			        }
-	        
+			        
 			        int profit= totalPrice - totalLoss;
 			        int preProfit = previousPrice - previousLoss;
 			        
@@ -450,12 +452,9 @@ public class CostController {
 					if(item.getRef().substring(0, 6).equals(formattedDate)) {
 						totalLoss = totalLoss + item.getPrice();
 					}			
-					if(item.getRef().substring(0, 6).equals(previousMonth)) {
+					if(item.getRef().substring(0, 6).equals(previousMonth.substring(0, 6))) {
 						previousLoss = previousLoss + item.getPrice();
-						System.out.println(previousLoss);
-					}	
-					
-					
+					}				
 				}
 				
 				//매출 건수 
@@ -472,7 +471,7 @@ public class CostController {
 				        }
 				    }
 				    //전달 매출
-				    if(previousMonth.equals(ref.substring(0, 6)) && item.getDel().equals(del)) {
+				    if(previousMonth.substring(0, 6).equals(ref.substring(0, 6)) && item.getDel().equals(del)) {
 				    	previousPrice = previousPrice + item.getPrice();
 				    }
 				    //환불 매출 건수
@@ -494,7 +493,7 @@ public class CostController {
 				    	}
 				    }
 				    //전달 매출
-				    if(previousMonth.equals(ref.substring(0, 6)) && item.getStatus() != -1) {
+				    if(previousMonth.substring(0, 6).equals(ref.substring(0, 6)) && item.getStatus() != -1) {
 				    	previousPrice = previousPrice + item.getPrice();
 				    }
 				    // 환불 매출 건수
@@ -522,13 +521,13 @@ public class CostController {
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률
 		        double increaseRate = 0;
-		        if(previousPrice != 0) {
+		        if(previousPrice > 0) {
 		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
 			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 		        }
 		        
 		        double lossIncreaseRate = 0;
-		        if(previousLoss != 0) {
+		        if(previousLoss > 0) {
 		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
 		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 		        }
@@ -538,10 +537,11 @@ public class CostController {
 		        
 		        // 손익 상승률
 		        double preIncreaseRate = 0;
-		        if(previousLoss != 0) {
-		        	preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
-		        	preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
-		        }		        	        			
+		        if (preProfit > 0) {
+		            preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
+		            preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
+		        }
+		        System.out.println(previousPrice);
 				map.put("totalPrice", totalPrice); // 총매출
 				map.put("totalLoss", totalLoss);   // 총지출
 				map.put("totalCount", totalCount); // 총판매갯수
@@ -564,12 +564,11 @@ public class CostController {
 			if(param.getChoice() == 2) {
 				//발주지출
 				for(CostParam item : orderPrice) {				
-					if(item.getRef().substring(0, 4).equals(formattedDate)) {
+					if(item.getRef().substring(0, 4).equals(formattedDate.substring(0, 4))) {
 						totalLoss = totalLoss + item.getPrice();
-					}			
-					if(item.getRef().substring(0, 4).equals(previousYear)) {
+					}
+					if(item.getRef().substring(0, 4).equals(previousYear.substring(0, 4))) {
 						previousLoss = previousLoss + item.getPrice();
-						System.out.println(previousLoss);
 					}			
 				}
 				// 매장 매출
@@ -636,13 +635,13 @@ public class CostController {
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률
 		        double increaseRate = 0;
-		        if(previousPrice != 0) {
+		        if(previousPrice > 0) {
 		        	increaseRate = ((double)(totalPrice - previousPrice) / previousPrice) * 100;
 			        increaseRate = Math.round(increaseRate * 100.0) / 100.0;
 		        }
 		        
 		        double lossIncreaseRate = 0;
-		        if(previousLoss != 0) {
+		        if(previousLoss > 0) {
 		        	lossIncreaseRate = ((double)(totalLoss - previousLoss) / previousLoss) * 100;
 		        	lossIncreaseRate = Math.round(lossIncreaseRate * 100.0) / 100.0;
 		        }
@@ -652,10 +651,11 @@ public class CostController {
 		        
 		        // 손익 상승률
 		        double preIncreaseRate = 0;
-		        if(previousLoss != 0) {
+		        if(previousLoss > 0) {
 		        	preIncreaseRate = ((double)(profit - preProfit) / preProfit) * 100;
 		        	preIncreaseRate = Math.round(preIncreaseRate * 100.0) / 100.0;
-		        }		        	        			
+		        }
+		        
 				map.put("totalPrice", totalPrice); // 총매출
 				map.put("totalLoss", totalLoss);   // 총지출
 				map.put("totalCount", totalCount); // 총판매갯수
@@ -710,7 +710,7 @@ public class CostController {
 		
 		
 		List<Map<String, Object>> brandSalesList = new ArrayList<>();
-	    Map<String, Integer> brandSalesMap = new HashMap<>();	    	    		
+	    Map<String, Integer> brandSalesMap = new LinkedHashMap<>();	    	    		
 		//월별			
 		if (param.getChoice() == 1) {
 			for (CostParam item : payment) {
@@ -801,20 +801,19 @@ public class CostController {
 	        payment.get(i).setRef(convertedRef);
 	    }
 
-	    Map<String, List<Map<String, Object>>> result = new HashMap<>();
+	    Map<String, List<Map<String, Object>>> result = new TreeMap<>();
 	    
 	    for (CostParam item : payment) {
 	        String ref = item.getRef();
 	        String productName = item.getProductName();
 	        String hour = ref.substring(8, 10); // ref에서 시간대 추출 (예: "10" 시간대)
 	        System.out.println(hour);
-	        if(formattedDate.contains(ref.substring(0,8))) {
+	        if(formattedDate.equals(ref.substring(0,8))) {
 	        		        
 		        if (!result.containsKey(hour)) {
 		            result.put(hour, new ArrayList<>());
 		        }
 	
-		        // 시간대별로만 되어있음,,, 년도 월 일 시간 별로 분류 해야함,,,,,, 개에바
 		        List<Map<String, Object>> hourlyDataList = result.get(hour);
 		        Map<String, Object> salesItem = findSalesItemByProductName(hourlyDataList, productName);
 	
@@ -869,7 +868,6 @@ public class CostController {
 		        }
 	        }
 	    }
-
 	    return result;
 	}
 	
