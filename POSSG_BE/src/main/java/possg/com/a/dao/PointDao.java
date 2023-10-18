@@ -14,4 +14,5 @@ public interface PointDao {
 	int addPoint(PointParam param);
 	PointDto searchPoint(PointParam param);
 	int usePoint(PointParam param);
+	int checkNumPoint(String phoneNumber);
 }

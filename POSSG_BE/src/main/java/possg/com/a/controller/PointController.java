@@ -44,7 +44,7 @@ public class PointController {
 		
 		// 이미 가입 되어있는지 체크
 		int check = service.checkPoint(phoneNumber);
-		System.out.println(check);
+		//System.out.println(check);
 		if(check > 0) {
 			return "ALREADY REGISTER";
 		}
@@ -124,5 +124,18 @@ public class PointController {
 		return "NOT USED";
 	};
 	
+	@GetMapping("checkNumPoint")
+	public int checkNumPoint(String phoneNumber) {
+		System.out.println("PointController checkNumPoint " + new Date());
+		
+		// 이미 가입 되어있는지 체크
+		int check = service.checkPoint(phoneNumber);
+		if (check <= 0) {
+			return -1;
+		}
+		
+		int point = service.checkNumPoint(phoneNumber);
+		return point;
+	}
 	
 }
