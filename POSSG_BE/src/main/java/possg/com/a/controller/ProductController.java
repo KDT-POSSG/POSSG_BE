@@ -866,7 +866,7 @@ public class ProductController {
 	
 	// 영양정보 획득
 	@GetMapping("getNutritionInfo")
-	public List<Map<String, Object>> getNutritionInfo(NutritionDto seqDto){
+	public List<Map<Object, Object>> getNutritionInfo(NutritionDto seqDto){
 		System.out.println("ProductController getNutritionInfo() " + new Date());
 		System.out.println("param 값: " + seqDto);
 		
@@ -874,46 +874,55 @@ public class ProductController {
 		System.out.println(nutDto);
 		
 		// 최종 결과를 저장할 리스트
-        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<Map<Object, Object>> resultList = new ArrayList<>();
 
         // 개별 상품 정보를 저장할 맵
-        LinkedHashMap<String, Object> productMap = new LinkedHashMap<>();
-
+        LinkedHashMap<Object, Object> productMap = new LinkedHashMap<>();
+        
+        
         // Get the class object
         Class<?> clazz = nutDto.getClass();
 
         // Get all fields from the class
         Field[] fields = clazz.getDeclaredFields();
-
+         
         int cnt = 0;
+        
         // Loop through all fields to get their names and values
         for (Field field : fields) {
-            field.setAccessible(true); // You might want to set this to access private fields
-            
+            field.setAccessible(true); // You might want to set this to access private fields      
             try {
-                // Get field name
-                String fieldName = field.getName();
-                
 
-                // Get field value
-                Object fieldValue = field.get(nutDto);
+            	if (cnt < 2) {
+            		// Get field name
+                    String fieldName = field.getName();
+                    
+                    // Get field value
+                    Object fieldValue = field.get(nutDto);
+                    
+                    // Put them in the map
+                    productMap.put(fieldName, fieldValue);
+            	}else {
+            		if (cnt % 2 == 0){
+            			productMap.put("title", field.get(nutDto));
+            		}else {
+            			productMap.put("value", field.get(nutDto));
+            		}
+	            	
+            	}
 
-                // Put them in the map
-                productMap.put(fieldName, fieldValue);
-                
                 cnt++;
-                if(cnt == 2) {
+                if(cnt % 2 == 0) {
                 	resultList.add(productMap);
                 	productMap = new LinkedHashMap<>();
-                	//System.out.println("fieldName= " + resultList);
-                	cnt = 0;
+                	System.out.println("fieldName= " + resultList);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
             
         }
-
+         
         return resultList;
     }
 	
