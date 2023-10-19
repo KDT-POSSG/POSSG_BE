@@ -1,44 +1,22 @@
 package possg.com.a.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import possg.com.a.dto.ConvenienceDto;
-import possg.com.a.dto.MessageDto;
-import possg.com.a.dto.SmsRequestDto;
-import possg.com.a.dto.SmsResponseDto;
-import possg.com.a.dto.TokenDto;
 import possg.com.a.service.ConvenienceService;
 import possg.com.a.util.TokenCreate;
 

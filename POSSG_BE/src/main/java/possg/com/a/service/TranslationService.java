@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.TranslationDao;
 import possg.com.a.dto.ProductDto;
-import possg.com.a.dto.ProductParam;
 
 @Service
 @Transactional

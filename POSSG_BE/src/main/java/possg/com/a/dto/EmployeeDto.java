@@ -1,7 +1,5 @@
 package possg.com.a.dto;
 
-import java.util.Date;
-
 public class EmployeeDto {
 	private int employeeSeq;
 	private int convSeq;

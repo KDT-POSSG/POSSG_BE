@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.ConvenienceDao;
 import possg.com.a.dto.ConvenienceDto;
-import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.TokenDto;
 
 

@@ -52,8 +52,5 @@ public interface DeliveryDao {
 	DeliveryCount allDeliveryCount(DeliveryParam param);
 	
 	List<ProductDto> findProduct(ProductDto dto);
-	
-	// List<DeliveryDto> getAllDeliveryOrderList();
-	// List<DeliveryDto> getRefDeliveryOrderList(String delRef);
 
 }
