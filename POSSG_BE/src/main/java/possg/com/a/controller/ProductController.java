@@ -1,5 +1,6 @@
 package possg.com.a.controller;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.annotation.PostConstruct;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
@@ -80,7 +83,7 @@ public class ProductController {
 				String temp = controller.translationProductName(dto.getProductName(), param.getCountry());
 				System.out.println("trans" + temp);
 				dto.setProductTranslationName(temp);
-				if (cnt > 3) {break;}
+				if (cnt > 10) {break;}
 				cnt ++;
 			}
 		}
@@ -844,15 +847,19 @@ public class ProductController {
 		System.out.println("ProductController getNutritionInfo() " + new Date());
 		System.out.println("param 값: " + seqDto);
 		
-		NutritionDto nutDto = service.getNutritionInfo(seqDto);
-		System.out.println(nutDto);
-		
 		// 최종 결과를 저장할 리스트
         List<Map<Object, Object>> resultList = new ArrayList<>();
 
         // 개별 상품 정보를 저장할 맵
         LinkedHashMap<Object, Object> productMap = new LinkedHashMap<>();
-        
+
+		NutritionDto nutDto = service.getNutritionInfo(seqDto);
+		
+		if (nutDto == null || nutDto.equals("")) {
+			return resultList;
+		}
+		System.out.println(nutDto);
+		
         
         // Get the class object
         Class<?> clazz = nutDto.getClass();
