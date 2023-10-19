@@ -19,7 +19,7 @@ public class DeleteToken {
 	 @Autowired
 	 private CustomerService custService;
 
-	    public static void main(String[] args) {
+	    public static void deleteToken(String[] args) {
 	        SpringApplication.run(DeleteToken.class, args);
 	    }
 
