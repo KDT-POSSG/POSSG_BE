@@ -63,4 +63,8 @@ public class CustomerService {
 	public int deliveryDelete(int customerSeq) {
 		return dao.deliveryDelete(customerSeq);
 	}
+	
+	public int deleteCustomerToken() {
+		return dao.deleteCustomerToken();
+	}
 }

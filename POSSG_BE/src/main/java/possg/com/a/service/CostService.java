@@ -11,6 +11,7 @@ import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CostDto;
 import possg.com.a.dto.CostParam;
 import possg.com.a.dto.DeliveryCount;
+import possg.com.a.dto.PaymentDto;
 import possg.com.a.dto.ProductDto;
 
 @Service
@@ -62,6 +63,10 @@ public class CostService {
 	
 	public List<CostParam> paymentPrice(CostParam param){
 		return dao.paymentPrice(param);
+	}
+	
+	public List<PaymentDto> cardOrCash(CostParam param){
+		return dao.cardOrCash(param);
 	}
 
 }

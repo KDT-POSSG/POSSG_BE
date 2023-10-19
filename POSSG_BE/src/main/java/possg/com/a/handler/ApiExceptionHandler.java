@@ -18,6 +18,9 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.MethodNotAllowedException;
+
+import io.jsonwebtoken.ExpiredJwtException;
+
 import javax.naming.ServiceUnavailableException;
 
 @RestControllerAdvice

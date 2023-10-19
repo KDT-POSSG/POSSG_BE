@@ -30,7 +30,7 @@
 	
 <!-- 아이디 찾기  -->	
 <select id="findUserByAddressAndPhoneNumber" parameterType="possg.com.a.dto.ConvenienceDto" resultType="possg.com.a.dto.ConvenienceDto">
-     SELECT * FROM Convenience WHERE representative_name = #{representativeName} AND phone_number = #{phoneNumber}
+     SELECT * from Convenience where representative_name = #{representativeName} and phone_number = #{phoneNumber}
 </select>
     
     
@@ -82,8 +82,8 @@ where user_id = #{userId}
 
 <!-- 토큰이랑 아이디 db에 저장 -->
 <insert id="insertToken" parameterType="possg.com.a.dto.TokenDto">
-	insert into Token(refresh, user_id)
-	values(#{refresh}, #{userId})
+	insert into Token(refresh, user_id, created_at)
+	values(#{refresh}, #{userId}, now())
 </insert>
 
 <!-- access토큰의 아이디를 파싱하여 userId로 보내주면 db에 저장된 user_id랑 비교해서 같은 refresh토큰만 선택 -->
@@ -116,6 +116,10 @@ where user_id = #{userId}
 	where user_id = #{userId}	
 </delete>
 
-
+<delete id="autoTokenClean">
+	delete
+	from Token
+	where datediff(now(), created_at) > 7
+</delete>
 
 </mapper>
