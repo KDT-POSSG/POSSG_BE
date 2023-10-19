@@ -15,6 +15,14 @@
 		WHERE phone_num = #{phoneNumber}
 	</select>
 	
+	<!-- 전화번호로 포인트만 조회 -->
+	<select id="checkNumPoint" parameterType="String" resultType="Integer">
+		SELECT total_pt
+		FROM PT
+		WHERE phone_num = #{phoneNumber}
+	</select>
+	
+	
 	<!-- 포인트 적립 -->
 	<update id="addPoint" parameterType="possg.com.a.dto.PointParam">
 		UPDATE PT
@@ -24,7 +32,7 @@
 	
 	<!-- 고객 포인트 조회 -->
 	<select id="searchPoint" parameterType="possg.com.a.dto.PointParam" resultType="possg.com.a.dto.PointDto">
-		SELECT pt_seq AS ptSeq, phone_num AS phoneNumber, total_pt AS totalPoint, pwd <!-- 매핑때문에 -->
+		SELECT phone_num AS phoneNumber, total_pt AS totalPoint, pwd <!-- 매핑때문에 -->
 		FROM PT
 		WHERE phone_num = #{phoneNumber} and pwd = #{pwd} 
 	</select>
@@ -33,6 +41,7 @@
 	<update id="usePoint" parameterType="possg.com.a.dto.PointParam">
 		UPDATE PT
 		SET total_pt = total_pt - #{point}
-		WHERE phone_num = #{phoneNumber}
+		WHERE phone_num = #{phoneNumber} 
 	</update>
+	
 </mapper>

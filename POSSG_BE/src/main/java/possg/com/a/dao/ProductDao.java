@@ -1,6 +1,7 @@
 package possg.com.a.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.NutritionDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 
@@ -25,6 +27,7 @@ public interface ProductDao {
 	int getProductTotalNumber(ProductParam param);
 	List<ProductDto> getProductSeqAndTotalStock(ProductDto dto);
 	int updateProductStock(ProductDto dto);
+	List<ProductDto> findStockName(ProductDto dto);
 	int deleteProduct(ProductDto dto);
 	int deleteProductRegiInfo(ProductDto dto);
 	
@@ -72,4 +75,7 @@ public interface ProductDao {
 	
 	int updateExpirationFlagAuto();
 	int updateProductExpirationFlag(ProductDto dto);
+	
+	int addNutritionInfo(NutritionDto nutDto);
+	NutritionDto getNutritionInfo(NutritionDto seqDto);
 }

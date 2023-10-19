@@ -29,7 +29,7 @@ public class ProductUtil {
 	public static List<ProductDto> productScrap(ProductService proService) throws InterruptedException {
 		System.out.println("ProductController productScrap " + new Date());
 		
-		int conv_seq = 5;
+		int conv_seq = 1;
 		
         int cnt = 1;
         
@@ -41,8 +41,8 @@ public class ProductUtil {
         	
         	// 상품 상세정보 필요시 크롤링 페이지 다른 주소로 변경 (변경 시 파라미터 수정 필요)>> https://emile.emarteveryday.co.kr/
         	
-            //String url = "https://www.emart24.co.kr/goods/event?search=&page=" + cnt + "&category_seq=&align=";
-        	String url = "https://www.emart24.co.kr/goods/ff?search=&page=" + cnt + "&category_seq=&align=";
+            String url = "https://www.emart24.co.kr/goods/event?search=&page=" + cnt + "&category_seq=&align=";
+        	//String url = "https://www.emart24.co.kr/goods/ff?search=&page=" + cnt + "&category_seq=&align=";
             try {
             	Document document = Jsoup.connect(url)
                         .timeout(10 * 1000)  // 10초 타임아웃
@@ -54,7 +54,7 @@ public class ProductUtil {
                     break;
                 }
                 for (Element item : items) {
-                    int category_id = 2; //2; // 카테고리 (1: 행사상품, 2: 신선식품)
+                    int category_id = 1; //2; // 카테고리 (1: 행사상품, 2: 신선식품)
                     String product_name = item.select(".itemtitle a").text(); // 제품 이름
                     String product_roman_name = KoreanRomanizer.romanize(product_name, KoreanCharacter.ConsonantAssimilation.Regressive);
                     
@@ -106,6 +106,7 @@ public class ProductUtil {
                 }
 
                 cnt++;
+
                 // Thread.sleep(1000);  // 1초 대기
 
             } catch (IOException e) {
@@ -154,14 +155,15 @@ public class ProductUtil {
         Random random = new Random();
         
         // 0~365 사이의 랜덤한 숫자 생성
-        int randomDays = random.nextInt(1,14);//random.nextInt(180);
-        
+        int randomDays = random.nextInt(180);//random.nextInt(180);
+        String randomtime = " " + String.valueOf(random.nextInt(1,23)) + ":00";//random.nextInt(1,14);
+        System.out.println("time= " + randomtime);
         // 랜덤한 날짜를 더하기
         calendar.add(Calendar.DAY_OF_YEAR, randomDays);
         //calendar.add(Calendar.YEAR, 1);
         // 날짜를 스트링으로 포맷하기
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = sdf.format(calendar.getTime()) + " 18:00";
+        String formattedDate = sdf.format(calendar.getTime()) + randomtime;
         
         return formattedDate;
     }

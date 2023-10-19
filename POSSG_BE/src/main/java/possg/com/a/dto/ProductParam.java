@@ -11,10 +11,12 @@ public class ProductParam{
 	private int promotionInfo; // 프로모션 정보
 	private int categoryId; // 1: 행사상품, 2: 신선식품	
 	private String sortOrder = "newest";	
-	private int pageSize = 20;	
+	private int pageSize = 10;	
 	private int country = 0;
 	private int convSeq;
 
+	private int stockListCheck = 0;
+	
 	public ProductParam() {
 	}
 
@@ -49,7 +51,7 @@ public class ProductParam{
 	}
 	
 	public ProductParam(String choice, String search, int pageNumber, int seq, int minPrice, int maxPrice,
-			int promotionInfo, int categoryId, String sortOrder, int pageSize, int country, int convSeq) {
+			int promotionInfo, int categoryId, String sortOrder, int pageSize, int country, int convSeq, int stockListCheck) {
 		super();
 		this.choice = choice;
 		this.search = search;
@@ -63,6 +65,7 @@ public class ProductParam{
 		this.pageSize = pageSize;
 		this.country = country;
 		this.convSeq = convSeq;
+		this.stockListCheck = stockListCheck;
 	}
 
 	public int getMinPrice() {
@@ -161,13 +164,20 @@ public class ProductParam{
 		this.convSeq = convSeq;
 	}
 
+	public int getStockListCheck() {
+		return stockListCheck;
+	}
+
+	public void setStockListCheck(int stockListCheck) {
+		this.stockListCheck = stockListCheck;
+	}
+
 	@Override
 	public String toString() {
 		return "ProductParam [choice=" + choice + ", search=" + search + ", pageNumber=" + pageNumber + ", seq=" + seq
 				+ ", minPrice=" + minPrice + ", maxPrice=" + maxPrice + ", promotionInfo=" + promotionInfo
 				+ ", categoryId=" + categoryId + ", sortOrder=" + sortOrder + ", pageSize=" + pageSize + ", country="
-				+ country + ", convSeq=" + convSeq + "]";
-
+				+ country + ", convSeq=" + convSeq + ", stockListCheck=" + stockListCheck + "]";
 	}
 	
 }

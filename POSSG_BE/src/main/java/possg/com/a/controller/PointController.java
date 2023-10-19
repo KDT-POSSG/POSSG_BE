@@ -37,6 +37,20 @@ public class PointController {
 		return "NO";
 	};
 	
+	@PostMapping("checkPoint")
+	public String checkPoint(@RequestParam String phoneNumber) {
+		System.out.println("PointController checkPoint " + new Date());
+		
+		// 이미 가입 되어있는지 체크
+		int check = service.checkPoint(phoneNumber);
+		//System.out.println(check);
+		if(check > 0) {
+			return "ALREADY REGISTER";
+		}
+		
+		return "YES";
+	}
+	
 	@PostMapping("addPoint")
 	public String addPoint(@RequestBody PointParam param) {
 		System.out.println("PointController addPoint " + new Date());
@@ -101,11 +115,29 @@ public class PointController {
 		int count = service.usePoint(param);
 		
 		if(count > 0) {
-			return "YES";
+			// 잔여 포인트도 return
+			PointDto remain = service.searchPoint(param);
+			System.out.println(remain.getTotalPoint());
+			return Integer.toString(remain.getTotalPoint());
 		}
 		
-		return "NO";
+		return "NOT USED";
 	};
+	
+	@GetMapping("checkNumPoint")
+	public int checkNumPoint(String phoneNumber) {
+		System.out.println("PointController checkNumPoint " + new Date());
+		
+		// 이미 가입 되어있는지 체크
+		int check = service.checkPoint(phoneNumber);
+		if (check <= 0) {
+			return -1;
+		}
+		
+		int point = service.checkNumPoint(phoneNumber);
+		return point;
+	}
+	
 	
 	
 }
