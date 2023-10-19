@@ -72,7 +72,7 @@ public class PointController {
 	};
 	
 	// 고객 포인트 조회
-	@GetMapping("searchPoint")
+	@PostMapping("searchPoint")
 	public int searchPoint(@RequestBody PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());
 		//System.out.println(param.toString());
