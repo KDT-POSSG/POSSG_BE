@@ -1,11 +1,5 @@
 package possg.com.a.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,22 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.Claims;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import net.crizin.KoreanCharacter;
-import net.crizin.KoreanRomanizer;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
@@ -45,16 +29,8 @@ import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.NutritionDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
-import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
-import possg.com.a.service.TranslationService;
-import possg.com.a.util.NaverCloudUtil;
 import possg.com.a.util.ProductUtil;
-import possg.com.a.util.SecurityConfig;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @SpringBootApplication
 @EnableScheduling
@@ -106,7 +82,7 @@ public class ProductController {
 				String temp = controller.translationProductName(dto.getProductName(), param.getCountry());
 				System.out.println("trans" + temp);
 				dto.setProductTranslationName(temp);
-				if (cnt > 3) {break;}
+				if (cnt > 10) {break;}
 				cnt ++;
 			}
 		}
@@ -870,15 +846,19 @@ public class ProductController {
 		System.out.println("ProductController getNutritionInfo() " + new Date());
 		System.out.println("param 값: " + seqDto);
 		
-		NutritionDto nutDto = service.getNutritionInfo(seqDto);
-		System.out.println(nutDto);
-		
 		// 최종 결과를 저장할 리스트
         List<Map<Object, Object>> resultList = new ArrayList<>();
 
         // 개별 상품 정보를 저장할 맵
         LinkedHashMap<Object, Object> productMap = new LinkedHashMap<>();
-        
+
+		NutritionDto nutDto = service.getNutritionInfo(seqDto);
+		
+		if (nutDto == null || nutDto.equals("")) {
+			return resultList;
+		}
+		System.out.println(nutDto);
+		
         
         // Get the class object
         Class<?> clazz = nutDto.getClass();
