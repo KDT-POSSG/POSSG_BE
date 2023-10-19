@@ -1,7 +1,6 @@
 package possg.com.a.dto;
 
 public class PointDto {
-    private int ptSeq;
     private String phoneNumber;
     private int totalPoint;
     private String pwd;
@@ -11,22 +10,11 @@ public class PointDto {
 
 	
 
-	public PointDto(int ptSeq, String phoneNumber, int totalPoint, String pwd) {
+	public PointDto(String phoneNumber, int totalPoint, String pwd) {
 		super();
-		this.ptSeq = ptSeq;
 		this.phoneNumber = phoneNumber;
 		this.totalPoint = totalPoint;
 		this.pwd = pwd;
-	}
-
-
-
-	public int getPtSeq() {
-		return ptSeq;
-	}
-
-	public void setPtSeq(int ptSeq) {
-		this.ptSeq = ptSeq;
 	}
 
 	public String getPhoneNumber() {
@@ -59,7 +47,7 @@ public class PointDto {
 
 	@Override
 	public String toString() {
-		return "PointDto [ptSeq=" + ptSeq + ", phoneNumber=" + phoneNumber + ", totalPoint=" + totalPoint + ", pwd="
+		return "PointDto [phoneNumber=" + phoneNumber + ", totalPoint=" + totalPoint + ", pwd="
 				+ pwd + "]";
 	}
 
