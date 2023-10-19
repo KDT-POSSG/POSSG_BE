@@ -559,8 +559,6 @@ public class CostController {
 		
 		DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy년MM월dd일");
         LocalDate localDate = LocalDate.parse(param.getDate(), inputFormatter);       
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formattedDate = localDate.format(outputFormatter);
         
         DateTimeFormatter paramDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     	String dayDate = localDate.format(paramDate);

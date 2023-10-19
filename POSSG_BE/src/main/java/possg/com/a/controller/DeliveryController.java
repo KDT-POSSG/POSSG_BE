@@ -462,13 +462,13 @@ public class DeliveryController {
 			}
 			return "NO";
 		}
-		
+		/*
 		@PostMapping("exceoptionTest")
 		public void exceoptionTest (){		   
 		        String str = null;
 		        int length = str.length();  // 여기서 NullPointerException이 발생합니다.	        		    
 		}
-
+		 */
 
 		
 		//---------------------------------------------------함수------------------------------------------------------

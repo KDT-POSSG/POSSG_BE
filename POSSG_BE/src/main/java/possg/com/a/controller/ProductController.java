@@ -1,11 +1,5 @@
 package possg.com.a.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,21 +10,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
-import net.crizin.KoreanCharacter;
-import net.crizin.KoreanRomanizer;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
@@ -40,16 +23,9 @@ import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
-import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
-import possg.com.a.service.TranslationService;
-import possg.com.a.util.NaverCloudUtil;
-import possg.com.a.util.ProductUtil;
-import possg.com.a.util.SecurityConfig;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import possg.com.a.util.ProductUtil;
 
 @RestController
 public class ProductController {
