@@ -52,8 +52,8 @@
 
 <!-- 토큰저장 -->
 <insert id="customerRefresh" parameterType="possg.com.a.dto.CustomerTokenDto">
-	insert into Customer_token(refresh, customer_id)
-	values(#{refresh}, #{customerId})
+	insert into Customer_token(refresh, customer_id, created_at)
+	values(#{refresh}, #{customerId}, now())
 </insert>
 
 <!-- access토큰의 아이디를 파싱하여 userId로 보내주면 db에 저장된 customer_id랑 비교해서 같은 refresh토큰만 선택 -->
@@ -90,5 +90,11 @@
 	set customer_status = 0
 	where customer_id = #{customerId}
 </update>
+
+<delete id="deleteCustomerToken">
+	delete 
+	from Customer_token
+	where datediff(now(), created_at) > 7
+</delete>
 
 </mapper>

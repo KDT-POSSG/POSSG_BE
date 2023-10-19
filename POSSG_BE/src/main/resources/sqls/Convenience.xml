@@ -30,7 +30,7 @@
 	
 <!-- 아이디 찾기  -->	
 <select id="findUserByAddressAndPhoneNumber" parameterType="possg.com.a.dto.ConvenienceDto" resultType="possg.com.a.dto.ConvenienceDto">
-     SELECT * FROM Convenience WHERE representative_name = #{representativeName} AND phone_number = #{phoneNumber}
+     SELECT * from Convenience where representative_name = #{representativeName} and phone_number = #{phoneNumber}
 </select>
     
     
@@ -119,7 +119,7 @@ where user_id = #{userId}
 <delete id="autoTokenClean">
 	delete
 	from Token
-	where DATEDIFF(NOW(), created_at) > 7
+	where datediff(now(), created_at) > 7
 </delete>
 
 </mapper>
