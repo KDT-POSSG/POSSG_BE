@@ -298,3 +298,26 @@ CREATE TABLE Call_product_customer (
 	foreign key(product_seq) references Product(product_seq)		-- 상품 테이블에서 참조
 );
 
+CREATE TABLE Nutrition(
+	nutrition_seq INT auto_increment primary key,
+	product_seq INT not null,
+	serving_size VARCHAR(255),
+	serving_size_amount VARCHAR(255),
+	calorie VARCHAR(255),
+	calorie_amount VARCHAR(255),
+	carbohydrate VARCHAR(255),
+	carbohydrate_amount VARCHAR(255),
+	protein VARCHAR(255),
+	protein_amount VARCHAR(255),
+	fat VARCHAR(255),
+	fat_amount VARCHAR(255),
+	cholesterol VARCHAR(255),
+	cholesterol_amount VARCHAR(255),
+	sodium VARCHAR(255),
+	sodium_amount VARCHAR(255),
+	dietary_fiber VARCHAR(255),
+	dietary_fiber_amount VARCHAR(255),
+	potassium VARCHAR(255),
+	potassium_amount VARCHAR(255),
+	foreign key(product_seq) references Product(product_seq)
+);
