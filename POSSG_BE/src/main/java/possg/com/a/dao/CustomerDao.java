@@ -34,4 +34,6 @@ public interface CustomerDao {
 	int customerDeliveryBranchName(CustomerDto dto);
 	
 	int deliveryDelete(int customerSeq);
+	
+	int deleteCustomerToken();
 }

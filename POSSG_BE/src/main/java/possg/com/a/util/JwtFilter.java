@@ -84,7 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
    	 		    	
 		    	
 		    } else {
-		    	System.out.println("accessToken이 만료되었습니다"); // 401
+		    	System.out.println("accessToken이 만료되었습니다");
 		    	isError = true;		        
 		    	RequestDispatcher dispatcher = request.getRequestDispatcher("/tokenController/refresh");
 		    	dispatcher.forward(request, response);
