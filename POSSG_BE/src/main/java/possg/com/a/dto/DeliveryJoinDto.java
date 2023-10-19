@@ -190,7 +190,4 @@ public class DeliveryJoinDto {
 				+ ", delTotalPrice=" + delTotalPrice + ", delRemark=" + delRemark + ", delRef=" + delRef + "]";
 	}
 
-	
-	
-
 }
