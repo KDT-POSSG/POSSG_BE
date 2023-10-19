@@ -118,6 +118,7 @@ public class PointController {
 		if(count > 0) {
 			// 잔여 포인트도 return
 			PointDto remain = service.searchPoint(param);
+			System.out.println(remain.getTotalPoint());
 			return Integer.toString(remain.getTotalPoint());
 		}
 		
@@ -137,5 +138,7 @@ public class PointController {
 		int point = service.checkNumPoint(phoneNumber);
 		return point;
 	}
+	
+	
 	
 }

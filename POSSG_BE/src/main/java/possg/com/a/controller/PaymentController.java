@@ -20,8 +20,10 @@ import kr.co.bootpay.model.request.Cancel;
 import possg.com.a.dto.ItemsDto;
 import possg.com.a.dto.PaymentDto;
 import possg.com.a.dto.PaymentParam;
+import possg.com.a.dto.PointParam;
 import possg.com.a.service.ItemsService;
 import possg.com.a.service.PaymentService;
+import possg.com.a.service.PointService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:9200") // 프론트엔드 CORS 허용
@@ -32,6 +34,9 @@ public class PaymentController {
 	
 	@Autowired
 	ItemsService service2;
+	
+	@Autowired
+	PointService service3;
 	
 	// 결제 정보 추가
 	@PostMapping("addpayment")
@@ -59,10 +64,19 @@ public class PaymentController {
 		int cashCheck = service.cashCheck(receiptId);
 		System.out.println(cashCheck);
 		
+		// 결제 취소 
 		if (cashCheck > 0) {
 			int count = service.cancelpayment(receiptId);
 			if(count > 0) {
-				return "YES";
+				// 결제 포인트 회복
+				PaymentParam param = service.paymentOneList(receiptId);
+				int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+				
+				if (cancelPointCheck > 0) {
+					check = "POINT RECOVERY";
+				}
+				
+				return check + " YES";
 			}
 			else{
 				return "CANCEL YES BUT UPDATE NO";
@@ -96,9 +110,19 @@ public class PaymentController {
 		    if(res.get("error_code") == null) { //success
 		        System.out.println("receiptCancel success: " + res);
 		        
+		        // 결제취소
 		        int count = service.cancelpayment(receiptId);
 				if(count > 0) {
-					check = "YES";
+					
+					// 결제 포인트 회복
+					PaymentParam param = service.paymentOneList(receiptId);
+					int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+					
+					if (cancelPointCheck > 0) {
+						check = "POINT RECOVERY";
+					}
+					
+					check += " YES";
 				}
 				else{
 					check = "CANCEL YES BUT UPDATE NO";
