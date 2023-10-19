@@ -29,7 +29,7 @@ public class ProductUtil {
 	public static List<ProductDto> productScrap(ProductService proService) throws InterruptedException {
 		System.out.println("ProductController productScrap " + new Date());
 		
-		int conv_seq = 2;
+		int conv_seq = 1;
 		
         int cnt = 1;
         

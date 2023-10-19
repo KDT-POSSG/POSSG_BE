@@ -1,6 +1,7 @@
 package possg.com.a.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import possg.com.a.dto.CallProductConvOrderListDto;
 import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.NutritionDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
 
@@ -171,5 +173,12 @@ public class ProductService {
 	
 	public int updateProductExpirationFlag(ProductDto dto) {
 		return dao.updateProductExpirationFlag(dto);
+	}
+	
+	public int addNutritionInfo(NutritionDto nutDto) {
+		return dao.addNutritionInfo(nutDto);
+	}
+	public NutritionDto getNutritionInfo(NutritionDto seqDto){
+		return dao.getNutritionInfo(seqDto);
 	}
 }
