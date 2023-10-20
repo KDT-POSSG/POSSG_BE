@@ -41,7 +41,7 @@
     		p.del AS del,
     		p.receipt_url AS receiptUrl,
     		p.pt_phone_num AS ptPhoneNum,
-    		p.use_point AS usePoint
+    		p.use_point AS usePoint,
     		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
@@ -66,7 +66,7 @@
     		p.del AS del,
     		p.receipt_url AS receiptUrl,
     		p.pt_phone_num AS ptPhoneNum,
-    		p.use_point AS usePoint
+    		p.use_point AS usePoint,
     		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
@@ -92,7 +92,7 @@
     		p.card_num AS cardNum,
     		p.del AS del,
     		p.pt_phone_num AS ptPhoneNum,
-    		p.use_point AS usePoint
+    		p.use_point AS usePoint,
     		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
