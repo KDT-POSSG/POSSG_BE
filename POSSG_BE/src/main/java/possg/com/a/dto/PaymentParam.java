@@ -16,7 +16,8 @@ public class PaymentParam {
 	private String cardNum;
 	private String del;
 	private String ptPhoneNum; 		
-    private int usePoint;		
+    private int usePoint;
+    private int earnedPoint;
 	
 	public PaymentParam() {
 		
@@ -25,7 +26,7 @@ public class PaymentParam {
 
 	public PaymentParam(String customerSeq, String customerName, String branchName, String representativeName,
 			String receiptId, String pg, String method, int price, String purchasedAt, String receiptUrl,
-			String cardCompany, String cardNum, String del, String ptPhoneNum, int usePoint) {
+			String cardCompany, String cardNum, String del, String ptPhoneNum, int usePoint, int earnedPoint) {
 		super();
 		this.customerSeq = customerSeq;
 		this.customerName = customerName;
@@ -42,6 +43,7 @@ public class PaymentParam {
 		this.del = del;
 		this.ptPhoneNum = ptPhoneNum;
 		this.usePoint = usePoint;
+		this.earnedPoint = earnedPoint;
 	}
 
 
@@ -172,13 +174,24 @@ public class PaymentParam {
 	}
 
 
+	public int getEarnedPoint() {
+		return earnedPoint;
+	}
+
+
+	public void setEarnedPoint(int earnedPoint) {
+		this.earnedPoint = earnedPoint;
+	}
+
+
 	@Override
 	public String toString() {
 		return "PaymentParam [customerSeq=" + customerSeq + ", customerName=" + customerName + ", branchName="
 				+ branchName + ", representativeName=" + representativeName + ", receiptId=" + receiptId + ", pg=" + pg
 				+ ", method=" + method + ", price=" + price + ", purchasedAt=" + purchasedAt + ", receiptUrl="
 				+ receiptUrl + ", cardCompany=" + cardCompany + ", cardNum=" + cardNum + ", del=" + del
-				+ ", ptPhoneNum=" + ptPhoneNum + ", usePoint=" + usePoint + "]";
+				+ ", ptPhoneNum=" + ptPhoneNum + ", usePoint=" + usePoint + ", earnedPoint=" + earnedPoint + "]";
 	}
+	
 	
 }
