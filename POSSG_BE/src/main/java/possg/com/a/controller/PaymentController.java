@@ -77,9 +77,9 @@ public class PaymentController {
 		if (cashCheck > 0) {
 			int count = service.cancelpayment(receiptId);
 			if(count > 0) {
-				// 결제 포인트 회복
+				// 적립 포인트는 다시 환불, 쓴 포인트는 회복
 				PaymentParam param = service.paymentOneList(receiptId);
-				int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+				int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint()-param.getEarnedPoint(), ""));
 				
 				if (cancelPointCheck > 0) {
 					check = "POINT RECOVERY";
@@ -123,9 +123,9 @@ public class PaymentController {
 		        int count = service.cancelpayment(receiptId);
 				if(count > 0) {
 					
-					// 결제 포인트 회복
+					// 적립 포인트는 다시 환불, 쓴 포인트는 회복
 					PaymentParam param = service.paymentOneList(receiptId);
-					int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+					int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint()-param.getEarnedPoint(), ""));
 					
 					if (cancelPointCheck > 0) {
 						check = "POINT RECOVERY";
