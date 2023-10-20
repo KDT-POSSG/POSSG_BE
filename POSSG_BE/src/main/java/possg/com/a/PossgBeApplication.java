@@ -27,7 +27,6 @@ public class PossgBeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PossgBeApplication.class, args);
 		TokenUtil.getToken();
-		SpringApplication.run(PossgBeApplication.class, args);
 	}
 	
 	@Scheduled(cron = "0 0 12 * * *")
