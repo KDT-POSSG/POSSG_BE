@@ -180,7 +180,7 @@
 <update id="updateProductExpirationFlag" parameterType="possg.com.a.dto.ProductDto">
 	update Product
 	set expiration_flag = #{expirationFlag}
-	where barcode = #{barcode}
+	where barcode = #{barcode} and conv_seq = #{convSeq}
 </update>
 
 <!-- 점주 발주 대기 -->
