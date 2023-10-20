@@ -71,8 +71,8 @@ public class PointController {
 		return "NO";
 	};
 	
-	// 고객 포인트 조회
-	@GetMapping("searchPoint")
+	// 포인트 사용 가능 조회
+	@PostMapping("searchPoint")
 	public int searchPoint(@RequestBody PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());
 		//System.out.println(param.toString());
@@ -87,6 +87,11 @@ public class PointController {
 		PointDto dto = service.searchPoint(param);
 		if (dto == null) {
 			return -2;
+		}
+		
+		// 포인트 잔여량보다 사용량이 많은지 체크
+		if (param.getPoint() > dto.getTotalPoint()) {
+			return -3;
 		}
 
 		return dto.getTotalPoint();

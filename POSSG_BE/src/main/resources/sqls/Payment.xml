@@ -7,12 +7,13 @@
     <insert id="addpayment" parameterType="possg.com.a.dto.PaymentDto">
         INSERT INTO Payment (
             receipt_id, user_seq, conv_seq, pg, method, discount_info, original_price,
-            price, purchased_at, receipt_url, card_num, card_company, del, pt_phone_num, use_point
+            price, purchased_at, receipt_url, card_num, card_company, del, pt_phone_num, 
+            use_point, earned_point
         )
         VALUES (
             #{receiptId}, #{userSeq}, #{convSeq}, #{pg}, #{method}, #{discountInfo}, #{originalPrice},
             #{price}, #{purchasedAt}, #{receiptUrl}, #{cardNum}, #{cardCompany}, "결제 완료", 
-            #{ptPhoneNum}, #{usePoint}
+            #{ptPhoneNum}, #{usePoint}, #{earnedPoint}
         )
     </insert>
     
@@ -41,6 +42,7 @@
     		p.receipt_url AS receiptUrl,
     		p.pt_phone_num AS ptPhoneNum,
     		p.use_point AS usePoint
+    		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
@@ -65,6 +67,7 @@
     		p.receipt_url AS receiptUrl,
     		p.pt_phone_num AS ptPhoneNum,
     		p.use_point AS usePoint
+    		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
@@ -90,6 +93,7 @@
     		p.del AS del,
     		p.pt_phone_num AS ptPhoneNum,
     		p.use_point AS usePoint
+    		p.earned_point AS earnedPoint 
     	FROM Payment p
     	JOIN Convenience c ON p.conv_seq = c.conv_seq
     	JOIN Customer cu ON cu.customer_seq = p.user_seq
