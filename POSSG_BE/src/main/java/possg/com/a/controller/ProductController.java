@@ -1,11 +1,6 @@
 package possg.com.a.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,22 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.Claims;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import net.crizin.KoreanCharacter;
-import net.crizin.KoreanRomanizer;
 
 import possg.com.a.dto.CallProductConvDto;
 import possg.com.a.dto.CallProductConvOrderListDto;
@@ -41,18 +26,12 @@ import possg.com.a.dto.CallProductConvParam;
 import possg.com.a.dto.CallProductCustomerDto;
 import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
+import possg.com.a.dto.NutritionDto;
 import possg.com.a.dto.ProductDto;
 import possg.com.a.dto.ProductParam;
-import possg.com.a.dto.amountDto;
 import possg.com.a.service.ProductService;
-import possg.com.a.service.TranslationService;
-import possg.com.a.util.NaverCloudUtil;
-import possg.com.a.util.ProductUtil;
-import possg.com.a.util.SecurityConfig;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import possg.com.a.util.ProductUtil;
 
 @SpringBootApplication
 @EnableScheduling
@@ -79,7 +58,7 @@ public class ProductController {
 	}
 	
 	public String responseMessage;
-	
+
 	// 상품 목록 획득
 	@GetMapping("productList")
 	public Map<String, Object> productList(ProductParam param){ //Map<String, Object> //List<ProductDto>
@@ -104,7 +83,7 @@ public class ProductController {
 				String temp = controller.translationProductName(dto.getProductName(), param.getCountry());
 				System.out.println("trans" + temp);
 				dto.setProductTranslationName(temp);
-				if (cnt > 3) {break;}
+				if (cnt > 10) {break;}
 				cnt ++;
 			}
 		}
@@ -229,7 +208,9 @@ public class ProductController {
 		
 		if (list.isEmpty()) {
 			System.out.println("빈 배열");
-			map.put("empty", "빈 배열");
+			map.put("ProductList", new ProductDto[0]);
+			map.put("pageProduct", 0);
+			map.put("cnt", 0); // react 중 pagination 사용시 활용
 			return map;
 		}
 		
@@ -298,7 +279,6 @@ public class ProductController {
  			pageProduct = pageProduct + 1;
  		}
 
- 		
  		map.put("ProductList", resultList);
  		map.put("pageProduct", pageProduct);
  		map.put("cnt", count);
@@ -584,12 +564,20 @@ public class ProductController {
 		return "YES";
 	}
 	
-	// input: int expirationFlag, String productSeq
+	// input: int expirationFlag, String barcode
 	@PostMapping("updateProductExpirationFlag")
 	public String updateProductExpirationFlag(List<ProductDto> dtoList) {
 		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
 		
+		if (dtoList.isEmpty()) {
+			System.out.println("바코드를 입력해주세요.");
+			return "NO";
+		}
+		
 		for(ProductDto tempDto : dtoList) {
+			if (tempDto.getExpirationFlag() == 0) {
+				tempDto.setExpirationFlag(2);
+			}
 			int count = service.updateProductExpirationFlag(tempDto);
 			if(count == 0) {
 				System.out.println("업데이트 실패");
@@ -794,7 +782,8 @@ public class ProductController {
 	}
 	
 	// 유통기한 만료 할당 Auto
-	@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
+	@Scheduled(cron = "0 0 * * * ?")
+	//@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
 	public String updateExpirationDateFlagAuto() {
 		System.out.println("ProductController updateExpirationDateFlagAuto() " + new Date());
 		int count = service.updateExpirationFlagAuto();
@@ -860,12 +849,93 @@ public class ProductController {
 		return "YES";
 	}
 	
+	// 영양정보 획득
+	@GetMapping("getNutritionInfo")
+	public List<Map<Object, Object>> getNutritionInfo(NutritionDto seqDto){
+		System.out.println("ProductController getNutritionInfo() " + new Date());
+		System.out.println("param 값: " + seqDto);
+		
+		// 최종 결과를 저장할 리스트
+        List<Map<Object, Object>> resultList = new ArrayList<>();
+
+        // 개별 상품 정보를 저장할 맵
+        LinkedHashMap<Object, Object> productMap = new LinkedHashMap<>();
+
+		NutritionDto nutDto = service.getNutritionInfo(seqDto);
+		
+		if (nutDto == null || nutDto.equals("")) {
+			return resultList;
+		}
+		System.out.println(nutDto);
+		
+        
+        // Get the class object
+        Class<?> clazz = nutDto.getClass();
+
+        // Get all fields from the class
+        Field[] fields = clazz.getDeclaredFields();
+         
+        int cnt = 0;
+        
+        // Loop through all fields to get their names and values
+        for (Field field : fields) {
+            field.setAccessible(true); // You might want to set this to access private fields      
+            try {
+
+            	if (cnt < 2) {
+            		// Get field name
+                    String fieldName = field.getName();
+                    
+                    // Get field value
+                    Object fieldValue = field.get(nutDto);
+                    
+                    // Put them in the map
+                    productMap.put(fieldName, fieldValue);
+            	}else {
+            		if (cnt % 2 == 0){
+            			productMap.put("title", field.get(nutDto));
+            		}else {
+            			productMap.put("value", field.get(nutDto));
+            		}
+	            	
+            	}
+
+                cnt++;
+                if(cnt % 2 == 0) {
+                	resultList.add(productMap);
+                	productMap = new LinkedHashMap<>();
+                	System.out.println("fieldName= " + resultList);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            
+        }
+         
+        return resultList;
+    }
+	
+	// 영양정보 입력
+	@PostMapping("addNutritionInfo")
+	public String addNutritionInfo(@RequestBody List<NutritionDto> dtoList) {
+		System.out.println("ProductController addNutritionInfo() " + new Date());
+		for(NutritionDto nutDto : dtoList) {
+			int count = service.addNutritionInfo(nutDto);
+			if(count == 0) {
+				System.out.println("실패" + nutDto);
+				return "NO";
+			}
+		}
+		
+		return "YES";
+	}
+	
 	// 데모 상품 크롤링
 	
 	// 상품 상세정보 필요시 조치 방안
 	// 1. 영양정보 검색 후 수작업 https://www.fatsecret.kr/%EC%B9%BC%EB%A1%9C%EB%A6%AC-%EC%98%81%EC%96%91%EC%86%8C
 	// 2. 크롤링 페이지 다른 주소로 변경 >> https://emile.emarteveryday.co.kr/
-	
+	//@Scheduled(cron = "0 0 11 * * * ?") 0초 0분 11시 매일 매월 (요일무시)마다 실행
 	//@Scheduled(fixedRate = 0*(60*60*1000)/*시*/ + 50*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 크롤링 기능
 	@GetMapping("productScrap")
 	public void productScrap() throws Exception {

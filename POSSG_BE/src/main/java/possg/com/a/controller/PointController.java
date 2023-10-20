@@ -71,7 +71,8 @@ public class PointController {
 		return "NO";
 	};
 	
-	// 포인트 사용 가능 조회
+
+	// 고객 포인트 조회
 	@PostMapping("searchPoint")
 	public int searchPoint(@RequestBody PointParam param) {
 		System.out.println("PointController searchPoint " + new Date());

@@ -1,13 +1,13 @@
 package possg.com.a.dto;
 
-public class amountDto {
+public class AmountDto {
 	private int amount;
 	
-	public amountDto() {
+	public AmountDto() {
 		
 	}
 
-	public amountDto(int amount) {
+	public AmountDto(int amount) {
 		super();
 		this.amount = amount;
 	}

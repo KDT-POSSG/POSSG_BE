@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.CustomerTokenDto;
-import possg.com.a.dto.DeliveryDto;
 
 @Mapper
 @Repository

@@ -11,7 +11,7 @@ public class ProductParam{
 	private int promotionInfo; // 프로모션 정보
 	private int categoryId; // 1: 행사상품, 2: 신선식품	
 	private String sortOrder = "newest";	
-	private int pageSize = 20;	
+	private int pageSize = 10;	
 	private int country = 0;
 	private int convSeq;
 

@@ -29,7 +29,7 @@ public class ProductUtil {
 	public static List<ProductDto> productScrap(ProductService proService) throws InterruptedException {
 		System.out.println("ProductController productScrap " + new Date());
 		
-		int conv_seq = 2;
+		int conv_seq = 1;
 		
         int cnt = 1;
         
@@ -95,8 +95,9 @@ public class ProductUtil {
 							promotion_info, barcode, img_url);
             		
                     // 동일한 제목이 있으면 해당 제목 return
-                    boolean compare = findProductName(dto, proService);
                     /*
+                    boolean compare = findProductName(dto, proService);
+                    
                     if(compare) {
             			System.out.println("\n product skip check: \n" );
             			break;

@@ -180,7 +180,7 @@
 <update id="updateProductExpirationFlag" parameterType="possg.com.a.dto.ProductDto">
 	update Product
 	set expiration_flag = #{expirationFlag}
-	where product_seq = #{productSeq}
+	where barcode = #{barcode}
 </update>
 
 <!-- 점주 발주 대기 -->
@@ -438,6 +438,33 @@ resultType="possg.com.a.dto.ProductDto">
 	where product_seq = #{productSeq}
 </update>
 
+<!-- 영양정보 출력 -->
+<select id="getNutritionInfo" parameterType="possg.com.a.dto.NutritionDto"
+resultType="possg.com.a.dto.NutritionDto">
+	SELECT P.product_name, N.* 
+	FROM Nutrition N
+	JOIN Product P ON N.product_seq = P.product_seq
+	WHERE P.product_seq = #{productSeq};
+</select>
+
+<!-- 영양정보 입력 -->
+<insert id="addNutritionInfo" parameterType="possg.com.a.dto.NutritionDto">
+	insert into Nutrition(
+	nutrition_seq, product_seq,
+	serving_size, serving_size_amount,
+	calorie, calorie_amount, 
+	carbohydrate, carbohydrate_amount,
+	protein, protein_amount, 
+	fat, fat_amount, 
+	cholesterol, cholesterol_amount, 
+	sodium, sodium_amount, 
+	dietary_fiber, dietary_fiber_amount,
+	potassium, potassium_amount)
+	values (0, #{productSeq}, #{servingSize}, #{servingSizeAmount}, #{calorie}, #{calorieAmount}, #{carbohydrate}, #{carbohydrateAmount},
+	#{protein}, #{proteinAmount}, #{fat}, #{fatAmount}, #{cholesterol}, #{cholesterolAmount}, #{sodium}, #{sodiumAmount}, #{dietaryFiber}, #{dietaryFiberAmount},
+	#{potassium}, #{potassiumAmount})
+</insert>
+
 <!-- 현재 사용하지 않는 기능 -->
 <!-- 대기 상품의 총 갯수 -->
 <select id="getCallProductTotalAmount" parameterType="possg.com.a.dto.CallProductConvDto"
@@ -461,4 +488,5 @@ resultType="possg.com.a.dto.ProductDto">
 	from Call_product_conv
 	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != -1
 </select>
+
 </mapper>

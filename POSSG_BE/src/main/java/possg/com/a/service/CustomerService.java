@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import possg.com.a.dao.CustomerDao;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.CustomerTokenDto;
-import possg.com.a.dto.DeliveryDto;
 
 @Service
 @Transactional
