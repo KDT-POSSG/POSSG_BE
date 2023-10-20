@@ -582,6 +582,7 @@ public class CostController {
 	        dto.get(i).setPurchasedAt(convertedRef);
 		}
         Map<String, Object> map = new HashMap<>();
+        Map<String, Object> card = new HashMap<>();
         
         int cash = 0;
         int kakao = 0;
@@ -606,7 +607,7 @@ public class CostController {
     			}
     		    
     		    if(item.getPg().equals("카드")) {
-    		    	map.put(item.getCardCompany(), 
+    		    	card.put(item.getCardCompany(), 
     		    			(int)map.getOrDefault(item.getCardCompany(), 0) + item.getPrice());
     			}      			
         	}
@@ -615,6 +616,7 @@ public class CostController {
         	map.put("kakao", kakao);
         	map.put("toss", toss);
         	map.put("totalSales", totalSales);
+        	map.put("card", card);
         	
         	return map;
 	}
