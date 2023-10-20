@@ -547,7 +547,7 @@ public class ProductController {
 		System.out.println("fincProductName: " + productDto);
 		// 해당 상품 가격
 		int productPrice = productDto.get(0).getPriceOrigin();
-		convDto.setPrice(productPrice);
+		convDto.setPrice(productDto.get(0).getPrice());
 		
 		// 해당 상품 총 가격 set
 		//convDto.setPrice(productPrice * convDto.getAmount());
