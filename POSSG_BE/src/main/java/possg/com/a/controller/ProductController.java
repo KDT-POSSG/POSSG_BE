@@ -563,12 +563,20 @@ public class ProductController {
 		return "YES";
 	}
 	
-	// input: int expirationFlag, String productSeq
+	// input: int expirationFlag, String barcode
 	@PostMapping("updateProductExpirationFlag")
 	public String updateProductExpirationFlag(List<ProductDto> dtoList) {
 		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
 		
+		if (dtoList.isEmpty()) {
+			System.out.println("바코드를 입력해주세요.");
+			return "NO";
+		}
+		
 		for(ProductDto tempDto : dtoList) {
+			if (tempDto.getExpirationFlag() == 0) {
+				tempDto.setExpirationFlag(2);
+			}
 			int count = service.updateProductExpirationFlag(tempDto);
 			if(count == 0) {
 				System.out.println("업데이트 실패");
