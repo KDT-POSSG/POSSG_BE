@@ -581,7 +581,7 @@ public class CostController {
 	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 	        dto.get(i).setPurchasedAt(convertedRef);
 		}
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         Map<String, Object> card = new HashMap<>();
         
         int cash = 0;
@@ -612,11 +612,23 @@ public class CostController {
     			}      			
         	}
         	
-        	map.put("cash", cash);
+        	map.put("kakaoShare", ((double)kakao/totalSales * 100));
+        	map.put("cashShare", ((double)cash/totalSales * 100));
+        	map.put("tossShare", ((double)toss/totalSales * 100));
+        	
+        	Map<String, Double> cardShare = new HashMap<>();
+        	System.out.println(card);
+        	System.out.println(card.entrySet());
+        	for(Map.Entry<String, Object> entry : card.entrySet()) { 
+        		cardShare.put(entry.getKey() + "Share", ((double)(Integer)entry.getValue() / totalSales * 100));
+        	}
+        	map.put("cardShare", cardShare);
         	map.put("kakao", kakao);
+        	map.put("cash", cash);       	
         	map.put("toss", toss);
-        	map.put("totalSales", totalSales);
         	map.put("card", card);
+        	map.put("totalSales", totalSales);
+        	
         	
         	return map;
 	}
