@@ -314,36 +314,48 @@ public class ProductController {
 	}
 	
 	// 상품 폐기 처리
-	// input: int expirationFlag, String barcode, int productSeq
+	// input: int expirationFlag, String barcode, int convSeq
 	@PostMapping("updateProductExpirationFlag")
-	public List<String> updateProductExpirationFlag(@RequestBody List<ProductDto> dtoList) {
+	public List<Map<String,String>> updateProductExpirationFlag(@RequestBody List<ProductDto> dtoList) {
 		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
 		System.out.println(dtoList.toString());
+		Map<String, String> result = new HashMap<String, String>();
 		if (dtoList.isEmpty()) {
+			result.put("NO", "바코드를 입력해주세요");
 			System.out.println("바코드를 입력해주세요");
-			return Arrays.asList("바코드를 입력해주세요");
+			
+			return Arrays.asList(result);
 		}
 		
-		List<String> productNameList = new ArrayList<>();
-		
+		List<Map<String, String>> productNameList = new ArrayList<>();
+
 		for(ProductDto tempDto : dtoList) {
+			result = new HashMap<String, String>();
 			System.out.println(tempDto);
-			List<ProductDto> list = service.findProductBarcode(tempDto);
+			List<ProductDto> list = service.findAllProductBarcode(tempDto);
+			
 			if(list.isEmpty() || list == null) {
+				result.put("NO", "해당 바코드의 상품이 없거나 폐기된 상품입니다.");
 				System.out.println("list= " + list);
-				return Arrays.asList("해당 바코드의 상품이 없습니다");
+				productNameList.add(result);
+				continue;
+				//return Arrays.asList(result);
 			}
-			productNameList.add(list.get(0).getProductName());
+			System.out.println("list= " + list.get(0).getProductName());
+			result.put("YES", list.get(0).getProductName());
+			productNameList.add(result);
+			System.out.println("productNameList= " + productNameList);
 			
 			if (tempDto.getExpirationFlag() == 0) {
 				tempDto.setExpirationFlag(2);
 			}
 			int count = service.updateProductExpirationFlag(tempDto);
 			if(count == 0) {
+				result.put("NO", "폐기 처리에 실패했습니다");
 				System.out.println("업데이트 실패");
-				return Arrays.asList("폐기 처리에 실패했습니다");
+				return Arrays.asList(result);
 			}
-			
+	
 			System.out.println("업데이트 성공");
 		}
 		

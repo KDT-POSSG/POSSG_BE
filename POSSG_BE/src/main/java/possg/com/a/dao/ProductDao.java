@@ -35,6 +35,7 @@ public interface ProductDao {
 	
 	List<ProductDto> findProductName(ProductDto dto);
 	List<ProductDto> findProductBarcode(ProductDto dto);
+	List<ProductDto> findAllProductBarcode(ProductDto dto);
 	
 	int getTotalStock(String name);
 	int addCallProductConv(ProductDto dto);
