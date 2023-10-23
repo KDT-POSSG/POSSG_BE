@@ -323,8 +323,8 @@ public class DeliveryController {
 				if((count % 12) > 0) {
 					AllPage = AllPage + 1;
 				}	
-		    			
-								
+		    	System.out.println(dto.size());
+				System.out.println(count);			
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("deliveryList", uniqueGroupedData);
 				map.put("allPage", AllPage);

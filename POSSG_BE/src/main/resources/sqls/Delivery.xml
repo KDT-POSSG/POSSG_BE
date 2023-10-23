@@ -144,10 +144,9 @@
     p.del_total_price,
     p.del_remark,
     p.del_ref
-	FROM Delivery as o
-	inner join Convenience j on o.branch_name = j.branch_name
-	inner join Delivery_list p on o.ref = p.del_ref
-	WHERE j.branch_name = #{branchName}
+	FROM Delivery_list p
+	inner join Delivery as o on o.ref = p.del_ref
+	WHERE p.branch_name = #{branchName}
 		<if test="orderStatus == 1 ">
 			 AND p.del_status = 1
 		</if>
