@@ -3,6 +3,7 @@ package possg.com.a.controller;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -155,6 +156,7 @@ public class ProductController {
 		
 	}
 
+	// 상품을 구매하여 재고 업데이트
 	// input: int amount, String productName, int convSeq, String expirationDate
 	@PostMapping("buyProduct")
 	public String buyProduct(@RequestBody ProductDto dto) {
@@ -280,6 +282,80 @@ public class ProductController {
 		return map;
 	}
 	
+	// 유통기한 만료 할당 Auto
+	@Scheduled(cron = "0 0 * * * ?")
+	//@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
+	public String updateExpirationDateFlagAuto() {
+		System.out.println("ProductController updateExpirationDateFlagAuto() " + new Date());
+		int count = service.updateExpirationFlagAuto();
+		if (count > 0) {
+			return "YES";
+		}
+		
+		return "NO";
+	}
+	
+	// 유통기한 만료 할당
+	@PostMapping("updateExpirationFlag")
+	public String updateExpirationDateFlag() {
+		System.out.println("ProductController updateExpirationDateFlag() " + new Date());
+		int count = service.updateExpirationFlagAuto();
+		if (count > 0) {
+			return "YES";
+		}
+		
+		return "NO";
+	}
+	
+	// 상품 폐기 처리
+	// input: int expirationFlag, String barcode, int convSeq
+	@PostMapping("updateProductExpirationFlag")
+	public List<Map<String,String>> updateProductExpirationFlag(@RequestBody List<ProductDto> dtoList) {
+		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
+		System.out.println(dtoList.toString());
+		Map<String, String> result = new HashMap<String, String>();
+		if (dtoList.isEmpty()) {
+			result.put("NO", "바코드를 입력해주세요");
+			System.out.println("바코드를 입력해주세요");
+			
+			return Arrays.asList(result);
+		}
+		
+		List<Map<String, String>> productNameList = new ArrayList<>();
+
+		for(ProductDto tempDto : dtoList) {
+			result = new HashMap<String, String>();
+			System.out.println(tempDto);
+			List<ProductDto> list = service.findAllProductBarcode(tempDto);
+			
+			if(list.isEmpty() || list == null) {
+				result.put("NO", "해당 바코드의 상품이 없거나 폐기된 상품입니다.");
+				System.out.println("list= " + list);
+				productNameList.add(result);
+				continue;
+				//return Arrays.asList(result);
+			}
+			System.out.println("list= " + list.get(0).getProductName());
+			result.put("YES", list.get(0).getProductName());
+			productNameList.add(result);
+			System.out.println("productNameList= " + productNameList);
+			
+			if (tempDto.getExpirationFlag() == 0) {
+				tempDto.setExpirationFlag(2);
+			}
+			int count = service.updateProductExpirationFlag(tempDto);
+			if(count == 0) {
+				result.put("NO", "폐기 처리에 실패했습니다");
+				System.out.println("업데이트 실패");
+				return Arrays.asList(result);
+			}
+	
+			System.out.println("업데이트 성공");
+		}
+		
+		return productNameList;
+	}
+	
 	/* 발주 대기 */
 	// 발주 대기 목록 획득
 	// input: int convSeq
@@ -387,10 +463,9 @@ public class ProductController {
 		// 재고가 충분한 경우
 		return "NO";
 	}
-	// stock 반영 코드 만들어야함
-	// 점주 발주 대기 리스트에 추가
-	// input
-	// ProductDto: int convSeq, String productName, int price, int priceOrigin, String imgUrl
+
+	// 상품 대기 목록에 상품 추가
+	// input: ProductDto( int convSeq, String productName, int price, int priceOrigin, String imgUrl)
 	@PostMapping("addCallProductConv")
 	public String addCallProductConv(@RequestBody ProductDto productDto) {// @RequestBody Map<String, Object> payload, @RequestBody int amount
 		System.out.println("ProductController addCallProductConv() " + new Date());
@@ -478,7 +553,7 @@ public class ProductController {
 		System.out.println("fincProductName: " + productDto);
 		// 해당 상품 가격
 		int productPrice = productDto.get(0).getPriceOrigin();
-		convDto.setPrice(productPrice);
+		convDto.setPrice(productDto.get(0).getPrice());
 		
 		// 해당 상품 총 가격 set
 		//convDto.setPrice(productPrice * convDto.getAmount());
@@ -555,30 +630,6 @@ public class ProductController {
 				return "NO";
 			}
 		}
-		return "YES";
-	}
-	
-	// input: int expirationFlag, String barcode
-	@PostMapping("updateProductExpirationFlag")
-	public String updateProductExpirationFlag(List<ProductDto> dtoList) {
-		System.out.println("ProductController updateProductExpirationFlag()" + new Date());
-		
-		if (dtoList.isEmpty()) {
-			System.out.println("바코드를 입력해주세요.");
-			return "NO";
-		}
-		
-		for(ProductDto tempDto : dtoList) {
-			if (tempDto.getExpirationFlag() == 0) {
-				tempDto.setExpirationFlag(2);
-			}
-			int count = service.updateProductExpirationFlag(tempDto);
-			if(count == 0) {
-				System.out.println("업데이트 실패");
-				return "NO";
-			}
-		}
-		System.out.println("업데이트 성공");
 		return "YES";
 	}
 	
@@ -775,30 +826,7 @@ public class ProductController {
 		return "NO";
 	}
 	
-	// 유통기한 만료 할당 Auto
-	@Scheduled(cron = "0 0 * * * ?")
-	//@Scheduled(fixedRate = 1*(60*60*1000)/*시*/ + 0*(60*1000)/*분*/ + 0*(1000)/*초*/) // 일정 시간마다 자동 실행
-	public String updateExpirationDateFlagAuto() {
-		System.out.println("ProductController updateExpirationDateFlagAuto() " + new Date());
-		int count = service.updateExpirationFlagAuto();
-		if (count > 0) {
-			return "YES";
-		}
-		
-		return "NO";
-	}
-	
-	// 유통기한 만료 할당
-	@PostMapping("updateExpirationFlag")
-	public String updateExpirationDateFlag() {
-		System.out.println("ProductController updateExpirationDateFlag() " + new Date());
-		int count = service.updateExpirationFlagAuto();
-		if (count > 0) {
-			return "YES";
-		}
-		
-		return "NO";
-	}
+
 	
 	
 	/* 편의점 */

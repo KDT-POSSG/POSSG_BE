@@ -148,6 +148,13 @@
     where barcode = #{barcode} and conv_seq = #{convSeq} and expiration_flag = 0
 </select>
 
+<!-- 바코드 검색: 유통기한 지난 expiration -->
+<select id="findAllProductBarcode" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+    select * 
+    from Product 
+    where barcode = #{barcode} and conv_seq = #{convSeq} and expiration_flag &lt; 2
+</select>
+
 <!-- 새로운 상품을 추가 -->
 <insert id="addProduct" parameterType="possg.com.a.dto.ProductDto">
 	insert into Product(conv_seq, category_id, product_name, product_roman_name, price, price_origin, price_discount, 
@@ -180,7 +187,7 @@
 <update id="updateProductExpirationFlag" parameterType="possg.com.a.dto.ProductDto">
 	update Product
 	set expiration_flag = #{expirationFlag}
-	where barcode = #{barcode}
+	where barcode = #{barcode} and conv_seq = #{convSeq}
 </update>
 
 <!-- 점주 발주 대기 -->
