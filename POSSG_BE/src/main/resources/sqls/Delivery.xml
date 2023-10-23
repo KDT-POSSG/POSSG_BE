@@ -163,7 +163,7 @@
 		<if test="orderStatus == 4 ">
 			AND p.del_status = 4 OR p.del_status = -1
 		</if>
-	order by p.seq desc
+	order by p.del_date desc
 	limit ${(pageNumber* 12)}, 12
 </select>
 
