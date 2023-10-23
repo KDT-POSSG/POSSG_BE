@@ -64,7 +64,7 @@ public class DummyDataGenerator {
         String password = dbpassword;
 
         List<Product> productList = new ArrayList<>();
-        int records = 1000;
+        
         try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT product_seq, product_name, price FROM Product where conv_seq = 1")) {
@@ -75,7 +75,7 @@ public class DummyDataGenerator {
                 int price = rs.getInt("price");
                 productList.add(new Product(productSeq, productName, price));
             }
-
+            int records = 2500;
             Random random = new Random();
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             DateTimeFormatter refFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -84,7 +84,7 @@ public class DummyDataGenerator {
                     + " product_name, order_date, ref, location, price, branch_name, not_discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
-                for (int i = 101; i <= records; i++) {
+                for (int i = 1001; i <= records; i++) {
                     Product selectedProduct = productList.get(random.nextInt(productList.size()));
 
                     int orderSeq = i + 1; // 연속된 주문 번호
@@ -136,11 +136,33 @@ public class DummyDataGenerator {
         String password = dbpassword;
 
         List<Delivery> productList = new ArrayList<>();
-        int records = 1000;
+        int records = 2501;
+        int maxSeq = 0;        
         try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT user_id, not_discount, price, ref, order_date, quantity  FROM Delivery where branch_name = '센텀시티 이마트' ")) {
-            
+             ResultSet rs = stmt.executeQuery("SELECT "
+             		+ "    d.user_id, "
+             		+ "    d.not_discount, "
+             		+ "    d.price, "
+             		+ "    d.ref, "
+             		+ "    d.order_date, "
+             		+ "    d.quantity "
+             		+ "FROM "
+             		+ "    Delivery d "
+             		+ "LEFT JOIN "
+             		+ "    Delivery_list dl "
+             		+ "ON "
+             		+ "    d.ref = dl.del_ref "
+             		+ "WHERE "
+             		+ "    d.branch_name = '센텀시티 이마트' "
+             		+ "    AND dl.del_ref IS NULL ")) {
+        	Statement stmt2 = connection.createStatement();
+        	ResultSet query = stmt2.executeQuery("SELECT MAX(seq) AS max_seq FROM Delivery_list WHERE branch_name = '센텀시티 이마트'");
+               	
+            if (query.next()) {  // 커서를 첫 번째 행으로 이동
+                maxSeq = query.getInt("max_seq");
+            }
+        	
             while (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int notDiscount = rs.getInt("not_discount");
@@ -168,19 +190,20 @@ public class DummyDataGenerator {
             	    "맛있게 드세요!", 
             	    "기분 좋은 일이 생길 것 같아요", 
             	    "잘 부탁드립니다!"
-            	};
-
+            };
+                  
             	Random random = new Random();
-            
+            	System.out.println(query.getInt("max_seq"));
             String insertSql = "INSERT INTO Delivery_list (seq, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name, "
             		+ " not_discount, user_id) "
             		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
-                for (int i = 901; i <= records; i++) {
+                for (int i = 0; i <= 10; i++) {
                 	Delivery selectedProduct = productList.get(i);
-
-                    int seq = i + 1; // 연속된 주문 번호
+                	
+                    int seq = maxSeq + 1; // 연속된 주문 번호
+                    maxSeq++;
                     String delRef = selectedProduct.getRef();
                     String delDate = selectedProduct.getDelDate();
                     int delStatus = 4;
