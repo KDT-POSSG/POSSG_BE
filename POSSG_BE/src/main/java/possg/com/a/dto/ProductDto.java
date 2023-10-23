@@ -17,7 +17,6 @@ public class ProductDto {
     private int promotionInfo;
     private String barcode;
     private String imgUrl;
-    
     private int totalStock;
     private int amount=0;
     private String callDate;
@@ -30,6 +29,11 @@ public class ProductDto {
     	super();
     	this.productName = productName;
     	this.convSeq = convSeq;
+    }
+    
+    public ProductDto(int productSeq, int amount) {
+    	this.productSeq = productSeq;
+    	this.amount = amount;
     }
 
 	public ProductDto(int productSeq, int convSeq, int categoryId, String productName, String productRomanName,
