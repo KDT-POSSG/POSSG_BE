@@ -441,9 +441,7 @@ public class CostController {
 					if(item.getRef().substring(0, 4).equals(previousYear.substring(0, 4))) {
 						previousLoss = previousLoss + item.getPrice();
 					}			
-				}
-				//년도관리비
-				
+				}				
 				
 				// 매장 매출
 				for(CostParam item : payment) {
@@ -497,11 +495,10 @@ public class CostController {
 					if(item.getCostYear() == formattedYear) {				
 						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
 			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;
-						System.out.println(totalLoss);
 					}
-					
-					//전달 지출
-					if(item.getCostYear() == Integer.parseInt(previousMonth.substring(0, 4))) {
+
+					//전년 지출
+					if(item.getCostYear() == formattedYear - 1) {
 						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
 			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
 					}
