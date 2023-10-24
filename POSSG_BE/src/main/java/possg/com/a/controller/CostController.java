@@ -602,7 +602,7 @@ public class CostController {
     				kakao = kakao + item.getPrice();      				
     			}
     			
-    		    if(item.getPg().equals("토스페이")) {
+    		    if(item.getPg().equals("토스")) {
     				toss = toss + item.getPrice();
     			}
     		    
