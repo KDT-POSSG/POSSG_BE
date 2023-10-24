@@ -205,6 +205,7 @@ public class CostController {
 			List<CostParam> orderPrice = service.selectOrderPrice(param);		
 			List<CostParam> payment = service.paymentPrice(param);	
 			List<CostParam> list = service.getDeliveryPrice(param);		
+			List<CostDto> lossYear = service.selectYear(param);
 			
 			for(int i = 0; i< payment.size(); i++) {
 				String ref = payment.get(i).getRef();
@@ -441,6 +442,9 @@ public class CostController {
 						previousLoss = previousLoss + item.getPrice();
 					}			
 				}
+				//년도관리비
+				
+				
 				// 매장 매출
 				for(CostParam item : payment) {
 				    String ref = item.getRef();
@@ -488,11 +492,12 @@ public class CostController {
 				}
 
 		        // 지출
-		        for(CostDto item : lossList) {
+		        for(CostDto item : lossYear) {
 		        	
 					if(item.getCostYear() == formattedYear) {				
 						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
-			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;			
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;
+						System.out.println(totalLoss);
 					}
 					
 					//전달 지출
@@ -500,7 +505,7 @@ public class CostController {
 						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
 			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
 					}
-				}
+				}		        
 						        
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률

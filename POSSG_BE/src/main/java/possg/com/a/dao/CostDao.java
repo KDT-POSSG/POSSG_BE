@@ -36,5 +36,7 @@ public interface CostDao {
 	List<CostParam> paymentPrice(CostParam param);
 	
 	List<PaymentDto> cardOrCash(CostParam param);
+	
+	List<CostDto> selectYear(CostParam param);
 
 }
