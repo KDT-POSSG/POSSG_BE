@@ -314,17 +314,15 @@ public class DeliveryController {
 		                uniqueGroupedData.add(dataMap);
 		            }		            
 		        }
-		        
-		        System.out.println("unique"+uniqueGroupedData);
+
 		     // 편의점 보유 상품 총 개수
-			    int count = service.getDeliveryCount(param);
-			    System.out.println(count);
-			    
+		        int count = service.getDeliveryCount(param);
+		        		    
 			    int AllPage = count / 12;
 				if((count % 12) > 0) {                                                               
 					AllPage = AllPage + 1;
 				}	
-		    	System.out.println(dto.size());
+		    	System.out.println(count);
 				System.out.println(AllPage);			
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("deliveryList", uniqueGroupedData);
