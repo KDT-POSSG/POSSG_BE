@@ -317,7 +317,8 @@ public class DeliveryController {
 		        
 		        System.out.println("unique"+uniqueGroupedData);
 		     // 편의점 보유 상품 총 개수
-			    int count = service.getDeliveryCount(param);							    
+			    int count = service.getDeliveryCount(param);
+			    System.out.println(count);
 			    
 			    int AllPage = count / 12;
 				if((count % 12) > 0) {                                                               

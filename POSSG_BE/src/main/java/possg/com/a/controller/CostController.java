@@ -630,7 +630,7 @@ public class CostController {
         	map.put("kakao", kakao);
         	map.put("cash", cash);       	
         	map.put("toss", toss);
-        	map.put("cardMap", cardMap);
+        	map.put("card", cardMap);
         	map.put("totalSales", totalSales);
         	
         	
