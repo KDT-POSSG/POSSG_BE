@@ -226,6 +226,7 @@
 		resultType="java.lang.Integer">
 		select count(*) 
 		from  Delivery_list as dl
+		join Delivery d on d.ref = dl.del_ref
 		<if test="orderStatus == 1 ">
 			where dl.branch_name = #{branchName} and dl.del_status = 1
 		</if>
