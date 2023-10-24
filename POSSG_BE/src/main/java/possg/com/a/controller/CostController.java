@@ -205,6 +205,7 @@ public class CostController {
 			List<CostParam> orderPrice = service.selectOrderPrice(param);		
 			List<CostParam> payment = service.paymentPrice(param);	
 			List<CostParam> list = service.getDeliveryPrice(param);		
+			List<CostDto> lossYear = service.selectYear(param);
 			
 			for(int i = 0; i< payment.size(); i++) {
 				String ref = payment.get(i).getRef();
@@ -440,7 +441,8 @@ public class CostController {
 					if(item.getRef().substring(0, 4).equals(previousYear.substring(0, 4))) {
 						previousLoss = previousLoss + item.getPrice();
 					}			
-				}
+				}				
+				
 				// 매장 매출
 				for(CostParam item : payment) {
 				    String ref = item.getRef();
@@ -488,19 +490,19 @@ public class CostController {
 				}
 
 		        // 지출
-		        for(CostDto item : lossList) {
+		        for(CostDto item : lossYear) {
 		        	
 					if(item.getCostYear() == formattedYear) {				
 						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
-			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;			
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;
 					}
-					
-					//전달 지출
-					if(item.getCostYear() == Integer.parseInt(previousMonth.substring(0, 4))) {
+
+					//전년 지출
+					if(item.getCostYear() == formattedYear - 1) {
 						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
 			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
 					}
-				}
+				}		        
 						        
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률
