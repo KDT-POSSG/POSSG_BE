@@ -573,7 +573,10 @@ public class CostController {
         }
         param.setConvSeq(convSeq);
         
-        List<PaymentDto> dto =  service.cardOrCash(param);
+        System.out.println(dayDate);
+        System.out.println(dayDate.substring(0, 7));
+        
+        List<PaymentDto> dto = service.cardOrCash(param);
         
         for(int i = 0; i< dto.size(); i++) {
 			String ref = dto.get(i).getPurchasedAt();
@@ -582,7 +585,7 @@ public class CostController {
 	        dto.get(i).setPurchasedAt(convertedRef);
 		}
         Map<String, Object> map = new LinkedHashMap<>();
-        Map<String, Object> card = new HashMap<>();
+        Map<String, Object> cardMap = new HashMap<>();
         
         int cash = 0;
         int kakao = 0;
@@ -607,26 +610,27 @@ public class CostController {
     			}
     		    
     		    if(item.getPg().equals("카드")) {
-    		    	card.put(item.getCardCompany(), 
-    		    			(int)map.getOrDefault(item.getCardCompany(), 0) + item.getPrice());
+    		    	cardMap.put(item.getCardCompany(), 
+    		    		    (int)cardMap.getOrDefault(item.getCardCompany(), 0) + item.getPrice());
     			}      			
         	}
         	
-        	map.put("kakaoShare", ((double)kakao/totalSales * 100));
-        	map.put("cashShare", ((double)cash/totalSales * 100));
-        	map.put("tossShare", ((double)toss/totalSales * 100));
+        	map.put("kakaoShare", Math.round(((double)kakao/ Math.abs(totalSales) * 100) * 100) / 100.0);
+        	map.put("cashShare", Math.round(((double)cash/ Math.abs(totalSales) * 100) * 100) / 100.0);
+        	map.put("tossShare", Math.round(((double)toss/ Math.abs(totalSales) * 100) * 100) / 100.0);
         	
         	Map<String, Double> cardShare = new HashMap<>();
-        	System.out.println(card);
-        	System.out.println(card.entrySet());
-        	for(Map.Entry<String, Object> entry : card.entrySet()) { 
-        		cardShare.put(entry.getKey() + "Share", ((double)(Integer)entry.getValue() / totalSales * 100));
+        	System.out.println(cardMap.entrySet());
+        	for(Map.Entry<String, Object> entry : cardMap.entrySet()) { 
+        		double result = ((double)(Integer)entry.getValue() / Math.abs(totalSales) * 100);
+        		result = Math.round(result * 100) / 100.0;
+        		cardShare.put(entry.getKey() + "Share", result);
         	}
         	map.put("cardShare", cardShare);
         	map.put("kakao", kakao);
         	map.put("cash", cash);       	
         	map.put("toss", toss);
-        	map.put("card", card);
+        	map.put("cardMap", cardMap);
         	map.put("totalSales", totalSales);
         	
         	
