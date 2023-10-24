@@ -128,7 +128,7 @@
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
 <select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
-	SELECT  distinct p.seq,
+	SELECT distinct p.seq,
     o.user_id,
     o.product_seq,
     o.order_status,
@@ -145,7 +145,7 @@
     p.del_remark,
     p.del_ref
 	FROM Delivery_list p
-	inner join Delivery as o on o.ref = p.del_ref
+	join Delivery as o on o.ref = p.del_ref
 	WHERE p.branch_name = #{branchName}
 		<if test="orderStatus == 1 ">
 			 AND p.del_status = 1
@@ -188,21 +188,22 @@
 <select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
 		resultType="java.lang.Integer">
 		select count(*) 
-		from  Delivery_list		
+		from  Delivery_list as dl
+		join Delivery d on d.ref = dl.del_ref
 		<if test="orderStatus == 1 ">
-			where branch_name = #{branchName} and del_status = 1
+			where dl.branch_name = #{branchName} and dl.del_status = 1
 		</if>
 		
 		<if test="orderStatus == 2 ">
-			where branch_name = #{branchName} and del_status = 2
+			where dl.branch_name = #{branchName} and dl.del_status = 2
 		</if>
 		
 		<if test="orderStatus == 3 ">
-			where branch_name = #{branchName} and del_status = 3
+			where dl.branch_name = #{branchName} and dl.del_status = 3
 		</if>
 		
 		<if test="orderStatus == 4 ">
-			where branch_name = #{branchName} AND (del_status = 4 OR del_status = -1)
+			where dl.branch_name = #{branchName} AND (dl.del_status = 4 OR dl.del_status = -1)
 		</if>		
 </select>
 
