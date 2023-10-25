@@ -33,12 +33,7 @@ public class PossgBeApplication {
     public void dailyDatabaseCleanupTask() {
     	service.autoTokenClean();
     	custService.deleteCustomerToken();
+    	service.autoSmsClean();
     }
-	
-	@Scheduled(cron = "0 */5 * * * *")
-	public void deleteOldData() {
-	    service.autoSmsClean();
-	}
-	
 
 }

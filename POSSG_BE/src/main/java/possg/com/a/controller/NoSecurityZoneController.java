@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +26,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -235,6 +240,11 @@ public class NoSecurityZoneController {
             
             service.insertSms(dto);
             
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+                service.autoSmsClean();
+            }, 5, TimeUnit.MINUTES);
+            
             return ResponseEntity.ok(response);   
 	 }
 	 return ResponseEntity.badRequest().body("SMS 전송 실패");
@@ -250,13 +260,20 @@ public class NoSecurityZoneController {
 		 int veri = number();
 	     dto.setSmsNum(veri);
 	     dto.setPhoneNumber(messageDto.getTo());
-	 
-	 
+
 	 	 service.insertSms(dto);
 	 
 		 verificationCodeGenerationTime = System.currentTimeMillis();
 		 	System.out.println("send time" + verificationCodeGenerationTime);
-            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);  
+            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
+            
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+            	System.out.println("count");
+                service.autoSmsClean();
+                service.deleteSms(dto);
+            }, 5, TimeUnit.MINUTES);
+            
             return ResponseEntity.ok(response);   
     }
  
@@ -288,7 +305,7 @@ public class NoSecurityZoneController {
 			  
 			 if(currentTime - verificationCodeGenerationTime <= 300000 && dto != null) {			
 				 				 
-				 service.deleteSms(dto.getSmsNum());		 		 
+				 service.deleteSms(dto);		 		 
 					 return "YES";		 
 			 }
 		 }
@@ -490,6 +507,6 @@ public class NoSecurityZoneController {
 			        String userId = claims.get("userId", String.class);
 			        
 			        return userId;
-			}	
+			}
 
 }

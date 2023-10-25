@@ -110,7 +110,7 @@ where user_id = #{userId}
 	where phone_number = #{phoneNumber}
 </update>
 
-<delete id="deleteSms" parameterType="Integer">
+<delete id="deleteSms" parameterType="possg.com.a.dto.SmsDto">
 	delete from Sms
 	where sms_num = #{smsNum}
 </delete>

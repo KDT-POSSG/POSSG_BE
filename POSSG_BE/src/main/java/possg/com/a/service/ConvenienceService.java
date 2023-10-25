@@ -109,8 +109,8 @@ public class ConvenienceService {
 		return dao.selectSms(smsNum);
 	}
 	
-	public int deleteSms(int smsNum) {
-		return dao.deleteSms(smsNum);
+	public int deleteSms(SmsDto dto) {
+		return dao.deleteSms(dto);
 	}
 	
 	public int logout(String userId) {

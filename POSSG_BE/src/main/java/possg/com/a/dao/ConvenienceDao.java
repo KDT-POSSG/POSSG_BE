@@ -52,7 +52,7 @@ public interface ConvenienceDao {
 	
 	SmsDto selectSms(SmsDto smsNum);
 	
-	int deleteSms(int smsNum);
+	int deleteSms(SmsDto dto);
 	
 	int logout(String userId);
 	
