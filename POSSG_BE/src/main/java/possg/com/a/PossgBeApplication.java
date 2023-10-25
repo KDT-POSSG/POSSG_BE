@@ -37,7 +37,6 @@ public class PossgBeApplication {
 	
 	@Scheduled(cron = "0 */5 * * * *")
 	public void deleteOldData() {
-		System.out.println("5분마다");
 	    service.autoSmsClean();
 	}
 	
