@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import possg.com.a.dao.ConvenienceDao;
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.TokenDto;
 
 
@@ -100,16 +101,16 @@ public class ConvenienceService {
 		return dao.selectToken(userId);
 	}
 	
-	public int insertSms(int smsNum) {
+	public int insertSms(SmsDto smsNum) {
 		return dao.insertSms(smsNum);
 	}
 	
-	public int selectSms(int smsNum) {
+	public SmsDto selectSms(SmsDto smsNum) {
 		return dao.selectSms(smsNum);
 	}
 	
-	public int deleteSms(int smsNum) {
-		return dao.deleteSms(smsNum);
+	public int deleteSms(SmsDto dto) {
+		return dao.deleteSms(dto);
 	}
 	
 	public int logout(String userId) {
@@ -118,6 +119,14 @@ public class ConvenienceService {
 
 	public int autoTokenClean() {
 		return dao.autoTokenClean();
+	}
+	
+	public int autoSmsClean() {
+		return dao.autoSmsClean();
+	}
+	
+	public int updateSms(SmsDto dto) {
+		return dao.updateSms(dto);
 	}
 
 }

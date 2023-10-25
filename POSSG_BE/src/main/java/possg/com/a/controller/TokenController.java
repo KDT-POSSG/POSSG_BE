@@ -39,50 +39,57 @@ public class TokenController {
 	
 		@RequestMapping(value = "refresh", method = {RequestMethod.GET, RequestMethod.POST})
 		public ResponseEntity<?> refreshAccessToken(
-		    @RequestHeader("accessToken") String accessToken, 
-		    HttpServletRequest request,
-		    HttpServletResponse response) {
-	
-		    System.out.println("ConvenienceController refresh() " + new Date());
-	
-		    String refreshToken = request.getHeader("refreshToken");
-		    System.out.println(accessToken);
-		    System.out.println(refreshToken);
-		    
-		    if(accessToken == null || refreshToken == null) {
-		        System.out.println("refresh fail");
-		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		    }
-		    
-		    String userId;
-		    try {
-		        userId = tokenCreate.getuserIdFromToken(accessToken);
-		    }
-		    catch (ExpiredJwtException e) {
-		        userId = tokenCreate.getuserIdFromToken(refreshToken);
-		    }
-		    catch (Exception e) {
-		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		    }
-	
-		    if(userId == null) {
-		        System.out.println("넌 유저가 아니다");
-		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		    }
-	
-		    ConvenienceDto userDto = convService.changePassword(userId);
-		    List<TokenDto> userToken = convService.selectToken(refreshToken);
-	
-		    if(userToken == null) {
-		        System.out.println("유효한 refresh토큰이 없습니다.");
-		        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		    }
-	
-		    String newAccessToken = tokenCreate.generateJwtToken(userDto);
-		    HttpHeaders headers = new HttpHeaders();
-		    headers.add("accessToken", newAccessToken);
-	
-		    return ResponseEntity.ok().headers(headers).body("REFRESH_YES");
+		    @RequestHeader("accessToken") String accessToken, @RequestHeader("refreshToken") String refreshToken,
+		    HttpServletRequest request, HttpServletResponse response) {
+			try {	
+				System.out.println("ConvenienceController refresh() " + new Date());
+				if(accessToken != null) {
+				    	
+				    try {
+				    	//refreshToken = request.getHeader("refreshToken");
+					    System.out.println(accessToken);
+					    System.out.println(refreshToken);
+				    }
+				    catch (ExpiredJwtException e) {
+				    	System.out.println("refresh fail");
+				        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");
+					}
+	    
+				    String userId;
+				    try {
+				        userId = tokenCreate.getuserIdFromToken(accessToken);
+				    }
+				    catch (ExpiredJwtException e) {
+				        userId = tokenCreate.getuserIdFromToken(refreshToken);
+				    }
+				    catch (Exception e) {
+				        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");
+				    }
+			
+				    if(userId == null) {
+				        System.out.println("넌 유저가 아니다");
+				        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");
+				    }
+			
+				    ConvenienceDto userDto = convService.changePassword(userId);
+				    List<TokenDto> userToken = convService.selectToken(refreshToken);
+			
+				    if(userToken == null) {
+				        System.out.println("유효한 refresh토큰이 없습니다.");
+				        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");
+				    }
+			
+				    String newAccessToken = tokenCreate.generateJwtToken(userDto);
+				    HttpHeaders headers = new HttpHeaders();
+				    headers.add("accessToken", newAccessToken);
+			
+				    return ResponseEntity.ok().headers(headers).body("REFRESH_YES");
+				    }
+		    	    System.out.println("refresh fail");
+		            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");	   
+				}catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("REFRESH_NO");	 
+			}		
 		}
 
 		

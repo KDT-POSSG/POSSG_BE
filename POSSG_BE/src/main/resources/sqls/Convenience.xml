@@ -93,18 +93,24 @@ where user_id = #{userId}
 	where refresh = #{refresh}
 </select>
 
-<insert id="insertSms" parameterType="Integer">
-	insert Sms(sms_num)
-	values(#{smsNum})
+<insert id="insertSms" parameterType="possg.com.a.dto.SmsDto">
+	insert into Sms(sms_num, create_at, phone_number, count)
+	values(#{smsNum}, now(), #{phoneNumber}, 0)
 </insert>
 
-<select id="selectSms" parameterType="Integer"  resultType="Integer">
-	select count(*)
+<select id="selectSms" parameterType="possg.com.a.dto.SmsDto"  resultType="possg.com.a.dto.SmsDto">
+	select *
 	from Sms
-	where sms_num = #{smsNum}
+	where sms_num = #{smsNum} and #{phoneNumber}
 </select>
 
-<delete id="deleteSms" parameterType="Integer">
+<update id="updateSms" parameterType="possg.com.a.dto.SmsDto">
+	update Sms 
+	set count = count + 1 
+	where phone_number = #{phoneNumber}
+</update>
+
+<delete id="deleteSms" parameterType="possg.com.a.dto.SmsDto">
 	delete from Sms
 	where sms_num = #{smsNum}
 </delete>
@@ -120,6 +126,12 @@ where user_id = #{userId}
 	delete
 	from Token
 	where datediff(now(), created_at) > 7
+</delete>
+
+<delete id="autoSmsClean">
+    delete
+    from Sms
+    where TIMESTAMPDIFF(MINUTE, create_at, NOW()) > 5
 </delete>
 
 </mapper>
