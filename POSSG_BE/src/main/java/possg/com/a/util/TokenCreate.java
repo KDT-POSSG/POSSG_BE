@@ -24,8 +24,8 @@ public class TokenCreate {
 	@Value("${custom.security.key}")
     public String securityKey;
 	
-	  //private final Long expiredTime = 1000 * 60L * 60L * 24L; // 유효기간 1일
-	  private final Long expiredTime = 1000 * 10L; // 유효기간 10초
+	  private final Long expiredTime = 1000 * 60L * 60L * 24L; // 유효기간 1일
+	  //private final Long expiredTime = 1000 * 10L; // 유효기간 10초
 	  @Autowired
 	  ConvenienceService service;	  	  
 	  /**
@@ -51,7 +51,7 @@ public class TokenCreate {
 	// Refresh Token 생성 로직
 	  public String generateRefreshToken(ConvenienceDto dto) {
 	      Date now = new Date();
-	      Long expiredTime = 1000 * 60L * 1L; //* 60L * 24L * 14L; // 2주
+	      Long expiredTime = 1000 * 60L * 60L * 60L * 24L * 14L; // 2주
 	      
 	      return Jwts.builder()
 	          .setSubject(dto.getRepresentativeName())
