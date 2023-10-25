@@ -38,6 +38,7 @@ import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.CustomerTokenDto;
 import possg.com.a.dto.MessageDto;
+import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.SmsRequestDto;
 import possg.com.a.dto.SmsResponseDto;
 import possg.com.a.dto.TokenDto;
@@ -228,8 +229,11 @@ public class NoSecurityZoneController {
 		 verificationCodeGenerationTime = System.currentTimeMillis();
             SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
             
+            SmsDto dto = new SmsDto();
+   	        dto.setSmsNum(veri);
+   	        dto.setPhoneNumber(messageDto.getTo());
             
-            service.insertSms(veri);
+            service.insertSms(dto);
             
             return ResponseEntity.ok(response);   
 	 }
@@ -241,9 +245,14 @@ public class NoSecurityZoneController {
 	 public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 	 System.out.println("ConvenienceController sendSms() " + new Date());
 	 
-	 int veri = number();
+		 SmsDto dto = new SmsDto();
+		 
+		 int veri = number();
+	     dto.setSmsNum(veri);
+	     dto.setPhoneNumber(messageDto.getTo());
 	 
-	 	service.insertSms(veri);
+	 
+	 	 service.insertSms(dto);
 	 
 		 verificationCodeGenerationTime = System.currentTimeMillis();
 		 	System.out.println("send time" + verificationCodeGenerationTime);
@@ -254,31 +263,36 @@ public class NoSecurityZoneController {
 
 	 // sms 확인하기#
 	 @PostMapping("Authentication")
-	 public String Authentication(int CodeNumber) {		 
+	 public String Authentication(@RequestBody SmsDto dto) {		 
 		 System.out.println("ConvenienceController Authentication() " + new Date());
 		 
 		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
-		 System.out.println(CodeNumber);
 		 
-		 int smsNum = service.selectSms(CodeNumber);
+		 SmsDto smsNum = service.selectSms(dto);
 		 
-		 System.out.println(smsNum);
-		 
-		 if(smsNum == 0) {
-			 System.out.println("db에 일치하는 인증번호가 없습니다.");
-			 return "NO";
-		 }	 
-	
-		 long currentTime = System.currentTimeMillis();
-		 System.out.println(currentTime);
-		 
-		 System.out.println(verificationCodeGenerationTime);
-		  
-		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
-			 				 
-			 service.deleteSms(CodeNumber);		 		 
-				 return "YES";		 
-		 }	
+		 if(smsNum != null) {
+			 		 
+			 if(smsNum.getSmsNum() != dto.getSmsNum()) {
+				 System.out.println("db에 일치하는 인증번호가 없습니다.");
+				 return "NO";
+			 }
+			 if(smsNum.getCount() >= 5) {
+				 System.out.println("횟수초과");
+				 return "MANY_COUNTING";
+			 }
+		
+			 long currentTime = System.currentTimeMillis();
+			 System.out.println(currentTime);
+			 
+			 System.out.println(verificationCodeGenerationTime);
+			  
+			 if(currentTime - verificationCodeGenerationTime <= 300000 && dto != null) {			
+				 				 
+				 service.deleteSms(dto.getSmsNum());		 		 
+					 return "YES";		 
+			 }
+		 }
+		 service.updateSms(dto);
 		 return "NO";
 	 }
 	 

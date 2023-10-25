@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import possg.com.a.dto.ConvenienceDto;
+import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.TokenDto;
 
 
@@ -47,14 +48,17 @@ public interface ConvenienceDao {
 	
 	List<TokenDto> selectToken(String userId);
 	
-	int insertSms(int smsNum);
+	int insertSms(SmsDto smsNum);
 	
-	int selectSms(int smsNum);
+	SmsDto selectSms(SmsDto smsNum);
 	
 	int deleteSms(int smsNum);
 	
 	int logout(String userId);
 	
 	int autoTokenClean();
-
+	
+	int autoSmsClean();
+	
+	int updateSms(SmsDto dto);
 }
