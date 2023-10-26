@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -238,7 +239,8 @@ public class ProductController {
 	    	// 상품 img 주소
             productMap.put("img_url", dto.getImgUrl());
             // 총 재고량
-            productMap.put("totalStock", dto.getStockQuantity());
+            int totalStock = dto.getStockQuantity();
+            productMap.put("totalStock", totalStock);
             System.out.println("productMap: " + productMap);
             
             for (ProductDto nameDto : nameDtoList) {
@@ -248,6 +250,9 @@ public class ProductController {
             	detail.put("conv_seq", nameDto.getConvSeq());
                 detail.put("product_name", nameDto.getProductName());
                 detail.put("stock", nameDto.getStockQuantity());
+                if(totalStock == 0) {
+                	nameDto.setExpirationDate("");
+                }
                 detail.put("expiration_date", nameDto.getExpirationDate());
                 detail.put("expiration_flag", nameDto.getExpirationFlag());
                 detail.put("price", nameDto.getPriceDiscount());
@@ -329,7 +334,7 @@ public class ProductController {
 			List<ProductDto> list = service.findAllProductBarcode(tempDto);
 			
 			if(list.isEmpty() || list == null) {
-				result.put("NO", "해당 바코드의 상품이 없거나 폐기된 상품입니다.");
+				result.put("NO", "해당 바코드의 상품이 없거나 폐기된 상품입니다");
 				System.out.println("list= " + list);
 				productNameList.add(result);
 				continue;
@@ -732,7 +737,18 @@ public class ProductController {
 	    String callRef = ProductUtil.generateCallRef();
 	    // 발주 등록 시간
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String formattedDate = sdf.format(new Date());
+	    Date currentDate = new Date();
+        String formattedDate = sdf.format(currentDate);
+        System.out.println("Current Date: " + formattedDate);
+        
+        // Calendar 객체를 사용하여 9시간을 추가합니다.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 9);
+        
+        // 9시간이 추가된 날짜와 시간을 다시 포맷하여 출력합니다.
+        Date newDate = calendar.getTime();
+        formattedDate = sdf.format(newDate);
 		
 	    // 발주 상품 수 및 총 가격 계산
 	    int totalProduct = callList.size();
