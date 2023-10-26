@@ -182,12 +182,6 @@ public class ProductController {
 				int count_big = service.updateProductStock(tempDto.get(i));
 				if(count_big>0) {
 					System.out.println("update 성공");
-					/*
-					int count_del = service.deleteProductRegiInfo(dto);
-					if(count_del > 0) {
-						System.out.println("delete 성공");
-					}
-					*/
 					return "YES";
 				}
 			}

@@ -4,16 +4,20 @@ public class SmsDto {
 
 	private int seq;
 	private int smsNum;
+	private String createAt;
+	private String phoneNumber;
+	private int count;
 	
-	
-	public SmsDto() {
-	}
-
-
-	public SmsDto(int seq, int smsNum) {
+	public SmsDto(int seq, int smsNum, String createAt, String phoneNumber, int count) {
 		super();
 		this.seq = seq;
 		this.smsNum = smsNum;
+		this.createAt = createAt;
+		this.phoneNumber = phoneNumber;
+		this.count = count;
+	}
+
+	public SmsDto() {
 	}
 
 
@@ -37,11 +41,40 @@ public class SmsDto {
 	}
 
 
+	public String getCreateAt() {
+		return createAt;
+	}
+
+
+	public void setCreateAt(String createAt) {
+		this.createAt = createAt;
+	}
+
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+
+	public int getCount() {
+		return count;
+	}
+
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+
 	@Override
 	public String toString() {
-		return "SmsDto [seq=" + seq + ", smsNum=" + smsNum + "]";
+		return "SmsDto [seq=" + seq + ", smsNum=" + smsNum + ", createAt=" + createAt + ", phoneNumber=" + phoneNumber
+				+ ", count=" + count + "]";
 	}
-	
-	
-	
+
 }

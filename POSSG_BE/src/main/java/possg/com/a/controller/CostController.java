@@ -205,6 +205,7 @@ public class CostController {
 			List<CostParam> orderPrice = service.selectOrderPrice(param);		
 			List<CostParam> payment = service.paymentPrice(param);	
 			List<CostParam> list = service.getDeliveryPrice(param);		
+			List<CostDto> lossYear = service.selectYear(param);
 			
 			for(int i = 0; i< payment.size(); i++) {
 				String ref = payment.get(i).getRef();
@@ -440,7 +441,8 @@ public class CostController {
 					if(item.getRef().substring(0, 4).equals(previousYear.substring(0, 4))) {
 						previousLoss = previousLoss + item.getPrice();
 					}			
-				}
+				}				
+				
 				// 매장 매출
 				for(CostParam item : payment) {
 				    String ref = item.getRef();
@@ -488,19 +490,19 @@ public class CostController {
 				}
 
 		        // 지출
-		        for(CostDto item : lossList) {
+		        for(CostDto item : lossYear) {
 		        	
 					if(item.getCostYear() == formattedYear) {				
 						totalLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
-			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;			
+			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + totalLoss;
 					}
-					
-					//전달 지출
-					if(item.getCostYear() == Integer.parseInt(previousMonth.substring(0, 4))) {
+
+					//전년 지출
+					if(item.getCostYear() == formattedYear - 1) {
 						previousLoss = item.getTotalLaborCost() + item.getElectricityBill() + item.getGasBill() + item.getRent() 
 			        	+ item.getSecurityMaintenanceFee() + item.getTotalLaborCost() + item.getWaterBill() + previousLoss;
 					}
-				}
+				}		        
 						        
 		        notDiscount = notDiscount - totalPrice; 
 		        //매출 상승률
@@ -573,7 +575,10 @@ public class CostController {
         }
         param.setConvSeq(convSeq);
         
-        List<PaymentDto> dto =  service.cardOrCash(param);
+        System.out.println(dayDate);
+        System.out.println(dayDate.substring(0, 7));
+        
+        List<PaymentDto> dto = service.cardOrCash(param);
         
         for(int i = 0; i< dto.size(); i++) {
 			String ref = dto.get(i).getPurchasedAt();
@@ -581,8 +586,8 @@ public class CostController {
 	        String convertedRef = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 	        dto.get(i).setPurchasedAt(convertedRef);
 		}
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> card = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> cardMap = new HashMap<>();
         
         int cash = 0;
         int kakao = 0;
@@ -602,21 +607,34 @@ public class CostController {
     				kakao = kakao + item.getPrice();      				
     			}
     			
-    		    if(item.getPg().equals("토스페이")) {
+    		    if(item.getPg().equals("토스")) {
     				toss = toss + item.getPrice();
     			}
     		    
     		    if(item.getPg().equals("카드")) {
-    		    	card.put(item.getCardCompany(), 
-    		    			(int)map.getOrDefault(item.getCardCompany(), 0) + item.getPrice());
+    		    	cardMap.put(item.getCardCompany(), 
+    		    		    (int)cardMap.getOrDefault(item.getCardCompany(), 0) + item.getPrice());
     			}      			
         	}
         	
-        	map.put("cash", cash);
+        	map.put("kakaoShare", Math.round(((double)kakao/ Math.abs(totalSales) * 100) * 100) / 100.0);
+        	map.put("cashShare", Math.round(((double)cash/ Math.abs(totalSales) * 100) * 100) / 100.0);
+        	map.put("tossShare", Math.round(((double)toss/ Math.abs(totalSales) * 100) * 100) / 100.0);
+        	
+        	Map<String, Double> cardShare = new HashMap<>();
+        	System.out.println(cardMap.entrySet());
+        	for(Map.Entry<String, Object> entry : cardMap.entrySet()) { 
+        		double result = ((double)(Integer)entry.getValue() / Math.abs(totalSales) * 100);
+        		result = Math.round(result * 100) / 100.0;
+        		cardShare.put(entry.getKey() + "Share", result);
+        	}
+        	map.put("cardShare", cardShare);
         	map.put("kakao", kakao);
+        	map.put("cash", cash);       	
         	map.put("toss", toss);
+        	map.put("card", cardMap);
         	map.put("totalSales", totalSales);
-        	map.put("card", card);
+        	
         	
         	return map;
 	}

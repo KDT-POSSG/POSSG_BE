@@ -26,11 +26,13 @@ public class DummyDataGenerator {
         private int productSeq;
         private String productName;
         private int price;
+        private int priceDiscount;
 
-        public Product(int productSeq, String productName, int price) {
+        public Product(int productSeq, String productName, int price, int priceDiscount) {
             this.productSeq = productSeq;
             this.productName = productName;
             this.price = price;
+            this.priceDiscount = priceDiscount;
         }
 
         public int getProductSeq() {
@@ -43,6 +45,10 @@ public class DummyDataGenerator {
         
         public int getPrice() {
         	return price;
+        }
+        
+        public int getPriceDiscount() {
+        	return priceDiscount;
         }
     }
 	
@@ -64,18 +70,19 @@ public class DummyDataGenerator {
         String password = dbpassword;
 
         List<Product> productList = new ArrayList<>();
-        int records = 1000;
+        
         try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT product_seq, product_name, price FROM Product where conv_seq = 1")) {
+             ResultSet rs = stmt.executeQuery("SELECT product_seq, product_name, price, priceDiscount FROM Product where conv_seq = 1")) {
             
             while (rs.next()) {
                 int productSeq = rs.getInt("product_seq");
                 String productName = rs.getString("product_name");
                 int price = rs.getInt("price");
-                productList.add(new Product(productSeq, productName, price));
+                int priceDiscount = rs.getInt("priceDiscount");
+                productList.add(new Product(productSeq, productName, price, priceDiscount));
             }
-
+            int records = 2500;
             Random random = new Random();
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             DateTimeFormatter refFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -84,7 +91,7 @@ public class DummyDataGenerator {
                     + " product_name, order_date, ref, location, price, branch_name, not_discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
-                for (int i = 101; i <= records; i++) {
+                for (int i = 1001; i <= records; i++) {
                     Product selectedProduct = productList.get(random.nextInt(productList.size()));
 
                     int orderSeq = i + 1; // 연속된 주문 번호
@@ -97,7 +104,7 @@ public class DummyDataGenerator {
                     String ref = orderDate.format(refFormatter);
                     String location = faker.address().streetAddress(); // 무작위 주소
                     int notDiscount = selectedProduct.getPrice() * quantity;
-                    int price = notDiscount - (int)((notDiscount * random.nextInt(16)) / 100.0); // 할인률 적용
+                    int price = selectedProduct.getPriceDiscount() * quantity; // 할인률 적용
                     String branchName = "센텀시티 이마트";
                     
 
@@ -136,11 +143,33 @@ public class DummyDataGenerator {
         String password = dbpassword;
 
         List<Delivery> productList = new ArrayList<>();
-        int records = 1000;
+        int records = 2501;
+        int maxSeq = 0;        
         try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT user_id, not_discount, price, ref, order_date, quantity  FROM Delivery where branch_name = '센텀시티 이마트' ")) {
-            
+             ResultSet rs = stmt.executeQuery("SELECT "
+             		+ "    d.user_id, "
+             		+ "    d.not_discount, "
+             		+ "    d.price, "
+             		+ "    d.ref, "
+             		+ "    d.order_date, "
+             		+ "    d.quantity "
+             		+ "FROM "
+             		+ "    Delivery d "
+             		+ "LEFT JOIN "
+             		+ "    Delivery_list dl "
+             		+ "ON "
+             		+ "    d.ref = dl.del_ref "
+             		+ "WHERE "
+             		+ "    d.branch_name = '센텀시티 이마트' "
+             		+ "    AND dl.del_ref IS NULL ")) {
+        	Statement stmt2 = connection.createStatement();
+        	ResultSet query = stmt2.executeQuery("SELECT MAX(seq) AS max_seq FROM Delivery_list WHERE branch_name = '센텀시티 이마트'");
+               	
+            if (query.next()) {  // 커서를 첫 번째 행으로 이동
+                maxSeq = query.getInt("max_seq");
+            }
+        	
             while (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int notDiscount = rs.getInt("not_discount");
@@ -168,19 +197,20 @@ public class DummyDataGenerator {
             	    "맛있게 드세요!", 
             	    "기분 좋은 일이 생길 것 같아요", 
             	    "잘 부탁드립니다!"
-            	};
-
+            };
+                  
             	Random random = new Random();
-            
+            	System.out.println(query.getInt("max_seq"));
             String insertSql = "INSERT INTO Delivery_list (seq, del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, branch_name, "
             		+ " not_discount, user_id) "
             		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
-                for (int i = 901; i <= records; i++) {
+                for (int i = 0; i <= 10; i++) {
                 	Delivery selectedProduct = productList.get(i);
-
-                    int seq = i + 1; // 연속된 주문 번호
+                	
+                    int seq = maxSeq + 1; // 연속된 주문 번호
+                    maxSeq++;
                     String delRef = selectedProduct.getRef();
                     String delDate = selectedProduct.getDelDate();
                     int delStatus = 4;
@@ -215,6 +245,120 @@ public class DummyDataGenerator {
             e.printStackTrace();
         }              
         return "데이터 전송";
+	}
+	
+	@PostMapping("dummyPayment")
+	public String dummyPayment() {
+		Faker faker = new Faker(new Locale("ko", "KR"));
+
+        String url = dburl;
+        String user = dbusername;
+        String password = dbpassword;
+        
+        List<Product> productList = new ArrayList<>();
+        
+        try (Connection connection = DriverManager.getConnection(url, user, password);
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT product_seq, product_name, price, price_discount FROM Product where conv_seq = 1")) {
+            
+            while (rs.next()) {
+                int productSeq = rs.getInt("product_seq");
+                String productName = rs.getString("product_name");
+                int price = rs.getInt("price");
+                int priceDiscount = rs.getInt("price_discount");
+                productList.add(new Product(productSeq, productName, price, priceDiscount));
+            }
+            int records = 2500;
+            
+            String[] cardComp = {
+            	    "신한", 
+            	    "현대", 
+            	    "하나", 
+            	    "우리", 
+            	    "롯데",
+            	    "삼성",
+            	    "국민",
+            	    "기업",
+            	    "부산",
+            	    "토스뱅크",
+            	    "BC",
+            	    "농협"
+            };
+            
+            Random random = new Random();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter refFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            LocalDateTime baseDateTime = LocalDateTime.of(2023, 10, 1, 0, 0);
+
+            String insertSql = "INSERT INTO Payment (receipt_id, user_seq, conv_seq, pg, method, discount_info, original_price, price, purchased_at, card_num, card_company, del)"
+            		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
+                for (int i = 0; i <= 800; i++) {
+                    Product selectedProduct = productList.get(random.nextInt(productList.size()));
+                    
+                    int quantity = random.nextInt(6);
+                    
+                    String receiptId = RandomHexStringGenerator.generateRandomHex(24);
+                    int userSeq = 1;
+                    int convSeq = 1;
+                    String pg = "카드";
+                    String method = "카드";
+                    int discountInfo = random.nextInt(3);
+                    String cardNum = "1234123412341234";
+                    //String cardNum = "";
+                    String cardCompany = cardComp[random.nextInt(cardComp.length)];
+                    //String cardCompany = "";
+                    LocalDateTime purchasedAt = baseDateTime.minusDays(random.nextInt(600));
+                    int price = selectedProduct.getPrice() * quantity;
+                    int priceDiscount = selectedProduct.getPriceDiscount() * quantity;
+                    String del = "결제 완료";
+                    
+                    
+
+                    pstmt.setString(1, receiptId);
+                    pstmt.setInt(2, userSeq);
+                    pstmt.setInt(3, convSeq);
+                    pstmt.setString(4, pg);
+                    pstmt.setString(5, method);
+                    pstmt.setInt(6, discountInfo);
+                    pstmt.setInt(7, price);
+                    pstmt.setInt(8, priceDiscount);
+                    pstmt.setString(9, purchasedAt.format(dateFormatter));
+                    pstmt.setString(10, cardNum);
+                    pstmt.setString(11, cardCompany);
+                    pstmt.setString(12, del);
+
+                    pstmt.addBatch();
+
+                    if (i % 100 == 0 || i == records) { // 일정 간격으로 batch 실행
+                        pstmt.executeBatch();
+                    }
+                    
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "데이터 생성";
+	}
+	
+	static class RandomHexStringGenerator {
+
+	    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+	    private static final Random RANDOM = new Random();
+
+	    public static String generateRandomHex(int length) {
+	        if (length <= 0) {
+	            throw new IllegalArgumentException("길이는 양의 정수여야 합니다.");
+	        }
+
+	        char[] chars = new char[length];
+	        for (int i = 0; i < length; i++) {
+	            chars[i] = HEX_CHARS[RANDOM.nextInt(HEX_CHARS.length)];
+	        }
+	        return new String(chars);
+	    }
 	}
 	
 	static class Delivery{
@@ -259,4 +403,5 @@ public class DummyDataGenerator {
 		}
 		
 	}
+	
 }

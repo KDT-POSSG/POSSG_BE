@@ -80,4 +80,6 @@ public interface ProductDao {
 	
 	int addNutritionInfo(NutritionDto nutDto);
 	NutritionDto getNutritionInfo(NutritionDto seqDto);
+	
+	ProductDto findProductSeq(int seq);
 }

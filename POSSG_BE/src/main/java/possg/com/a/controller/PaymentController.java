@@ -42,15 +42,24 @@ public class PaymentController {
 	@PostMapping("addpayment")
 	public String addpayment(@RequestBody PaymentDto dto) { 
 		System.out.println("PaymentController addpayment " + new Date());
-		
-		System.out.println(dto.toString());
+		//System.out.println(dto.toString());
 		
 		int count = service.addpayment(dto);
 		if(count > 0) {
-			return "YES";
+			PointParam param = new PointParam(dto.getPtPhoneNum(), dto.getEarnedPoint()-dto.getUsePoint(), null);
+			
+			// 결제 성공시 포인트 적립
+			int point = service3.addPoint(param);
+			
+			if (point > 0) {
+				return "POINT YES";
+			}
+			
+			else {
+				return "YES";
+			}
 		}
-		return "NO";
-				
+		return "NO";	
 	}
 	
 	// 결제 취소 
@@ -68,9 +77,9 @@ public class PaymentController {
 		if (cashCheck > 0) {
 			int count = service.cancelpayment(receiptId);
 			if(count > 0) {
-				// 결제 포인트 회복
+				// 적립 포인트는 다시 환불, 쓴 포인트는 회복
 				PaymentParam param = service.paymentOneList(receiptId);
-				int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+				int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint()-param.getEarnedPoint(), ""));
 				
 				if (cancelPointCheck > 0) {
 					check = "POINT RECOVERY";
@@ -114,9 +123,9 @@ public class PaymentController {
 		        int count = service.cancelpayment(receiptId);
 				if(count > 0) {
 					
-					// 결제 포인트 회복
+					// 적립 포인트는 다시 환불, 쓴 포인트는 회복
 					PaymentParam param = service.paymentOneList(receiptId);
-					int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint(), ""));
+					int cancelPointCheck = service3.addPoint(new PointParam(param.getPtPhoneNum(), param.getUsePoint()-param.getEarnedPoint(), ""));
 					
 					if (cancelPointCheck > 0) {
 						check = "POINT RECOVERY";

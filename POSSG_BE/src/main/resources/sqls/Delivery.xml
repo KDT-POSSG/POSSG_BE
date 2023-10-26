@@ -7,55 +7,92 @@
 <!-- 장바구니에 넣기 -->
 <insert id="callAddDelivery" parameterType="possg.com.a.dto.DeliveryDto">
     insert into Delivery(user_id, product_seq, order_status, quantity, product_name, order_date, ref, location, price, branch_name, not_discount)
-    values(
-        (select customer_seq from Customer where customer_seq = #{userId}),
-        (select product_seq from Product where product_name = #{productName} and conv_seq = #{convSeq}),
-        0, #{quantity}, 
-        (select product_name from Product where product_name = #{productName} and conv_seq = #{convSeq}), 
-        now(), 0, #{location},
-        (
-            select 
-                case 
-                    when #{quantity} >= 1 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 2 then 
-                        (select price_discount from Product where product_name = #{productName} and conv_seq = #{convSeq}) * #{quantity} <!-- (1개 이상일 때) -->
-                    when   #{quantity} >= 2 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 4 then
-                		(select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/2) + #{quantity}%2) <!-- 1+1 -->
-                	when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 5 then 
-                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/3)*2 + #{quantity}%3) <!-- 2+1 할인 -->
-                    when #{quantity} >= 3 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 6 then 
-                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/3) + #{quantity}%3*2) <!-- 1+2 할인 -->
-                    when #{quantity} >= 4 and (select promotion_info from Product where product_name = #{productName} and conv_seq = #{convSeq}) = 7 then 
-                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * (floor(#{quantity}/4)*2 + #{quantity}%4*2) <!-- 2+2 할인 -->	              		
-                    else
-                        (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}) * #{quantity}
-                end
-        ), 
-        #{branchName}, (#{quantity} * (select price from Product where product_name = #{productName} and conv_seq = #{convSeq}))
-    )
+    select 
+        t.customer_seq, 
+        t.product_seq, 
+        t.order_status, 
+        t.quantity, 
+        t.product_name, 
+        t.order_date, 
+        t.ref, 
+        t.location, 
+        t.price, 
+        t.branchName, 
+        t.not_discount
+    from (
+        select
+            C.customer_seq,
+            P.product_seq,
+            0 as order_status,
+            #{quantity} as quantity,
+            P.product_name,
+            now() as order_date,
+            0 as ref,
+            #{location} as location,
+            case
+                when #{quantity} >= 1 and P.promotion_info = 2 then P.price_discount * #{quantity}
+                when #{quantity} >= 2 and P.promotion_info = 4 then P.price * (floor(#{quantity}/2) + #{quantity}%2)
+                when #{quantity} >= 3 and P.promotion_info = 5 then P.price * (floor(#{quantity}/3)*2 + #{quantity}%3)
+                when #{quantity} >= 3 and P.promotion_info = 6 then P.price * (floor(#{quantity}/3) + #{quantity}%3*2)
+                when #{quantity} >= 4 and P.promotion_info = 7 then P.price * (floor(#{quantity}/4)*2 + #{quantity}%4*2)
+                else P.price * #{quantity}
+            end as price,
+            #{branchName} as branchName,
+            #{quantity} * P.price as not_discount
+        from
+            Customer C
+        join
+            Product P on P.product_name = #{productName} and P.conv_seq = #{convSeq}
+        where
+            C.customer_seq = #{userId}
+        order by P.expiration_date asc limit 1
+    ) as t
 </insert>
 
-<update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
-	update Delivery
-	set quantity = quantity + #{quantity},
-	price=(
-	CASE 
-            WHEN  quantity >= 1  AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 2 THEN
-                (SELECT price_discount FROM Product WHERE product_name = #{productName}) * quantity 	<!-- (1개 이상일 때) -->             
-            WHEN  (#{quantity} + quantity) >= 2  AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 4 THEN
-                (FLOOR(quantity / 2) + quantity % 2) * (SELECT price FROM Product WHERE product_name = #{productName})                <!-- 1+1 -->
-		     WHEN (#{quantity} + quantity) >= 3 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 5 THEN
-          		(FLOOR(quantity / 3) * 2 + quantity % 3) * (SELECT price FROM Product WHERE product_name = #{productName})			<!-- 2+1 할인 -->
 
-     		WHEN (#{quantity} + quantity) >= 3 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 6 THEN
-                (FLOOR(quantity / 3) + quantity % 3*2) * (SELECT price FROM Product WHERE product_name = #{productName})
-            WHEN (#{quantity} + quantity) >= 4 AND (SELECT promotion_info FROM Product WHERE product_name = #{productName}) = 7 THEN
-                (FLOOR(quantity / 3)*2 + quantity % 3*2) * (SELECT price FROM Product WHERE product_name = #{productName})
-            ELSE
-                (price + #{price})
-        END
-        ), 
-        not_discount=(quantity * (select price from Product where product_name = #{productName}))
-	where product_name = #{productName} and order_status = 0 and ref = 0 and user_id = #{userId}
+<update id="updateCountDelivery" parameterType="possg.com.a.dto.DeliveryDto">
+	UPDATE Delivery
+		SET 
+		    quantity = quantity + #{quantity},
+		    price = (
+		        SELECT
+		            CASE
+		                WHEN quantity >= 1 AND P.promotion_info = 2 THEN P.price_discount * quantity
+		                WHEN (#{quantity} + quantity) >= 2 AND P.promotion_info = 4 THEN 
+		                    (FLOOR(quantity / 2) + quantity % 2) * P.price
+		                WHEN (#{quantity} + quantity) >= 3 AND P.promotion_info = 5 THEN 
+		                    (FLOOR(quantity / 3) * 2 + quantity % 3) * P.price
+		                WHEN (#{quantity} + quantity) >= 3 AND P.promotion_info = 6 THEN 
+		                    (FLOOR(quantity / 3) + quantity % 3 * 2) * P.price
+		                WHEN (#{quantity} + quantity) >= 4 AND P.promotion_info = 7 THEN 
+		                    (FLOOR(quantity / 4) * 2 + quantity % 4 * 2) * P.price
+		                ELSE P.price + #{price}
+		            END
+		        FROM 
+		            Product P 
+		        WHERE 
+		            P.product_name = #{productName}
+		        ORDER BY 
+		            P.expiration_date ASC 
+		        LIMIT 1
+		    ), 
+		    not_discount = (quantity + #{quantity}) * (
+		        SELECT 
+		            P.price 
+		        FROM 
+		            Product P 
+		        WHERE 
+		            P.product_name = #{productName}
+		        ORDER BY 
+		            P.expiration_date ASC 
+		        LIMIT 1
+		    )
+		WHERE 
+		    product_name = #{productName} 
+		    AND order_status = 0 
+		    AND ref = 0 
+		    AND user_id = #{userId}
+
 </update>
 
 <!-- 장바구니 상품 가져오기 -->
@@ -128,50 +165,52 @@
 
 <!-- 해당 지점의 점포에 배달주문건 추출 -->
 <select id="convenienceDeliveryList" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryJoinDto">
-	SELECT  distinct p.seq,
-    o.user_id,
-    o.product_seq,
-    o.order_status,
-    o.quantity,
-    o.product_name,
-    o.ref,
-    o.location,
-    o.price,
-    o.branch_name,
-    p.del_date,
-    p.del_status,
-    p.del_total_number,
-    p.del_total_price,
-    p.del_remark,
-    p.del_ref
+	SELECT 
+	    o.ref,
+	    p.del_ref,
+	    o.user_id,
+	    o.product_seq,
+	    o.order_status,
+	    o.quantity,
+	    o.product_name,
+	    o.location,
+	    o.price,
+	    o.branch_name,
+	    p.del_date,
+	    p.del_status,
+	    p.del_total_number,
+	    p.del_total_price,
+	    p.del_remark,    
+	    p.seq
 	FROM Delivery as o
-	inner join Convenience j on o.branch_name = j.branch_name
-	inner join Delivery_list p on o.ref = p.del_ref
-	WHERE j.branch_name = #{branchName}
-		<if test="orderStatus == 1 ">
-			 AND p.del_status = 1
-		</if>
-		
-		<if test="orderStatus == 2 ">
-			AND p.del_status = 2
-		</if>
-		
-		<if test="orderStatus == 3 ">
-			AND p.del_status = 3
-		</if>
-		
-		<if test="orderStatus == 4 ">
-			AND p.del_status = 4 OR p.del_status = -1
-		</if>
-	order by p.seq desc
-	limit ${(pageNumber* 12)}, 12
+	JOIN (
+	    SELECT del_ref, del_date, del_status, del_total_number, del_total_price, del_remark, seq
+	    FROM Delivery_list
+	    WHERE branch_name = #{branchName}
+		    <if test="orderStatus == 1 ">
+		        AND del_status = 1
+		    </if>
+		    <if test="orderStatus == 2 ">
+		        AND del_status = 2
+		    </if>
+		    <if test="orderStatus == 3 ">
+		        AND del_status = 3
+		    </if>
+		    <if test="orderStatus == 4 ">
+		        AND (del_status = 4 OR del_status = -1)
+		    </if>
+	    ORDER BY del_date DESC
+	    LIMIT ${(pageNumber* 12)}, 12
+	) AS p ON o.ref = p.del_ref
+
 </select>
 
 <select id="allDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="possg.com.a.dto.DeliveryCount">
 	SELECT
     COUNT(CASE WHEN del_status = 1 THEN 1 END) AS beforeOrder,
     COUNT(CASE WHEN del_status = 2 THEN 1 END) AS afterOrder,
-    COUNT(CASE WHEN del_status = 3 THEN 1 END) AS Delivering
+    COUNT(CASE WHEN del_status = 3 THEN 1 END) AS Delivering,
+    COUNT(CASE WHEN del_status = 4 or del_status = -1 THEN 1 END) AS count
 	FROM Delivery_list
 	where branch_name = #{branchName} and seq != 1
 </select>
@@ -186,25 +225,27 @@
         o.ref = #{ref} AND p.del_ref = #{ref}
 </update>
 
-<select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam"
-		resultType="java.lang.Integer">
-		select count(*) 
-		from  Delivery_list		
-		<if test="orderStatus == 1 ">
-			where branch_name = #{branchName} and del_status = 1
-		</if>
-		
-		<if test="orderStatus == 2 ">
-			where branch_name = #{branchName} and del_status = 2
-		</if>
-		
-		<if test="orderStatus == 3 ">
-			where branch_name = #{branchName} and del_status = 3
-		</if>
-		
-		<if test="orderStatus == 4 ">
-			where branch_name = #{branchName} AND (del_status = 4 OR del_status = -1)
-		</if>		
+<select id="getDeliveryCount" parameterType="possg.com.a.dto.DeliveryParam" resultType="java.lang.Integer">
+    select count(*)
+    from  Delivery_list as dl
+    <where>
+        dl.branch_name = #{branchName}       
+        <if test="orderStatus == 1 ">
+            AND dl.del_status = 1
+        </if>
+
+        <if test="orderStatus == 2 ">
+            AND dl.del_status = 2
+        </if>
+
+        <if test="orderStatus == 3 ">
+            AND dl.del_status = 3
+        </if>
+
+        <if test="orderStatus == 4 ">
+            AND (dl.del_status = 4 OR dl.del_status = -1)
+        </if>
+    </where>
 </select>
 
 
@@ -225,6 +266,8 @@
     select * 
     from Product 
     where product_name = #{productName} and conv_seq = #{convSeq}
+    order by expiration_date ASC
+    limit 1;
 </select>
 
 </mapper>

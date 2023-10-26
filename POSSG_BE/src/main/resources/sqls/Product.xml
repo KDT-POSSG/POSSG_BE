@@ -502,4 +502,11 @@ resultType="possg.com.a.dto.NutritionDto">
 	where call_ref = #{callRef} and conv_seq = #{convSeq} and call_status != -1
 </select>
 
+<!-- 주어진 productSeq로 상품 정보 획득 -->
+<select id="findProductSeq" parameterType="possg.com.a.dto.ProductDto" resultType="possg.com.a.dto.ProductDto">
+   	select * 
+    from Product 
+    where product_seq = #{productSeq} and expiration_flag = 0
+</select>
+
 </mapper>

@@ -66,5 +66,9 @@ public class CostService {
 	public List<PaymentDto> cardOrCash(CostParam param){
 		return dao.cardOrCash(param);
 	}
+	
+	public List<CostDto> selectYear(CostParam param){
+		return dao.selectYear(param);
+	}
 
 }

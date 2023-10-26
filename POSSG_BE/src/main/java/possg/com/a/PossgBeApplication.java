@@ -33,6 +33,7 @@ public class PossgBeApplication {
     public void dailyDatabaseCleanupTask() {
     	service.autoTokenClean();
     	custService.deleteCustomerToken();
+    	service.autoSmsClean();
     }
 
 }

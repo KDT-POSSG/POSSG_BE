@@ -4,17 +4,18 @@ public class DeliveryCount {
 
 	private int beforeOrder;
 	private int afterOrder;
-	private int Delivering;
+	private int delivering;
+	private int count;
 	
 	
 	public DeliveryCount() {
 	}
 
-	public DeliveryCount(int beforeOrder, int afterOrder, int delivering) {
+	public DeliveryCount(int beforeOrder, int afterOrder, int delivering, int count) {
 		super();
 		this.beforeOrder = beforeOrder;
 		this.afterOrder = afterOrder;
-		Delivering = delivering;
+		this.delivering = delivering;
 	}
 
 	public int getBeforeOrder() {
@@ -34,17 +35,25 @@ public class DeliveryCount {
 	}
 
 	public int getDelivering() {
-		return Delivering;
+		return delivering;
 	}
 
 	public void setDelivering(int delivering) {
-		Delivering = delivering;
+		this.delivering = delivering;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override
 	public String toString() {
-		return "DeliveryCount [beforeOrder=" + beforeOrder + ", afterOrder=" + afterOrder + ", Delivering=" + Delivering
-				+ "]";
+		return "DeliveryCount [beforeOrder=" + beforeOrder + ", afterOrder=" + afterOrder + ", delivering=" + delivering
+				+ ", count=" + count + "]";
 	}
 		
 }

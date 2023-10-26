@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +26,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +43,7 @@ import possg.com.a.dto.ConvenienceDto;
 import possg.com.a.dto.CustomerDto;
 import possg.com.a.dto.CustomerTokenDto;
 import possg.com.a.dto.MessageDto;
+import possg.com.a.dto.SmsDto;
 import possg.com.a.dto.SmsRequestDto;
 import possg.com.a.dto.SmsResponseDto;
 import possg.com.a.dto.TokenDto;
@@ -228,8 +234,16 @@ public class NoSecurityZoneController {
 		 verificationCodeGenerationTime = System.currentTimeMillis();
             SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
             
+            SmsDto dto = new SmsDto();
+   	        dto.setSmsNum(veri);
+   	        dto.setPhoneNumber(messageDto.getTo());
             
-            service.insertSms(veri);
+            service.insertSms(dto);
+            
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+                service.autoSmsClean();
+            }, 5, TimeUnit.MINUTES);
             
             return ResponseEntity.ok(response);   
 	 }
@@ -241,44 +255,61 @@ public class NoSecurityZoneController {
 	 public ResponseEntity<?> regisend(@RequestBody MessageDto messageDto) throws Exception {
 	 System.out.println("ConvenienceController sendSms() " + new Date());
 	 
-	 int veri = number();
-	 
-	 	service.insertSms(veri);
+		 SmsDto dto = new SmsDto();
+		 
+		 int veri = number();
+	     dto.setSmsNum(veri);
+	     dto.setPhoneNumber(messageDto.getTo());
+
+	 	 service.insertSms(dto);
 	 
 		 verificationCodeGenerationTime = System.currentTimeMillis();
 		 	System.out.println("send time" + verificationCodeGenerationTime);
-            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);  
+            SmsResponseDto response = sendSmsForSmsCert(messageDto, veri);
+            
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule(() -> {
+            	System.out.println("count");
+                service.autoSmsClean();
+                service.deleteSms(dto);
+            }, 5, TimeUnit.MINUTES);
+            
             return ResponseEntity.ok(response);   
     }
  
 
 	 // sms 확인하기#
 	 @PostMapping("Authentication")
-	 public String Authentication(int CodeNumber) {		 
+	 public String Authentication(@RequestBody SmsDto dto) {		 
 		 System.out.println("ConvenienceController Authentication() " + new Date());
 		 
 		 // 코드 넘버 확인하고 db랑 비교 후 맞으면 yes 틀리면 no
-		 System.out.println(CodeNumber);
 		 
-		 int smsNum = service.selectSms(CodeNumber);
+		 SmsDto smsNum = service.selectSms(dto);
 		 
-		 System.out.println(smsNum);
-		 
-		 if(smsNum == 0) {
-			 System.out.println("db에 일치하는 인증번호가 없습니다.");
-			 return "NO";
-		 }	 
-	
-		 long currentTime = System.currentTimeMillis();
-		 System.out.println(currentTime);
-		 
-		 System.out.println(verificationCodeGenerationTime);
-		  
-		 if(currentTime - verificationCodeGenerationTime <= 300000 && smsNum == 1) {			
-			 				 
-			 service.deleteSms(CodeNumber);		 		 
-				 return "YES";		 
-		 }	
+		 if(smsNum != null) {
+			 		 
+			 if(smsNum.getSmsNum() != dto.getSmsNum()) {
+				 System.out.println("db에 일치하는 인증번호가 없습니다.");
+				 return "NO";
+			 }
+			 if(smsNum.getCount() >= 5) {
+				 System.out.println("횟수초과");
+				 return "MANY_COUNTING";
+			 }
+		
+			 long currentTime = System.currentTimeMillis();
+			 System.out.println(currentTime);
+			 
+			 System.out.println(verificationCodeGenerationTime);
+			  
+			 if(currentTime - verificationCodeGenerationTime <= 300000 && dto != null) {			
+				 				 
+				 service.deleteSms(dto);		 		 
+					 return "YES";		 
+			 }
+		 }
+		 service.updateSms(dto);
 		 return "NO";
 	 }
 	 
@@ -476,6 +507,6 @@ public class NoSecurityZoneController {
 			        String userId = claims.get("userId", String.class);
 			        
 			        return userId;
-			}	
+			}
 
 }

@@ -23,8 +23,7 @@
 <select id="selectCost" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
 	select *
 	from Cost	
-	where conv_seq = #{convSeq} and cost_year = #{costYear} and (cost_month = #{costMonth} or cost_month = #{preMonth})		
-				
+	where conv_seq = #{convSeq} and cost_year = #{costYear} and (cost_month = #{costMonth} or cost_month = #{preMonth})						
 </select>
 
 <select id="selectCostList" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
@@ -32,6 +31,14 @@
 	from Cost	
    	where conv_seq = #{convSeq} and (cost_year = #{costYear} or cost_year = #{preYear}) and (cost_month = #{costMonth} or cost_month = #{preMonth})	
 </select>
+
+<select id="selectYear" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostDto">
+	select *
+	from Cost	
+	where conv_seq = #{convSeq} and (cost_year = #{costYear} or cost_year = #{preYear})
+</select>
+
+
 
 <select id="selectOrderPrice" parameterType="possg.com.a.dto.CostParam" resultType="possg.com.a.dto.CostParam">
 	select call_total_price as price, call_ref as ref

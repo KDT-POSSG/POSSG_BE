@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -50,7 +51,7 @@ public class TokenCreate {
 	// Refresh Token 생성 로직
 	  public String generateRefreshToken(ConvenienceDto dto) {
 	      Date now = new Date();
-	      Long expiredTime = 1000 * 60L * 60L * 24L * 14L; // 2주
+	      Long expiredTime = 1000 * 60L * 60L * 60L * 24L * 14L; // 2주
 	      
 	      return Jwts.builder()
 	          .setSubject(dto.getRepresentativeName())
@@ -129,13 +130,21 @@ public class TokenCreate {
 	  
 	  
 	  public Claims getClaims(String token) {
-		  if (token.startsWith("Bearer ")) {
-		        token = token.substring(7);
-		    }
+		  JwtParser jwtParser;
+		  try {
+			  if (token.startsWith("Bearer ")) {
+			        token = token.substring(7);
+			    }
+			  
+			  jwtParser = Jwts.parserBuilder()
+		    		    .setSigningKey(securityKey) 
+		    		    .build();
+		  }
+		  catch (ExpiredJwtException e) {
+			System.out.println("TokenCreate jwtexception");
+			return null;
+		  }
 		  
-		  JwtParser jwtParser = Jwts.parserBuilder()
-	    		    .setSigningKey(securityKey) 
-	    		    .build();
 		  
 		  return jwtParser.parseClaimsJws(token).getBody();
 	  }

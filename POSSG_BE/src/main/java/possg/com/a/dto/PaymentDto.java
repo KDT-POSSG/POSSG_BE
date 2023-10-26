@@ -16,6 +16,7 @@ public class PaymentDto {
     private String del; 			// 결제 취소 여부 (결제완료, 결제취소..)
     private String ptPhoneNum; 		// 포인트 사용 전화번호
     private int usePoint;			// 포인트 사용량
+    private int earnedPoint;		// 포인트 적립량
     
     public PaymentDto() {
 	}
@@ -25,7 +26,7 @@ public class PaymentDto {
 
 	public PaymentDto(String receiptId, int userSeq, int convSeq, String pg, String method, String discountInfo,
 			int originalPrice, int price, String purchasedAt, String receiptUrl, String cardNum, String cardCompany,
-			String del, String ptPhoneNum, int usePoint) {
+			String del, String ptPhoneNum, int usePoint, int earnedPoint) {
 		super();
 		this.receiptId = receiptId;
 		this.userSeq = userSeq;
@@ -42,6 +43,7 @@ public class PaymentDto {
 		this.del = del;
 		this.ptPhoneNum = ptPhoneNum;
 		this.usePoint = usePoint;
+		this.earnedPoint = earnedPoint;
 	}
 
 
@@ -161,11 +163,18 @@ public class PaymentDto {
 		return usePoint;
 	}
 
-
-
-
 	public void setUsePoint(int usePoint) {
 		this.usePoint = usePoint;
+	}
+	
+	
+	public int getEarnedPoint() {
+		return earnedPoint;
+	}
+
+
+	public void setEarnedPoint(int earnedPoint) {
+		this.earnedPoint = earnedPoint;
 	}
 
 
@@ -177,7 +186,6 @@ public class PaymentDto {
 				+ ", method=" + method + ", discountInfo=" + discountInfo + ", originalPrice=" + originalPrice
 				+ ", price=" + price + ", purchasedAt=" + purchasedAt + ", receiptUrl=" + receiptUrl + ", cardNum="
 				+ cardNum + ", cardCompany=" + cardCompany + ", del=" + del + ", ptPhoneNum=" + ptPhoneNum
-				+ ", usePoint=" + usePoint + "]";
+				+ ", usePoint=" + usePoint + ", earnedPoint=" + earnedPoint + "]";
 	}
-	
 }
