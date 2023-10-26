@@ -60,6 +60,9 @@ public class ProductService {
 	public int addProduct(ProductDto dto) {
 		return dao.addProduct(dto);
 	}
+	public ProductDto findProductSeq(int seq) {
+		return dao.findProductSeq(seq);
+	}
 	public List<ProductDto> findProductName(ProductDto dto) {
 		return dao.findProductName(dto);
 	}

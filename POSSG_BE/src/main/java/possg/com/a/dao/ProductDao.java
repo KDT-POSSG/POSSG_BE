@@ -33,6 +33,7 @@ public interface ProductDao {
 	
 	int addProduct(ProductDto dto);
 	
+	ProductDto findProductSeq(int seq); 
 	List<ProductDto> findProductName(ProductDto dto);
 	List<ProductDto> findProductBarcode(ProductDto dto);
 	List<ProductDto> findAllProductBarcode(ProductDto dto);

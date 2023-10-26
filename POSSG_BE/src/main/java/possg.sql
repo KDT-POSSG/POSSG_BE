@@ -19,7 +19,6 @@ CREATE TABLE Convenience (
     longtitude double,							-- 경도
     FOREIGN KEY (conv_key) REFERENCES account_num(account_code)
 );
-select * from Convenience;
 
 -- 고객 테이블 --
 CREATE TABLE Customer (
@@ -36,13 +35,6 @@ CREATE TABLE Customer (
     branch_name VARCHAR(255),									-- 배달 시킬 지점
     foreign key(conv_seq) references Convenience(conv_seq)
 );
-
-select * from Customer;
-
-ALTER TABLE Customer MODIFY phone_number VARCHAR(255) NOT NULL;
-
-insert into Customer(pin_number, phone_number, registration_date, customer_status)
-values (1234, 01012345123, 20230830, 1);
 
 -- 점주 인증 토큰 
 create table token(
@@ -64,9 +56,6 @@ create table sms(
     sms_num int not null					-- 문자 번호
 );
 
-INSERT INTO Customer (customer_id, pin_number, customer_name, phone_number, registration_date, customer_status)
-VALUES ('user0001', 111111, '홍길동', '01012345678', NOW(), 1);
-
 -- 배달 테이블 --
 CREATE TABLE Delivery (
 	order_seq int auto_increment primary key,					-- 배달 고유 번호
@@ -84,7 +73,7 @@ CREATE TABLE Delivery (
     foreign key(product_seq) references Product(product_seq) 	-- product 테이블에서 참조
 
 );
-ALTER TABLE Product CHANG priceOrigin price_origin int;
+
 -- 상품 테이블 --
 CREATE TABLE Product (
 	product_seq	INT auto_increment primary key, 						-- 상품 고유번호	
@@ -167,8 +156,6 @@ CREATE TABLE Items(
     foreign key(item_id) references Product(product_seq)
 );
 
-
-
 -- 직원 테이블 --
 CREATE TABLE Employee (
 	employee_seq INT auto_increment primary key,				-- 직원 고유번호
@@ -209,8 +196,6 @@ CREATE TABLE Attendance (
 	matter TEXT,													-- 특이사항
     foreign key (employee_seq) references Employee(employee_seq)	-- Employee 테이블에서 참조
 );
-
-select * from Attendance;
 
 -- 홈 즐겨찾기 페이지 --
 CREATE table Favorite_page(
@@ -266,10 +251,6 @@ CREATE TABLE Call_product_conv (
     foreign key(call_ref) references Call_product_conv_order_list(call_ref)
 );
 
-INSERT INTO Call_product_conv_order_list (seq, call_ref, call_date, call_status, call_total_number
-								, call_total_price, call_remark) 
-VALUES (0, '-1', '2000-01-01', 0, 0, 0, 'temp');
-
 CREATE TABLE Call_product_conv_order_list(
 	seq INT auto_increment primary key,							-- seq
 	conv_seq INT,										-- 편의점 점주 아이디 (주문자)
@@ -280,8 +261,6 @@ CREATE TABLE Call_product_conv_order_list(
 	call_total_price INT not null,								-- 발주 총 가격		
 	call_remark VARCHAR(255)									-- 비고
 );
-
-select * from call_product_conv_order_list;
 
 -- 고객 발주 테이블 --
 CREATE TABLE Call_product_customer (
