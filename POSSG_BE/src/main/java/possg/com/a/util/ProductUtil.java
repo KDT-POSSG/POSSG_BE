@@ -201,7 +201,19 @@ public class ProductUtil {
     
     public static String generateCallRef() {
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-	    String timestamp = sdf.format(new Date());
-	    return timestamp;
+	    Date currentDate = new Date();
+	    String formattedDate = sdf.format(currentDate);
+	    System.out.println("Current Date: " + formattedDate);
+	        
+	    // Calendar 객체를 사용하여 9시간을 추가합니다.
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(currentDate);
+	    calendar.add(Calendar.HOUR_OF_DAY, 9);
+	        
+	    // 9시간이 추가된 날짜와 시간을 다시 포맷하여 출력합니다.
+	    Date newDate = calendar.getTime();
+	    formattedDate = sdf.format(newDate);
+
+	    return formattedDate;
 	}
 }
