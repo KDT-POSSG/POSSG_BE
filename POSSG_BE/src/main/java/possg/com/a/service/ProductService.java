@@ -187,7 +187,4 @@ public class ProductService {
 	public NutritionDto getNutritionInfo(NutritionDto seqDto){
 		return dao.getNutritionInfo(seqDto);
 	}
-	public ProductDto findProductSeq(int seq) {
-		return dao.findProductSeq(seq);
-	}
 }
