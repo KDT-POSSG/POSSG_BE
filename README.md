@@ -114,5 +114,5 @@ docker run -d \
 - 관리비 조회
 - 매출 보고서
 - 판매 통계
-#### 알림 - <a href=>상세보기 - WIKI 이동</a>
+#### 알림 - <a href=https://github.com/KDT-POSSG/POSSG_BE/wiki/%EC%95%8C%EB%A6%BC-%ED%8E%98%EC%9D%B4%EC%A7%80>상세보기 - WIKI 이동</a>
 - 유통기한 임박/만료 알림
